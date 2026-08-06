@@ -1,3 +1,9 @@
+import Link from "next/link";
+// ...
+<Link href="/booking">
+  <button className="...">Book Appointment</button>
+</Link>
+import Button from "@/components/ui/Button";
 export default function Navbar() {
   return (
     <header className="fixed top-0 left-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-gray-200">
