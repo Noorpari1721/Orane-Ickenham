@@ -1,49 +1,101 @@
 "use client";
 
-import { motion } from "framer-motion";
+import Button from "@/components/ui/Button";
 
 export default function Hero() {
+  const scrollToServices = () => {
+    document.querySelector("#services")?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
+
   return (
-    <section className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#f8f5f0]">
-      <div className="absolute inset-0 bg-gradient-to-r from-black/50 to-black/20" />
+    <section
+      id="home"
+      className="relative h-screen w-full overflow-hidden"
+    >
+      {/* Background Video */}
 
-      <div className="relative z-10 mx-auto max-w-4xl px-6 text-center text-white">
-        <motion.p
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="mb-4 uppercase tracking-[0.4em] text-sm"
-        >
-          Luxury Beauty Salon
-        </motion.p>
+      <video
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="auto"
+        className="absolute inset-0 h-full w-full object-cover"
+      >
+        <source src="/videos/hero.mp4" type="video/mp4" />
+      </video>
 
-        <motion.h1
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 1 }}
-          className="text-5xl font-semibold md:text-7xl"
-        >
-          Beauty Crafted
-          <br />
-          To Perfection
-        </motion.h1>
+      {/* Overlay */}
 
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.6 }}
-          className="mx-auto mt-8 max-w-2xl text-lg text-gray-200"
-        >
-          Premium Nails • Lashes • Japanese Head Spa • Beauty Treatments
-        </motion.p>
+      <div className="absolute inset-0 bg-black/45" />
 
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.98 }}
-          className="mt-10 rounded-full bg-[#C8A46A] px-8 py-4 font-medium text-black transition"
-        >
-          Book Appointment
-        </motion.button>
+      {/* Content */}
+
+      <div className="relative z-10 flex h-full items-center justify-center px-6">
+        <div className="max-w-4xl text-center text-white">
+
+          <p className="mb-6 text-sm font-medium uppercase tracking-[0.45em] text-[#C49A45]">
+            ORANE ICKENHAM • LUXURY BEAUTY SALON
+          </p>
+
+          <h1 className="text-4xl font-light leading-tight md:text-6xl lg:text-7xl">
+            Beauty That
+            <br />
+            Inspires
+            <span className="text-[#C49A45]"> Confidence</span>
+          </h1>
+
+          <p className="mx-auto mt-8 max-w-2xl text-base leading-7 text-gray-200 md:text-lg">
+            Discover expert nails, lashes, head spa, facials and beauty
+            treatments in a luxurious setting where every appointment
+            is designed around you.
+          </p>
+
+          <div className="mt-10 flex flex-wrap justify-center gap-4">
+
+            <Button
+              text="Book Appointment"
+            />
+
+            <button
+              onClick={scrollToServices}
+              className="
+                inline-flex
+                items-center
+                justify-center
+                rounded-full
+                border
+                border-white/80
+                bg-transparent
+                px-8
+                py-4
+                text-sm
+                font-semibold
+                uppercase
+                tracking-[0.18em]
+                text-white
+                transition-all
+                duration-300
+                hover:scale-105
+                hover:bg-white
+                hover:text-black
+              "
+            >
+              Explore Services
+            </button>
+
+          </div>
+
+        </div>
+      </div>
+
+      {/* Scroll Indicator */}
+
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce text-white">
+        ↓
       </div>
     </section>
   );

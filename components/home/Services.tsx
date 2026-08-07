@@ -1,50 +1,131 @@
-"use client";
-
-import { motion } from "framer-motion";
+import Image from "next/image";
 
 const services = [
-  { name: "Premium Nails", desc: "Gel, acrylic & nail art crafted to perfection." },
-  { name: "Lashes", desc: "Classic, hybrid & volume lash extensions." },
-  { name: "Japanese Head Spa", desc: "A deeply relaxing scalp & hair ritual." },
-  { name: "Beauty Treatments", desc: "Facials, waxing & skin care essentials." },
+  {
+    title: "Head Spa",
+    image: "/images/services/head-spa.jpg",
+    description:
+      "Relaxing head spa treatments designed to refresh your scalp and provide deep relaxation.",
+  },
+  {
+    title: "Nails",
+    image: "/images/services/nails.jpg",
+    description:
+      "Elegant nail treatments with beautiful finishes tailored to your style.",
+  },
+  {
+    title: "Lashes",
+    image: "/images/services/lashes.jpg",
+    description:
+      "Professional lash treatments to enhance your natural beauty.",
+  },
+  {
+    title: "Facial",
+    image: "/images/services/facial.jpg",
+    description:
+      "Luxury facial treatments using professional techniques for glowing skin.",
+  },
+  {
+    title: "Massage",
+    image: "/images/services/massage.jpg",
+    description:
+      "Relaxing massage experiences created to help you unwind.",
+  },
+  {
+    title: "Beauty Treatments",
+    image: "/images/services/beauty.jpg",
+    description:
+      "Complete beauty care services delivered with precision and attention.",
+  },
 ];
 
 export default function Services() {
   return (
-    <section className="bg-white py-24 px-6">
-      <div className="mx-auto max-w-6xl text-center">
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="mb-3 text-sm uppercase tracking-[0.3em] text-[#C8A46A]"
-        >
-          What We Offer
-        </motion.p>
-        <motion.h2
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="mb-16 text-4xl font-semibold md:text-5xl"
-        >
-          Our Services
-        </motion.h2>
+    <section
+      id="services"
+      className="bg-white py-28"
+    >
 
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
-          {services.map((s, i) => (
-            <motion.div
-              key={s.name}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: i * 0.1 }}
-              className="rounded-2xl border border-gray-100 p-8 shadow-sm transition hover:shadow-lg"
-            >
-              <h3 className="mb-3 text-xl font-medium">{s.name}</h3>
-              <p className="text-sm text-gray-500">{s.desc}</p>
-            </motion.div>
-          ))}
+      <div className="mx-auto max-w-7xl px-6">
+
+
+        <div className="mb-16 text-center">
+
+          <div className="mx-auto mb-5 h-[2px] w-20 bg-[#C49A45]" />
+
+
+          <p className="mb-4 text-sm font-semibold uppercase tracking-[0.45em] text-[#C49A45]">
+            OUR SERVICES
+          </p>
+
+
+          <h2 className="text-4xl font-medium text-[#1A1A1A] md:text-6xl">
+            Luxury Beauty
+            <br />
+            Treatments
+          </h2>
+
+
+          <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-gray-600">
+            Discover personalised beauty treatments designed around your
+            comfort, confidence and style.
+          </p>
+
         </div>
+
+
+
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+
+          {services.map((service) => (
+
+            <div
+              key={service.title}
+              className="group overflow-hidden rounded-[30px] bg-[#F8F5F2] transition duration-500 hover:-translate-y-3 hover:shadow-xl"
+            >
+
+              <div className="relative aspect-[4/3] overflow-hidden">
+
+                <Image
+                  src={service.image}
+                  alt={service.title}
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  className="object-cover transition duration-700 group-hover:scale-110"
+                />
+
+
+                <div className="absolute bottom-0 left-0 h-1 w-0 bg-[#C49A45] transition-all duration-500 group-hover:w-full" />
+
+              </div>
+
+
+
+              <div className="p-8">
+
+                <h3 className="text-2xl font-medium text-[#1A1A1A]">
+                  {service.title}
+                </h3>
+
+
+                <p className="mt-4 leading-7 text-gray-600">
+                  {service.description}
+                </p>
+
+
+              </div>
+
+
+            </div>
+
+          ))}
+
+        </div>
+
+
       </div>
+
+
     </section>
   );
 }

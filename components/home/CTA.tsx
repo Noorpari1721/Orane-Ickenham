@@ -1,33 +1,70 @@
-"use client";
-
-import { motion } from "framer-motion";
+import Link from "next/link";
 
 export default function CTA() {
   return (
-    <section className="bg-black py-24 px-6 text-center text-white">
-      <motion.h2
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="mb-6 text-4xl font-semibold md:text-5xl"
-      >
-        Ready for Your Transformation?
-      </motion.h2>
-      <motion.p
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.1 }}
-        className="mx-auto mb-10 max-w-xl text-gray-300"
-      >
-        Book your appointment today and experience luxury beauty care crafted just for you.
-      </motion.p>
-      <motion.button
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.98 }}
-        className="rounded-full bg-[#C8A46A] px-8 py-4 font-medium text-black transition hover:bg-[#b8925a]"
-      >
-        Book Appointment
-      </motion.button>
+    <section
+      id="contact"
+      className="relative overflow-hidden bg-[#111111] py-28"
+    >
+
+      {/* Background Effect */}
+
+      <div className="absolute inset-0 bg-gradient-to-r from-[#C49A45]/10 via-transparent to-[#C49A45]/10" />
+
+
+      <div className="relative mx-auto max-w-5xl px-6 text-center">
+
+
+        {/* Heading */}
+
+        <div className="mx-auto mb-5 h-[2px] w-20 bg-[#C49A45]" />
+
+
+        <p className="mb-5 text-sm font-semibold uppercase tracking-[0.45em] text-[#C49A45]">
+          BOOK YOUR VISIT
+        </p>
+
+
+        <h2 className="text-4xl font-medium leading-tight text-white md:text-6xl">
+          Your Luxury Beauty
+          <br />
+          Experience Awaits
+        </h2>
+
+
+        <p className="mx-auto mt-8 max-w-2xl text-lg leading-8 text-gray-300">
+          Relax, refresh and enjoy premium beauty treatments delivered by
+          experienced professionals in a luxurious salon environment.
+        </p>
+
+
+        {/* Buttons */}
+
+        <div className="mt-12 flex flex-wrap justify-center gap-5">
+
+
+          <Link
+            href="/booking"
+            className="rounded-full bg-[#C49A45] px-10 py-4 font-medium text-white transition duration-300 hover:scale-105 hover:bg-[#A67C2E]"
+          >
+            Book Appointment
+          </Link>
+
+
+          <Link
+            href="tel:01895217151"
+            className="rounded-full border border-white/30 px-10 py-4 text-white transition duration-300 hover:border-[#C49A45] hover:bg-white/10"
+          >
+            Call Salon
+          </Link>
+
+
+        </div>
+
+
+      </div>
+
+
     </section>
   );
 }
