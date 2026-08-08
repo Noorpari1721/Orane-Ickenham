@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { ReactNode } from "react";
 import { motion } from "framer-motion";
@@ -106,12 +106,16 @@ export default function BookingShell({
              ===================================================== */}
           <div
             data-booking-scroll-area="true"
-            className="
+            className={`
               relative
               grid
               items-start
-              lg:grid-cols-[minmax(0,2fr)_380px]
-            "
+              ${
+                booking.step === 8
+                  ? "lg:grid-cols-1"
+                  : "lg:grid-cols-[minmax(0,2fr)_380px]"
+              }
+            `}
           >
 
             {/* Left booking content */}
@@ -137,24 +141,26 @@ export default function BookingShell({
             </div>
 
             {/* Right summary column */}
-            <div
-              className="
-                relative
-                self-stretch
-                bg-black/20
-                px-8
-                pb-8
-                pt-8
-              "
-            >
+            {booking.step !== 8 && (
+              <div
+                className="
+                  relative
+                  self-stretch
+                  bg-black/20
+                  px-8
+                  pb-8
+                  pt-8
+                "
+              >
 
-              <div className="sticky top-8">
+                <div className="sticky top-8">
 
-                <BookingSummary />
+                  <BookingSummary />
+
+                </div>
 
               </div>
-
-            </div>
+            )}
 
           </div>
 

@@ -10,6 +10,7 @@ import Step4Calendar from "@/components/booking/steps/Step4Calendar";
 import Step5Time from "@/components/booking/steps/Step5Time";
 import Step6Customer from "@/components/booking/steps/Step6Customer";
 import Step7Review from "@/components/booking/steps/Step7Review";
+import Step8Payment from "@/components/booking/steps/Step8Payment";
 import { useBooking } from "@/context/BookingContext";
 
 export default function BookingPage() {
@@ -44,9 +45,12 @@ export default function BookingPage() {
         return <Step6Customer />;
 
       case 7:
-        return <Step7Review />;
+    return <Step7Review />;
 
-      default:
+  case 8:
+    return <Step8Payment />;
+
+  default:
         return <Step1Category />;
     }
   };
