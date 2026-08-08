@@ -1,5 +1,7 @@
-import type { ReactNode } from "react";
+﻿import type { ReactNode } from "react";
 import { BookingProvider } from "@/context/BookingContext";
+import BookingNavbar from "@/components/layout/BookingNavbar";
+import Footer from "@/components/layout/Footer";
 
 export default function BookingLayout({
   children,
@@ -8,9 +10,17 @@ export default function BookingLayout({
 }) {
   return (
     <BookingProvider>
-      <main className="min-h-screen bg-[#F8F5F0]">
-        {children}
-      </main>
+      <div className="min-h-screen bg-[#050505]">
+
+        <BookingNavbar />
+
+        <div className="pt-[84px]">
+          {children}
+        </div>
+
+        <Footer />
+
+      </div>
     </BookingProvider>
   );
 }
