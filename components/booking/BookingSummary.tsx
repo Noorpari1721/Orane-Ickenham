@@ -1,121 +1,177 @@
 "use client";
 
-import { motion } from "framer-motion";
-
+import { motion, useScroll, useTransform } from "framer-motion";
 import {
   Sparkles,
   CalendarDays,
   Clock3,
   User,
-  ShieldCheck,
-  CheckCircle2,
 } from "lucide-react";
-
+import { useRef } from "react";
 import { useBooking } from "@/context/BookingContext";
+import { serviceCategories } from "@/data/services";
+
+function formatCategoryName(categoryId: string) {
+  const category = serviceCategories.find(
+    (item) => item.id === categoryId
+  );
+
+  if (category?.title) {
+    return category.title;
+  }
+
+  return categoryId
+    .split("-")
+    .map(
+      (word) =>
+        word.charAt(0).toUpperCase() +
+        word.slice(1).toLowerCase()
+    )
+    .join(" ");
+}
 
 export default function BookingSummary() {
   const { booking } = useBooking();
+  const containerRef = useRef<HTMLElement>(null);
+
+  const { scrollY } = useScroll();
+
+  /*
+    The summary moves with the page scroll.
+    The movement is deliberately limited so the card remains
+    inside the booking container.
+  */
+  const y = useTransform(
+    scrollY,
+    [0, 900],
+    [0, 260],
+    {
+      clamp: true,
+    }
+  );
+
+  const formattedDate = booking.date
+    ? booking.date.toLocaleDateString("en-GB", {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      })
+    : "Choose a date";
 
   return (
     <motion.aside
-      initial={{ opacity: 0 }}
+      ref={containerRef}
+      style={{ y }}
+      initial={{ opacity: 0, y: 18 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: .5 }}
-      className="sticky top-28 rounded-[34px] border border-white/10 bg-gradient-to-b from-white/8 to-white/5 p-8 backdrop-blur-3xl"
+      transition={{
+        opacity: { duration: 0.5 },
+      }}
+      className="relative overflow-hidden rounded-[34px] border border-[#D4AF37]/30 bg-gradient-to-b from-white/10 via-white/5 to-black/20 p-8 shadow-[0_0_35px_rgba(212,175,55,.14),0_25px_70px_rgba(0,0,0,.35)] backdrop-blur-3xl"
     >
-      <p className="text-xs uppercase tracking-[0.45em] text-[#D4AF37]">
-        YOUR EXPERIENCE
-      </p>
+      {/* Golden glow */}
+      <div className="pointer-events-none absolute -bottom-24 -left-20 h-52 w-52 rounded-full bg-[#D4AF37]/10 blur-[80px]" />
 
-      <div className="mt-8 space-y-7">
+      <div className="relative z-10">
+        <div className="flex items-center gap-3">
+          <Sparkles
+            size={17}
+            className="text-[#D4AF37]"
+          />
 
-        <SummaryItem
-          icon={<Sparkles size={18} />}
-          title="Category"
-          value={booking.category || "Select a category"}
-        />
-
-        <SummaryItem
-          icon={<Sparkles size={18} />}
-          title="Treatment"
-          value={booking.service?.name || "Select a treatment"}
-        />
-
-        <SummaryItem
-          icon={<User size={18} />}
-          title="Specialist"
-          value={booking.staff?.name || "Choose a specialist"}
-        />
-
-        <SummaryItem
-          icon={<CalendarDays size={18} />}
-          title="Date"
-          value={
-            booking.date
-              ? booking.date.toLocaleDateString("en-GB", {
-                  weekday: "long",
-                  day: "numeric",
-                  month: "long",
-                })
-              : "Choose a date"
-          }
-        />
-
-        <SummaryItem
-          icon={<Clock3 size={18} />}
-          title="Time"
-          value={booking.time || "Choose a time"}
-        />
-
-      </div>
-
-      <div className="my-8 h-px bg-white/10" />
-
-      <div className="flex justify-between">
-
-        <div>
-
-          <p className="text-sm uppercase tracking-[0.25em] text-white/50">
-            Duration
+          <p className="text-xs uppercase tracking-[0.35em] text-[#D4AF37]">
+            Your Experience
           </p>
-
-          <p className="mt-2 text-white">
-            {booking.service?.duration || "--"}
-          </p>
-
         </div>
 
-        <div className="text-right">
+        <h3 className="mt-2 text-2xl font-light text-white">
+          Booking Summary
+        </h3>
 
-          <p className="text-sm uppercase tracking-[0.25em] text-white/50">
-            Total
-          </p>
+        <div className="mt-8 space-y-7">
+          <SummaryItem
+            icon={<Sparkles size={18} />}
+            title="Category"
+            value={
+              booking.category
+                ? formatCategoryName(booking.category)
+                : "Select a category"
+            }
+          />
 
-          <motion.p
-            key={booking.service?.price}
-            initial={{ scale: .8 }}
-            animate={{ scale: 1 }}
-            className="mt-2 text-3xl font-light text-[#D4AF37]"
-          >
-            £{booking.service?.price ?? 0}
-          </motion.p>
+          <SummaryItem
+            icon={<Sparkles size={18} />}
+            title="Service"
+            value={
+              booking.service?.name ||
+              "Select a service"
+            }
+          />
 
+          <SummaryItem
+            icon={<User size={18} />}
+            title="Specialist"
+            value={
+              booking.staff?.name ||
+              "Choose a specialist"
+            }
+          />
+
+          <SummaryItem
+            icon={<CalendarDays size={18} />}
+            title="Date"
+            value={formattedDate}
+          />
+
+          <SummaryItem
+            icon={<Clock3 size={18} />}
+            title="Time"
+            value={
+              booking.time ||
+              "Choose a time"
+            }
+          />
         </div>
 
+        <div className="my-8 h-px bg-white/10" />
+
+        <div className="flex justify-between">
+          <div>
+            <p className="text-xs uppercase tracking-[0.25em] text-white/50">
+              Duration
+            </p>
+
+            <p className="mt-2 text-white">
+              {booking.service?.duration || "--"}
+            </p>
+          </div>
+
+          <div className="text-right">
+            <p className="text-xs uppercase tracking-[0.25em] text-white/50">
+              Total
+            </p>
+
+            <motion.p
+              key={booking.service?.price}
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.35 }}
+              className="mt-2 text-3xl font-light text-[#D4AF37]"
+            >
+              £{booking.service?.price ?? 0}
+            </motion.p>
+          </div>
+        </div>
+
+        <div className="my-8 h-px bg-white/10" />
+
+        <div className="space-y-4 text-sm">
+          <Feature text="Instant confirmation" />
+          <Feature text="Secure online booking" />
+          <Feature text="Free cancellation policy" />
+        </div>
       </div>
-
-      <div className="my-8 h-px bg-white/10" />
-
-      <div className="space-y-4 text-sm">
-
-        <Feature text="Instant confirmation" />
-
-        <Feature text="Secure online booking" />
-
-        <Feature text="Free cancellation policy" />
-
-      </div>
-
     </motion.aside>
   );
 }
@@ -134,12 +190,11 @@ function SummaryItem({
       layout
       className="flex gap-4"
     >
-      <div className="mt-1 text-[#D4AF37]">
+      <div className="text-[#D4AF37]">
         {icon}
       </div>
 
       <div>
-
         <p className="text-xs uppercase tracking-[0.25em] text-white/45">
           {title}
         </p>
@@ -147,9 +202,7 @@ function SummaryItem({
         <p className="mt-1 text-white">
           {value}
         </p>
-
       </div>
-
     </motion.div>
   );
 }
@@ -160,12 +213,9 @@ function Feature({
   text: string;
 }) {
   return (
-    <div className="flex items-center gap-3 text-white/70">
-      <CheckCircle2
-        size={18}
-        className="text-[#D4AF37]"
-      />
-      {text}
+    <div className="flex items-center gap-3 text-white/60">
+      <span className="h-1.5 w-1.5 rounded-full bg-[#D4AF37]" />
+      <span>{text}</span>
     </div>
   );
 }

@@ -53,7 +53,7 @@ export default function Testimonials() {
           </div>
 
           <p className="mx-auto max-w-3xl text-center text-2xl font-light leading-relaxed text-gray-700 md:text-3xl">
-            “{testimonial.review}”
+            â€œ{testimonial.review}â€
           </p>
 
           <div className="mt-12 text-center">

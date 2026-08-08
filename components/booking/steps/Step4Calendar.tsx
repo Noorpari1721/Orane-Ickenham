@@ -2,24 +2,50 @@
 
 import { useBooking } from "@/context/BookingContext";
 
-const weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+const weekdays = [
+  "Mon",
+  "Tue",
+  "Wed",
+  "Thu",
+  "Fri",
+  "Sat",
+  "Sun",
+];
+
+function dateKey(date: Date) {
+  return [
+    date.getFullYear(),
+    String(date.getMonth() + 1).padStart(2, "0"),
+    String(date.getDate()).padStart(2, "0"),
+  ].join("-");
+}
 
 export default function Step4Calendar() {
-  const { updateBooking, nextStep } = useBooking();
+  const { booking, setDate, updateBooking, nextStep } = useBooking();
 
   const today = new Date();
+  today.setHours(12, 0, 0, 0);
 
-  const dates = Array.from({ length: 21 }, (_, i) => {
-    const date = new Date();
-    date.setDate(today.getDate() + i);
-    return date;
-  });
+  const dates = Array.from(
+    { length: 21 },
+    (_, index) => {
+      const date = new Date(today);
+      date.setDate(today.getDate() + index);
+      date.setHours(12, 0, 0, 0);
+      return date;
+    }
+  );
+
+  const firstDayOffset =
+    (dates[0].getDay() + 6) % 7;
+
+  const selectedDateKey = booking.date
+    ? dateKey(booking.date)
+    : "";
 
   return (
-    <div className="space-y-10">
-
+    <div>
       <div className="text-center">
-
         <p className="text-sm uppercase tracking-[0.5em] text-[#D4AF37]">
           Step Four
         </p>
@@ -32,10 +58,16 @@ export default function Step4Calendar() {
           Select a convenient appointment date.
         </p>
 
+        <p className="mt-3 text-sm text-white/40">
+          Monday £ Saturday £ 10:00 AM £ 7:00 PM
+        </p>
+
+        <p className="mt-1 text-sm text-white/30">
+          Sunday £ Closed
+        </p>
       </div>
 
-      <div className="grid grid-cols-7 gap-4">
-
+      <div className="mt-10 grid grid-cols-7 gap-4">
         {weekdays.map((day) => (
           <div
             key={day}
@@ -45,47 +77,87 @@ export default function Step4Calendar() {
           </div>
         ))}
 
-        {dates.map((date) => {
+        {Array.from({
+          length: firstDayOffset,
+        }).map((_, index) => (
+          <div key={`empty-${index}`} />
+        ))}
 
-          const sunday = date.getDay() === 0;
+        {dates.map((date) => {
+          const isSunday =
+            date.getDay() === 0;
+
+          const selected =
+            selectedDateKey === dateKey(date);
+
+          const weekday = date.toLocaleDateString(
+            "en-GB",
+            {
+              weekday: "short",
+            }
+          );
 
           return (
             <button
-              key={date.toISOString()}
-              disabled={sunday}
+              key={dateKey(date)}
+              type="button"
+              disabled={isSunday}
               onClick={() => {
-                updateBooking({
-                  date,
-                });
+                if (isSunday) return;
 
-                setTimeout(() => {
-                  nextStep();
-                }, 250);
+                setDate(date);
+
+                setTimeout(() => { if (booking.editingReview) { updateBooking({ editingReview: false, step: 5 }); } else { nextStep(); } }, 250);
               }}
-              className={`rounded-2xl border p-5 transition-all duration-300
-
-                ${
-                  sunday
-                    ? "cursor-not-allowed border-white/5 bg-white/5 text-white/20"
-                    : "border-white/10 bg-white/5 hover:border-[#D4AF37] hover:bg-[#D4AF37]/10"
-                }`}
+              className={`rounded-2xl border p-5 transition-all duration-300 ${
+                isSunday
+                  ? "cursor-not-allowed border-white/5 bg-white/5 text-white/20"
+                  : selected
+                  ? "border-[#D4AF37] bg-[#D4AF37]/15 text-[#D4AF37] shadow-[0_0_30px_rgba(212,175,55,.25)]"
+                  : "border-white/10 bg-white/5 text-white hover:border-[#D4AF37] hover:bg-[#D4AF37]/10"
+              }`}
             >
-              <div className="text-2xl text-white">
+              <div
+                className={`text-xs uppercase tracking-[0.2em] ${
+                  isSunday
+                    ? "text-white/20"
+                    : "text-white/40"
+                }`}
+              >
+                {weekday}
+              </div>
+
+              <div
+                className={`mt-2 text-2xl ${
+                  isSunday
+                    ? "text-white/20"
+                    : selected
+                    ? "text-[#D4AF37]"
+                    : "text-white"
+                }`}
+              >
                 {date.getDate()}
               </div>
 
               <div className="mt-2 text-xs text-white/50">
-                {date.toLocaleString("en-GB", {
+                {date.toLocaleDateString("en-GB", {
                   month: "short",
                 })}
               </div>
+
+              {isSunday && (
+                <div className="mt-1 text-[10px] uppercase tracking-wider text-white/20">
+                  Closed
+                </div>
+              )}
             </button>
           );
-
         })}
-
       </div>
-
     </div>
   );
 }
+
+
+
+

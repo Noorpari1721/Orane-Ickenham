@@ -209,7 +209,7 @@ export default function Footer() {
         <div className="mx-auto flex max-w-7xl flex-col gap-3 px-6 py-6 text-sm text-gray-500 md:flex-row md:justify-between">
 
           <p>
-            © {new Date().getFullYear()} ORANE Ickenham. All rights reserved.
+            Â© {new Date().getFullYear()} ORANE Ickenham. All rights reserved.
           </p>
 
           <p>

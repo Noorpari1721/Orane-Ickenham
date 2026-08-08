@@ -26,22 +26,15 @@ const emptyCustomer: Customer = {
 
 const initialState: BookingState = {
   step: 1,
-
   category: "",
-
   service: null,
-
   treatment: null,
-
   staff: null,
-
   date: null,
-
   time: "",
-
   customer: emptyCustomer,
-
   completed: false,
+  editingReview: false,
 };
 
 const BookingContext = createContext<
@@ -73,7 +66,7 @@ export function BookingProvider({
   const goToStep = (step: number) => {
     setBooking((prev) => ({
       ...prev,
-      step,
+      step: Math.min(Math.max(step, 1), 8),
     }));
   };
 
@@ -111,9 +104,14 @@ export function BookingProvider({
   };
 
   const setDate = (date: Date) => {
+    const safeDate = new Date(date);
+
+    safeDate.setHours(12, 0, 0, 0);
+
     setBooking((prev) => ({
       ...prev,
-      date,
+      date: safeDate,
+      time: "",
     }));
   };
 
@@ -144,27 +142,16 @@ export function BookingProvider({
     <BookingContext.Provider
       value={{
         booking,
-
         nextStep,
-
         previousStep,
-
         goToStep,
-
         updateBooking,
-
         setService,
-
         setTreatment,
-
         setStaff,
-
         setDate,
-
         setTime,
-
         updateCustomer,
-
         resetBooking,
       }}
     >
@@ -184,3 +171,4 @@ export function useBooking() {
 
   return context;
 }
+

@@ -32,7 +32,7 @@ export default function Services() {
     <section className="bg-[#F8F5F2] py-28">
       <div className="mx-auto max-w-7xl px-6">
         <div className="mb-16 text-center">
-          <p className="mb-3 uppercase tracking-[0.4em] text-[#B8924A]">
+          <p className="mb-3 uppercase tracking-[0.4em] text-[#D4AF37]">
             Our Services
           </p>
 
@@ -66,10 +66,10 @@ export default function Services() {
                   {service.title}
                 </h3>
 
-                <div className="mt-4 h-[2px] w-12 bg-[#B8924A] transition-all duration-500 group-hover:w-24"></div>
+                <div className="mt-4 h-[2px] w-12 bg-[#D4AF37] transition-all duration-500 group-hover:w-24"></div>
 
-                <button className="mt-6 font-medium uppercase tracking-[0.15em] text-[#B8924A] transition hover:text-black">
-                  Learn More →
+                <button className="mt-6 font-medium uppercase tracking-[0.15em] text-[#D4AF37] transition hover:text-black">
+                  Learn More â†’
                 </button>
               </div>
             </div>
