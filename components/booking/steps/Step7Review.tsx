@@ -112,7 +112,7 @@ export default function Step7Review() {
 
               {booking.service && (
                 <p className="mt-2 text-sm text-white/45">
-                  {booking.service.duration} £ £{booking.service.price}
+                  {booking.service.duration} • £{booking.service.price}
                 </p>
               )}
             </div>
@@ -274,4 +274,6 @@ function ReviewItem({
     </div>
   );
 }
+
+
 

@@ -69,7 +69,7 @@ export default function Step5Time() {
         </p>
 
         <p className="mt-3 text-sm text-white/40">
-          Monday £ Saturday £ 10:00 AM £ 7:00 PM
+          Monday – Saturday · 10:00 AM – 7:00 PM
         </p>
       </div>
 
@@ -88,9 +88,9 @@ export default function Step5Time() {
 
                 setTimeout(() => { if (booking.editingReview) { updateBooking({ editingReview: false, step: 7 }); } else { nextStep(); } }, 250);
               }}
-              className={`rounded-2xl border px-6 py-5 transition-all duration-300 ${
+              className={`booking-card rounded-2xl border px-6 py-5 transition-all duration-300 ${
                 selected
-                  ? "border-[#D4AF37] bg-[#D4AF37]/15 text-[#D4AF37] shadow-[0_0_30px_rgba(212,175,55,.3)]"
+                  ? "booking-card-active border-[#D4AF37] bg-[#D4AF37]/15 text-[#D4AF37] shadow-[0_0_30px_rgba(212,175,55,.3)]"
                   : "border-white/10 bg-white/5 text-white hover:border-[#D4AF37] hover:bg-[#D4AF37]/5"
               }`}
             >
@@ -102,5 +102,8 @@ export default function Step5Time() {
     </div>
   );
 }
+
+
+
 
 

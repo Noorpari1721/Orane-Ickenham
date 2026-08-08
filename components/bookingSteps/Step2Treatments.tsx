@@ -57,7 +57,7 @@ export default function Step2Treatments() {
 
           <div className="mt-6">
             <LuxuryButton onClick={previousStep} variant="glass">
-              â† Back to Services
+              Ã¢â€ Â Back to Services
             </LuxuryButton>
           </div>
         </div>
@@ -121,14 +121,14 @@ export default function Step2Treatments() {
               onClick={previousStep}
               variant="glass"
             >
-              â† Back
+              Ã¢â€ Â Back
             </LuxuryButton>
 
             <LuxuryButton
               onClick={nextStep}
               disabled={!selectedService}
             >
-              Continue â†’
+              Continue Ã¢â€ â€™
             </LuxuryButton>
           </div>
         </>
@@ -136,3 +136,4 @@ export default function Step2Treatments() {
     </div>
   );
 }
+

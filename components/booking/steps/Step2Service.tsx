@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useBooking } from "@/context/BookingContext";
 import { serviceCategories } from "@/data/services";
@@ -64,9 +64,9 @@ export default function Step2Service() {
                   }
                 }, 250);
               }}
-              className={`group rounded-[28px] border transition-all duration-500 ${
+              className={`booking-card group rounded-[28px] border transition-all duration-500 ${
                 active
-                  ? "border-[#D4AF37] bg-[#D4AF37]/10 shadow-[0_0_50px_rgba(212,175,55,.2)]"
+                  ? "booking-card-active border-[#D4AF37] bg-[#D4AF37]/10 shadow-[0_0_50px_rgba(212,175,55,.2)]"
                   : "border-white/10 bg-white/5 hover:border-[#D4AF37]"
               }`}
             >
@@ -107,4 +107,6 @@ export default function Step2Service() {
     </div>
   );
 }
+
+
 

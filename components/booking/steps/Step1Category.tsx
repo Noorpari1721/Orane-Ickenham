@@ -54,9 +54,9 @@ export default function Step1Category() {
                   nextStep();
                 }, 300);
               }}
-              className={`group overflow-hidden rounded-[36px] border transition-all duration-500 ${
+              className={`booking-card group overflow-hidden rounded-[36px] border transition-all duration-500 ${
                 selected
-                  ? "border-[#D4AF37] shadow-[0_0_60px_rgba(212,175,55,.25)]"
+                  ? "booking-card-active border-[#D4AF37] shadow-[0_0_60px_rgba(212,175,55,.25)]"
                   : "border-white/10 hover:border-[#D4AF37]"
               }`}
             >
@@ -101,4 +101,7 @@ export default function Step1Category() {
     </div>
   );
 }
+
+
+
 

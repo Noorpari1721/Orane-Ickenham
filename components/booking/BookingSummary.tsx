@@ -1,13 +1,13 @@
-"use client";
+﻿"use client";
 
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
 import {
   Sparkles,
   CalendarDays,
   Clock3,
   User,
 } from "lucide-react";
-import { useRef } from "react";
+import type { ReactNode } from "react";
 import { useBooking } from "@/context/BookingContext";
 import { serviceCategories } from "@/data/services";
 
@@ -32,23 +32,6 @@ function formatCategoryName(categoryId: string) {
 
 export default function BookingSummary() {
   const { booking } = useBooking();
-  const containerRef = useRef<HTMLElement>(null);
-
-  const { scrollY } = useScroll();
-
-  /*
-    The summary moves with the page scroll.
-    The movement is deliberately limited so the card remains
-    inside the booking container.
-  */
-  const y = useTransform(
-    scrollY,
-    [0, 900],
-    [0, 260],
-    {
-      clamp: true,
-    }
-  );
 
   const formattedDate = booking.date
     ? booking.date.toLocaleDateString("en-GB", {
@@ -61,23 +44,35 @@ export default function BookingSummary() {
 
   return (
     <motion.aside
-      ref={containerRef}
-      style={{ y }}
-      initial={{ opacity: 0, y: 18 }}
-      animate={{ opacity: 1 }}
-      transition={{
-        opacity: { duration: 0.5 },
-      }}
-      className="relative overflow-hidden rounded-[34px] border border-[#D4AF37]/30 bg-gradient-to-b from-white/10 via-white/5 to-black/20 p-8 shadow-[0_0_35px_rgba(212,175,55,.14),0_25px_70px_rgba(0,0,0,.35)] backdrop-blur-3xl"
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="
+        sticky
+        top-8
+        w-full
+        overflow-hidden
+        rounded-[34px]
+        border
+        border-[#D4AF37]/30
+        bg-gradient-to-b
+        from-white/10
+        via-white/5
+        to-black/20
+        p-6
+        shadow-[0_0_35px_rgba(212,175,55,.14),0_25px_70px_rgba(0,0,0,.35)]
+        backdrop-blur-3xl
+        lg:p-8
+      "
     >
-      {/* Golden glow */}
-      <div className="pointer-events-none absolute -bottom-24 -left-20 h-52 w-52 rounded-full bg-[#D4AF37]/10 blur-[80px]" />
+      <div className="pointer-events-none absolute -right-24 -top-24 h-48 w-48 rounded-full bg-[#D4AF37]/10 blur-3xl" />
 
       <div className="relative z-10">
+
         <div className="flex items-center gap-3">
           <Sparkles
             size={17}
-            className="text-[#D4AF37]"
+            className="shrink-0 text-[#D4AF37]"
           />
 
           <p className="text-xs uppercase tracking-[0.35em] text-[#D4AF37]">
@@ -89,7 +84,8 @@ export default function BookingSummary() {
           Booking Summary
         </h3>
 
-        <div className="mt-8 space-y-7">
+        <div className="mt-8 space-y-6">
+
           <SummaryItem
             icon={<Sparkles size={18} />}
             title="Category"
@@ -119,12 +115,6 @@ export default function BookingSummary() {
           />
 
           <SummaryItem
-            icon={<CalendarDays size={18} />}
-            title="Date"
-            value={formattedDate}
-          />
-
-          <SummaryItem
             icon={<Clock3 size={18} />}
             title="Time"
             value={
@@ -132,45 +122,80 @@ export default function BookingSummary() {
               "Choose a time"
             }
           />
+
         </div>
 
-        <div className="my-8 h-px bg-white/10" />
+        <div className="my-7 h-px bg-white/10" />
 
-        <div className="flex justify-between">
-          <div>
+        {/* DATE — FIRST */}
+        <div>
+          <div className="flex items-center gap-2">
+            <CalendarDays
+              size={15}
+              className="text-[#D4AF37]"
+            />
+
             <p className="text-xs uppercase tracking-[0.25em] text-white/50">
-              Duration
-            </p>
-
-            <p className="mt-2 text-white">
-              {booking.service?.duration || "--"}
+              Date
             </p>
           </div>
 
-          <div className="text-right">
+          <p className="mt-2 break-words text-sm leading-6 text-white">
+            {formattedDate}
+          </p>
+        </div>
+
+        {/* DURATION — SECOND */}
+        <div className="mt-5">
+          <p className="text-xs uppercase tracking-[0.25em] text-white/50">
+            Duration
+          </p>
+
+          <p className="mt-2 text-base text-white">
+            {booking.service?.duration || "--"}
+          </p>
+        </div>
+
+        <div className="my-7 h-px bg-white/10" />
+
+        <div className="flex items-end justify-between gap-5">
+
+          <div>
             <p className="text-xs uppercase tracking-[0.25em] text-white/50">
               Total
             </p>
 
-            <motion.p
-              key={booking.service?.price}
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.35 }}
-              className="mt-2 text-3xl font-light text-[#D4AF37]"
-            >
-              £{booking.service?.price ?? 0}
-            </motion.p>
+            <p className="mt-1 text-xs text-white/40">
+              Treatment price
+            </p>
           </div>
+
+          <motion.p
+            key={booking.service?.price ?? "empty"}
+            initial={{
+              scale: 0.85,
+              opacity: 0,
+            }}
+            animate={{
+              scale: 1,
+              opacity: 1,
+            }}
+            transition={{ duration: 0.35 }}
+            className="whitespace-nowrap text-3xl font-light text-[#D4AF37]"
+          >
+            £{booking.service?.price ?? 0}
+          </motion.p>
+
         </div>
 
-        <div className="my-8 h-px bg-white/10" />
+        <div className="my-7 h-px bg-white/10" />
 
         <div className="space-y-4 text-sm">
           <Feature text="Instant confirmation" />
           <Feature text="Secure online booking" />
           <Feature text="Free cancellation policy" />
         </div>
+
       </div>
     </motion.aside>
   );
@@ -181,25 +206,25 @@ function SummaryItem({
   title,
   value,
 }: {
-  icon: React.ReactNode;
+  icon: ReactNode;
   title: string;
   value: string;
 }) {
   return (
     <motion.div
       layout
-      className="flex gap-4"
+      className="flex min-w-0 gap-4"
     >
-      <div className="text-[#D4AF37]">
+      <div className="mt-0.5 shrink-0 text-[#D4AF37]">
         {icon}
       </div>
 
-      <div>
+      <div className="min-w-0">
         <p className="text-xs uppercase tracking-[0.25em] text-white/45">
           {title}
         </p>
 
-        <p className="mt-1 text-white">
+        <p className="mt-1 break-words text-sm leading-6 text-white sm:text-base">
           {value}
         </p>
       </div>
@@ -213,9 +238,14 @@ function Feature({
   text: string;
 }) {
   return (
-    <div className="flex items-center gap-3 text-white/60">
-      <span className="h-1.5 w-1.5 rounded-full bg-[#D4AF37]" />
-      <span>{text}</span>
+    <div className="flex items-center gap-3">
+      <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-[#D4AF37]/50 text-[10px] text-[#D4AF37]">
+        ✓
+      </span>
+
+      <span className="text-white/70">
+        {text}
+      </span>
     </div>
   );
 }

@@ -59,11 +59,11 @@ export default function Step4Calendar() {
         </p>
 
         <p className="mt-3 text-sm text-white/40">
-          Monday £ Saturday £ 10:00 AM £ 7:00 PM
+          Monday – Saturday · 10:00 AM – 7:00 PM
         </p>
 
         <p className="mt-1 text-sm text-white/30">
-          Sunday £ Closed
+          Sunday · Closed
         </p>
       </div>
 
@@ -109,11 +109,11 @@ export default function Step4Calendar() {
 
                 setTimeout(() => { if (booking.editingReview) { updateBooking({ editingReview: false, step: 5 }); } else { nextStep(); } }, 250);
               }}
-              className={`rounded-2xl border p-5 transition-all duration-300 ${
+              className={`booking-card rounded-2xl border p-5 transition-all duration-300 ${
                 isSunday
                   ? "cursor-not-allowed border-white/5 bg-white/5 text-white/20"
                   : selected
-                  ? "border-[#D4AF37] bg-[#D4AF37]/15 text-[#D4AF37] shadow-[0_0_30px_rgba(212,175,55,.25)]"
+                  ? "booking-card-active border-[#D4AF37] bg-[#D4AF37]/15 text-[#D4AF37] shadow-[0_0_30px_rgba(212,175,55,.25)]"
                   : "border-white/10 bg-white/5 text-white hover:border-[#D4AF37] hover:bg-[#D4AF37]/10"
               }`}
             >
@@ -157,6 +157,9 @@ export default function Step4Calendar() {
     </div>
   );
 }
+
+
+
 
 
 

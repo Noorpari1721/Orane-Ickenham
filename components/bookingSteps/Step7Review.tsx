@@ -166,14 +166,14 @@ export default function Step6Review() {
           variant="glass"
           onClick={previousStep}
         >
-          â† Back
+          Ã¢â€ Â Back
         </LuxuryButton>
 
 
         <LuxuryButton
           onClick={nextStep}
         >
-          Proceed To Payment â†’
+          Proceed To Payment Ã¢â€ â€™
         </LuxuryButton>
 
       </div>
@@ -233,3 +233,4 @@ function ReviewItem({
     </div>
   );
 }
+

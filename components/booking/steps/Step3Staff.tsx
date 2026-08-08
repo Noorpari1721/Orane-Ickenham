@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Image from "next/image";
 import { Star, CheckCircle } from "lucide-react";
@@ -76,11 +76,11 @@ export default function Step3Staff() {
                 }, 250);
 
               }}
-              className={`group overflow-hidden rounded-[30px] border transition-all duration-500
+              className={`booking-card group overflow-hidden rounded-[30px] border transition-all duration-500
 
               ${
                 active
-                  ? "border-[#D4AF37] shadow-[0_0_50px_rgba(212,175,55,.25)]"
+                  ? "booking-card-active border-[#D4AF37] shadow-[0_0_50px_rgba(212,175,55,.25)]"
                   : "border-white/10 hover:border-[#D4AF37]"
               }`}
             >
@@ -166,3 +166,5 @@ export default function Step3Staff() {
     </div>
   );
 }
+
+
