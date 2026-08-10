@@ -121,14 +121,14 @@ export default function Step3Staff() {
           onClick={previousStep}
           variant="glass"
         >
-          â† Back
+          ← Back
         </LuxuryButton>
 
         <LuxuryButton
           onClick={nextStep}
           disabled={!selectedStaff}
         >
-          Continue â†’
+          Continue →
         </LuxuryButton>
       </div>
     </div>

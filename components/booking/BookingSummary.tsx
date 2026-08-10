@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { motion } from "framer-motion";
 import {
@@ -65,8 +65,6 @@ export default function BookingSummary() {
         lg:p-8
       "
     >
-      <div className="pointer-events-none absolute -right-24 -top-24 h-48 w-48 rounded-full bg-[#D4AF37]/10 blur-3xl" />
-
       <div className="relative z-10">
 
         <div className="flex items-center gap-3">
@@ -86,77 +84,60 @@ export default function BookingSummary() {
 
         <div className="mt-8 space-y-6">
 
-          <SummaryItem
-            icon={<Sparkles size={18} />}
-            title="Category"
-            value={
-              booking.category
-                ? formatCategoryName(booking.category)
-                : "Select a category"
-            }
-          />
+      <SummaryItem
+        icon={<Sparkles size={18} />}
+        title="Category"
+        value={
+          booking.category
+            ? formatCategoryName(booking.category)
+            : "Select a category"
+        }
+      />
 
-          <SummaryItem
-            icon={<Sparkles size={18} />}
-            title="Service"
-            value={
-              booking.service?.name ||
-              "Select a service"
-            }
-          />
+      <SummaryItem
+        icon={<Sparkles size={18} />}
+        title="Service"
+        value={
+          booking.service?.name ||
+          "Select a service"
+        }
+      />
 
-          <SummaryItem
-            icon={<User size={18} />}
-            title="Specialist"
-            value={
-              booking.staff?.name ||
-              "Choose a specialist"
-            }
-          />
+      <SummaryItem
+        icon={<Sparkles size={18} />}
+        title="Duration"
+        value={
+          booking.service?.duration ||
+          "--"
+        }
+      />
 
-          <SummaryItem
-            icon={<Clock3 size={18} />}
-            title="Time"
-            value={
-              booking.time ||
-              "Choose a time"
-            }
-          />
+      <SummaryItem
+        icon={<User size={18} />}
+        title="Specialist"
+        value={
+          booking.staff?.name ||
+          "Choose a specialist"
+        }
+      />
 
-        </div>
+      <SummaryItem
+        icon={<CalendarDays size={18} />}
+        title="Date"
+        value={formattedDate}
+      />
 
-        <div className="my-7 h-px bg-white/10" />
+      <SummaryItem
+        icon={<Clock3 size={18} />}
+        title="Time"
+        value={
+          booking.time ||
+          "Choose a time"
+        }
+      />
 
-        {/* DATE — FIRST */}
-        <div>
-          <div className="flex items-center gap-2">
-            <CalendarDays
-              size={15}
-              className="text-[#D4AF37]"
-            />
-
-            <p className="text-xs uppercase tracking-[0.25em] text-white/50">
-              Date
-            </p>
-          </div>
-
-          <p className="mt-2 break-words text-sm leading-6 text-white">
-            {formattedDate}
-          </p>
-        </div>
-
-        {/* DURATION — SECOND */}
-        <div className="mt-5">
-          <p className="text-xs uppercase tracking-[0.25em] text-white/50">
-            Duration
-          </p>
-
-          <p className="mt-2 text-base text-white">
-            {booking.service?.duration || "--"}
-          </p>
-        </div>
-
-        <div className="my-7 h-px bg-white/10" />
+    </div>
+    <div className="my-7 h-px bg-white/10" />
 
         <div className="flex items-end justify-between gap-5">
 
@@ -183,7 +164,7 @@ export default function BookingSummary() {
             transition={{ duration: 0.35 }}
             className="whitespace-nowrap text-3xl font-light text-[#D4AF37]"
           >
-            £{booking.service?.price ?? 0}
+            {"\u00A3"}{booking.service?.price ?? 0}
           </motion.p>
 
         </div>
@@ -215,7 +196,7 @@ function SummaryItem({
       layout
       className="flex min-w-0 gap-4"
     >
-      <div className="mt-0.5 shrink-0 text-[#D4AF37]">
+      <div className="shrink-0 text-[#D4AF37]">
         {icon}
       </div>
 
@@ -239,8 +220,8 @@ function Feature({
 }) {
   return (
     <div className="flex items-center gap-3">
-      <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-[#D4AF37]/50 text-[10px] text-[#D4AF37]">
-        ✓
+      <span className="flex h-5 w-5 items-center justify-center rounded-full border border-[#D4AF37]/30 text-xs text-[#D4AF37]">
+        ?
       </span>
 
       <span className="text-white/70">

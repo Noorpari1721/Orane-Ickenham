@@ -1,13 +1,17 @@
 type GlassPillProps = {
   children: React.ReactNode;
+  className?: string;
+  innerClassName?: string;
 };
 
 export default function GlassPill({
   children,
+  className = "",
+  innerClassName = "",
 }: GlassPillProps) {
   return (
     <div
-      className="
+      className={`
         relative
         rounded-full
         border
@@ -24,9 +28,18 @@ export default function GlassPill({
         before:from-white/20
         before:to-transparent
         before:pointer-events-none
-      "
+        ${className}
+      `}
     >
-      <div className="relative flex items-center gap-8">
+      <div
+        className={`
+          relative
+          flex
+          items-center
+          gap-8
+          ${innerClassName}
+        `}
+      >
         {children}
       </div>
     </div>

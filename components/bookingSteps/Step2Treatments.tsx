@@ -57,7 +57,7 @@ export default function Step2Treatments() {
 
           <div className="mt-6">
             <LuxuryButton onClick={previousStep} variant="glass">
-              Ã¢â€ Â Back to Services
+              ← Back to Services
             </LuxuryButton>
           </div>
         </div>
@@ -103,7 +103,7 @@ export default function Step2Treatments() {
 
                   <div className="shrink-0 text-right">
                     <p className="text-2xl font-light text-[#D4AF37]">
-                      £{service.price}
+                      ?{service.price}
                     </p>
 
                     <p className="mt-1 text-xs uppercase tracking-[0.15em] text-white/30">
@@ -121,14 +121,14 @@ export default function Step2Treatments() {
               onClick={previousStep}
               variant="glass"
             >
-              Ã¢â€ Â Back
+              ← Back
             </LuxuryButton>
 
             <LuxuryButton
               onClick={nextStep}
               disabled={!selectedService}
             >
-              Continue Ã¢â€ â€™
+              Continue →
             </LuxuryButton>
           </div>
         </>

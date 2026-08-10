@@ -1,79 +1,210 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
-import { UserRound } from "lucide-react";
+import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 
+import GlassPill from "./GlassPill";
+import MyAccountButton from "./MyAccountButton";
+
 export default function BookingNavbar() {
-  const [scrolled, setScrolled] = useState(false);
+  const [navbarVisible, setNavbarVisible] = useState(true);
 
   useEffect(() => {
+    const TOP_THRESHOLD = 20;
+
     const handleScroll = () => {
-      setScrolled(window.scrollY > 30);
+      const currentScrollY = window.scrollY;
+
+      // Visible ONLY at the very top.
+      // Remains hidden during the entire upward journey.
+      setNavbarVisible(currentScrollY <= TOP_THRESHOLD);
     };
 
-    window.addEventListener("scroll", handleScroll);
+    handleScroll();
+
+    window.addEventListener("scroll", handleScroll, {
+      passive: true,
+    });
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
-  const glassPill =
-    "flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-5 py-2.5 text-xs uppercase tracking-[0.18em] text-white/80 transition-all duration-300 hover:border-[#D4AF37]/50 hover:bg-[#D4AF37]/10 hover:text-[#D4AF37]";
-
   return (
-    <header
-      className={`
+    <motion.div
+      className="
         fixed
-        left-0
-        right-0
-        top-0
-        z-50
-        transition-all
-        duration-500
-        ${
-          scrolled
-            ? "h-[72px] border-b border-white/10 bg-[#070707]/90 shadow-2xl backdrop-blur-xl"
-            : "h-[84px] border-b border-white/5 bg-[#070707]/80 backdrop-blur-md"
-        }
-      `}
+        inset-x-0
+        top-5
+        z-[9999]
+        flex
+        justify-center
+        px-4
+        sm:px-6
+        pointer-events-none
+      "
+      animate={{
+        y: navbarVisible ? 0 : -140,
+        opacity: navbarVisible ? 1 : 0,
+      }}
+      transition={{
+        duration: 0.5,
+        ease: [0.22, 1, 0.36, 1],
+      }}
     >
-      <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-6 lg:px-10">
-
-        {/* Logo */}
-        <Link
-          href="/"
-          aria-label="Orane Ickenham Home"
-          className="group flex items-center"
-        >
-          <span className="text-2xl font-semibold tracking-[0.28em] text-white transition duration-300 group-hover:text-[#D4AF37]">
-            ORANE
-          </span>
-        </Link>
-
-        {/* Navigation */}
-        <nav className="flex items-center gap-2 sm:gap-3">
-
-          {/* Home */}
-          <Link
-            href="/"
-            className={glassPill}
+      <motion.div
+        className="
+          pointer-events-auto
+          relative
+          w-[min(94vw,980px)]
+        "
+        animate={{
+          y: [0, -5, 0],
+        }}
+        whileHover={{
+          boxShadow: [
+            "0 8px 30px rgba(0,0,0,0.18), 0 0 0 rgba(212,175,55,0)",
+            "0 14px 38px rgba(0,0,0,0.24), 0 0 32px rgba(212,175,55,0.25)",
+            "0 8px 30px rgba(0,0,0,0.18), 0 0 0 rgba(212,175,55,0)",
+          ],
+        }}
+        transition={{
+          y: {
+            duration: 6,
+            repeat: Infinity,
+            ease: "easeInOut",
+          },
+          boxShadow: {
+            duration: 2.8,
+            repeat: Infinity,
+            ease: "easeInOut",
+          },
+        }}
+      >
+        <GlassPill>
+          <div
+            className="
+              relative
+              flex
+              w-full
+              items-center
+              justify-center
+              gap-4
+              px-6
+              py-1
+              sm:gap-10
+              sm:px-12
+              lg:gap-20
+              lg:px-24
+            "
           >
-            Home
-          </Link>
+            {/* ORANE */}
 
-          {/* My Account */}
-          <button
-            type="button"
-            className={glassPill}
-          >
-            <UserRound size={15} />
-            <span>My Account</span>
-          </button>
+            <Link
+              href="/"
+              aria-label="Orane Ickenham Home"
+              className="
+                shrink-0
+                text-2xl
+                font-semibold
+                tracking-[0.25em]
+                text-white
+                transition-all
+                duration-500
+                hover:-translate-y-0.5
+                hover:text-[#D4AF37]
+                hover:[text-shadow:0_0_22px_rgba(212,175,55,.55)]
+              "
+            >
+              ORANE
+            </Link>
 
-        </nav>
-      </div>
-    </header>
+            {/* Home */}
+
+            <Link
+              href="/"
+              className="
+                shrink-0
+                rounded-full
+                px-4
+                py-2.5
+                text-lg
+                font-medium
+                tracking-wide
+                text-white/80
+                transition-all
+                duration-500
+                hover:-translate-y-0.5
+                hover:bg-white/10
+                hover:text-[#D4AF37]
+                hover:shadow-[0_0_28px_rgba(212,175,55,.24)]
+              "
+            >
+              Home
+            </Link>
+
+            {/* Contact */}
+
+            <Link
+              href="/contact"
+              className="
+                shrink-0
+                rounded-full
+                px-4
+                py-2.5
+                text-lg
+                font-medium
+                tracking-wide
+                text-white/80
+                transition-all
+                duration-500
+                hover:-translate-y-0.5
+                hover:bg-white/10
+                hover:text-[#D4AF37]
+                hover:shadow-[0_0_28px_rgba(212,175,55,.24)]
+              "
+            >
+              Contact
+            </Link>
+
+            {/* Shared My Account */}
+
+            <MyAccountButton variant="booking" />
+          </div>
+        </GlassPill>
+
+        {/* Gold glow underneath capsule */}
+
+        <motion.div
+          className="
+            pointer-events-none
+            absolute
+            -bottom-7
+            left-1/2
+            h-10
+            w-[72%]
+            -translate-x-1/2
+            rounded-full
+            bg-[#D4AF37]/20
+            blur-2xl
+          "
+          animate={{
+            opacity: [0.7, 1, 0.7],
+            scaleX: [1, 1.06, 1],
+          }}
+          whileHover={{
+            opacity: 1,
+            scaleX: 1.12,
+          }}
+          transition={{
+            duration: 3.5,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+      </motion.div>
+    </motion.div>
   );
 }

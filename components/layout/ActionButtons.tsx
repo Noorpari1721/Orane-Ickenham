@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { User } from "lucide-react";
+import MyAccountButton from "./MyAccountButton";
 
 type ActionButtonsProps = {
   scrolled: boolean;
@@ -11,41 +11,13 @@ export default function ActionButtons({
   scrolled,
 }: ActionButtonsProps) {
   return (
-    <div className="hidden items-center gap-4 lg:flex">
-
+    <>
       {/* My Account */}
 
-      <Link
-        href="/account"
-        className={`
-          group
-          flex
-          items-center
-          gap-2
-          rounded-full
-          border
-          px-5
-          py-3
-          text-sm
-          font-medium
-          transition-all
-          duration-300
-          backdrop-blur-xl
-
-          ${
-            scrolled
-              ? "border-black/10 bg-white/60 text-[#1A1A1A] hover:bg-white"
-              : "border-white/20 bg-white/10 text-white hover:bg-white/20"
-          }
-        `}
-      >
-        <User
-          size={18}
-          className="transition-transform duration-300 group-hover:scale-110"
-        />
-
-        <span>My Account</span>
-      </Link>
+      <MyAccountButton
+        variant="home"
+        scrolled={scrolled}
+      />
 
       {/* Book Now */}
 
@@ -72,7 +44,6 @@ export default function ActionButtons({
       >
         Book Now
       </Link>
-
-    </div>
+    </>
   );
 }

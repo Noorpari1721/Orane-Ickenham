@@ -152,7 +152,7 @@ export default function Step6Review() {
 
 
         <span className="text-3xl font-light text-[#D4AF37]">
-          £{booking.service?.price ?? 0}
+          ?{booking.service?.price ?? 0}
         </span>
 
       </div>
@@ -166,14 +166,14 @@ export default function Step6Review() {
           variant="glass"
           onClick={previousStep}
         >
-          Ã¢â€ Â Back
+          ← Back
         </LuxuryButton>
 
 
         <LuxuryButton
           onClick={nextStep}
         >
-          Proceed To Payment Ã¢â€ â€™
+          Proceed To Payment →
         </LuxuryButton>
 
       </div>

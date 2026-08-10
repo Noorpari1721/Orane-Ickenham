@@ -70,19 +70,19 @@ const periods = [
     id: "morning",
     label: "Morning",
     icon: Sun,
-    description: "9:00 AM â€“ 11:30 AM",
+    description: "9:00 AM – 11:30 AM",
   },
   {
     id: "afternoon",
     label: "Afternoon",
     icon: Sunset,
-    description: "12:00 PM â€“ 4:30 PM",
+    description: "12:00 PM – 4:30 PM",
   },
   {
     id: "evening",
     label: "Evening",
     icon: Moon,
-    description: "5:00 PM â€“ 7:30 PM",
+    description: "5:00 PM – 7:30 PM",
   },
 ] as const;
 
@@ -241,14 +241,14 @@ export default function Step4Time() {
           onClick={previousStep}
           variant="glass"
         >
-          â† Back
+          ← Back
         </LuxuryButton>
 
         <LuxuryButton
           onClick={nextStep}
           disabled={!selectedTime}
         >
-          Continue â†’
+          Continue →
         </LuxuryButton>
       </div>
     </div>

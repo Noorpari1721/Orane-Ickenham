@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useMemo, useState } from "react";
 import { useBooking } from "@/context/BookingContext";
@@ -98,10 +98,7 @@ export default function Step5Time() {
       window.clearInterval(interval);
     };
   }, []);
-
-  const isSunday = booking.date?.getDay() === 0;
-
-  const todayInLondon = useMemo(
+const todayInLondon = useMemo(
     () => getLondonDateParts(now),
     [now]
   );
@@ -120,32 +117,7 @@ export default function Step5Time() {
 
     return getSlotMinutes(time) <= currentLondonMinutes;
   };
-
-  if (isSunday) {
-    return (
-      <div className="text-center">
-        <p className="text-sm uppercase tracking-[0.5em] text-[#D4AF37]">
-          Step Five
-        </p>
-
-        <h2 className="mt-4 text-5xl font-light text-white">
-          Choose Your Time
-        </h2>
-
-        <div className="mx-auto mt-10 max-w-xl rounded-[28px] border border-white/10 bg-white/5 p-10">
-          <p className="text-2xl font-light text-white">
-            We are closed on Sundays.
-          </p>
-
-          <p className="mt-4 text-white/60">
-            Please choose another date for your appointment.
-          </p>
-        </div>
-      </div>
-    );
-  }
-
-  return (
+return (
     <div>
       <div className="text-center">
         <p className="text-sm uppercase tracking-[0.5em] text-[#D4AF37]">
@@ -161,7 +133,7 @@ export default function Step5Time() {
         </p>
 
         <p className="mt-3 text-sm text-white/40">
-          Monday - Saturday · 10:00 AM - 7:00 PM
+          Monday - Sunday · 10:00 AM - 7:00 PM
         </p>
 
         {selectedDateIsToday && (

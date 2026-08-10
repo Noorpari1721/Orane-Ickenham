@@ -101,27 +101,23 @@ export default function Step4Calendar() {
             <button
               key={dateKey(date)}
               type="button"
-              disabled={isSunday}
+              disabled={false}
               onClick={() => {
-                if (isSunday) return;
+                if (false) return;
 
                 setDate(date);
 
                 setTimeout(() => { if (booking.editingReview) { updateBooking({ editingReview: false, step: 5 }); } else { nextStep(); } }, 250);
               }}
               className={`booking-card rounded-2xl border p-5 transition-all duration-300 ${
-                isSunday
-                  ? "cursor-not-allowed border-white/5 bg-white/5 text-white/20"
-                  : selected
+                selected
                   ? "booking-card-active border-[#D4AF37] bg-[#D4AF37]/15 text-[#D4AF37] shadow-[0_0_30px_rgba(212,175,55,.25)]"
                   : "border-white/10 bg-white/5 text-white hover:border-[#D4AF37] hover:bg-[#D4AF37]/10"
               }`}
             >
               <div
                 className={`text-xs uppercase tracking-[0.2em] ${
-                  isSunday
-                    ? "text-white/20"
-                    : "text-white/40"
+                  "text-white/40"
                 }`}
               >
                 {weekday}
@@ -129,9 +125,7 @@ export default function Step4Calendar() {
 
               <div
                 className={`mt-2 text-2xl ${
-                  isSunday
-                    ? "text-white/20"
-                    : selected
+                  selected
                     ? "text-[#D4AF37]"
                     : "text-white"
                 }`}
@@ -145,11 +139,7 @@ export default function Step4Calendar() {
                 })}
               </div>
 
-              {isSunday && (
-                <div className="mt-1 text-[10px] uppercase tracking-wider text-white/20">
-                  Closed
-                </div>
-              )}
+              
             </button>
           );
         })}

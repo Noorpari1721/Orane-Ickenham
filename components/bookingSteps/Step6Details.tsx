@@ -164,7 +164,7 @@ export default function Step5Details() {
           variant="glass"
           onClick={previousStep}
         >
-          â† Back
+          ← Back
         </LuxuryButton>
 
 
@@ -172,7 +172,7 @@ export default function Step5Details() {
           onClick={nextStep}
           disabled={!isValid}
         >
-          Continue â†’
+          Continue →
         </LuxuryButton>
 
       </div>

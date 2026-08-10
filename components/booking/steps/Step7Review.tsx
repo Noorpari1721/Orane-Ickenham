@@ -112,7 +112,7 @@ export default function Step7Review() {
 
               {booking.service && (
                 <p className="mt-2 text-sm text-white/45">
-                  {booking.service.duration} • £{booking.service.price}
+                  {booking.service.duration} ? ?{booking.service.price}
                 </p>
               )}
             </div>
@@ -140,51 +140,53 @@ export default function Step7Review() {
         </p>
 
         <div className="mt-6 grid gap-6 sm:grid-cols-2">
-          <ReviewItem
-            icon={<UserRound size={18} />}
-            label="Specialist"
-            value={booking.staff?.name || "Not selected"}
-          />
 
-          <div className="flex items-start justify-between gap-4">
-            <ReviewItem
-              icon={<CalendarDays size={18} />}
-              label="Date"
-              value={formattedDate}
-            />
+      <ReviewItem
+        icon={<UserRound size={18} />}
+        label="Specialist"
+        value={booking.staff?.name || "Not selected"}
+      />
 
-            <button
-              type="button"
-              onClick={() => editStep(4)}
-              className="shrink-0 rounded-full border border-[#D4AF37]/30 px-4 py-2 text-xs text-[#D4AF37] transition hover:border-[#D4AF37] hover:bg-[#D4AF37]/10"
-            >
-              Change
-            </button>
-          </div>
+      <div className="flex items-start justify-between gap-4">
+        <ReviewItem
+          icon={<CalendarDays size={18} />}
+          label="Date"
+          value={formattedDate}
+        />
 
-          <div className="flex items-start justify-between gap-4">
-            <ReviewItem
-              icon={<Clock3 size={18} />}
-              label="Time"
-              value={booking.time || "Not selected"}
-            />
+        <button
+          type="button"
+          onClick={() => editStep(4)}
+          className="shrink-0 rounded-full border border-[#D4AF37]/30 px-4 py-2 text-xs text-[#D4AF37] transition hover:border-[#D4AF37] hover:bg-[#D4AF37]/10"
+        >
+          Change
+        </button>
+      </div>
 
-            <button
-              type="button"
-              onClick={() => editStep(5)}
-              className="shrink-0 rounded-full border border-[#D4AF37]/30 px-4 py-2 text-xs text-[#D4AF37] transition hover:border-[#D4AF37] hover:bg-[#D4AF37]/10"
-            >
-              Change
-            </button>
-          </div>
+      <ReviewItem
+        icon={<Sparkles size={18} />}
+        label="Duration"
+        value={booking.service?.duration || "Not selected"}
+      />
 
-          <ReviewItem
-            icon={<Sparkles size={18} />}
-            label="Duration"
-            value={booking.service?.duration || "Not selected"}
-          />
-        </div>
-      </motion.div>
+      <div className="flex items-start justify-between gap-4">
+        <ReviewItem
+          icon={<Clock3 size={18} />}
+          label="Time"
+          value={booking.time || "Not selected"}
+        />
+
+        <button
+          type="button"
+          onClick={() => editStep(5)}
+          className="shrink-0 rounded-full border border-[#D4AF37]/30 px-4 py-2 text-xs text-[#D4AF37] transition hover:border-[#D4AF37] hover:bg-[#D4AF37]/10"
+        >
+          Change
+        </button>
+      </div>
+
+    </div>
+  </motion.div>
 
       {/* Customer */}
       <motion.div

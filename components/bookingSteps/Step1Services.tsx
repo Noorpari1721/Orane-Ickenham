@@ -124,7 +124,7 @@ export default function Step1Services() {
           onClick={nextStep}
           disabled={!selectedCategory}
         >
-          Continue â†’
+          Continue →
         </LuxuryButton>
       </div>
     </div>

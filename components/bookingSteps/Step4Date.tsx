@@ -285,14 +285,14 @@ export default function Step3Date() {
           onClick={previousStep}
           variant="glass"
         >
-          â† Back
+          ← Back
         </LuxuryButton>
 
         <LuxuryButton
           onClick={nextStep}
           disabled={!booking.date}
         >
-          Continue â†’
+          Continue →
         </LuxuryButton>
       </div>
     </div>

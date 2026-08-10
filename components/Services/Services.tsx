@@ -69,7 +69,7 @@ export default function Services() {
                 <div className="mt-4 h-[2px] w-12 bg-[#D4AF37] transition-all duration-500 group-hover:w-24"></div>
 
                 <button className="mt-6 font-medium uppercase tracking-[0.15em] text-[#D4AF37] transition hover:text-black">
-                  Learn More â†’
+                  Learn More →
                 </button>
               </div>
             </div>
