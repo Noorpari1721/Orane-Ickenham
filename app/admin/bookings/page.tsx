@@ -774,7 +774,7 @@ try {
   href="/admin"
   className="mb-5 inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-white/40 transition hover:text-[#D4AF37]"
 >
-  <span aria-hidden="true">â†</span>
+  <span aria-hidden="true">&lt;-</span>
   <span>Admin Dashboard</span>
 </Link>
 <p className="text-xs uppercase tracking-[0.3em] text-[#D4AF37]">
@@ -1068,7 +1068,7 @@ try {
                         </p>
                       ) : (
                         <span className="text-xs text-white/20">
-                          Ã¢â‚¬â€
+                          -
                         </span>
                       )}
                     </div>
@@ -1316,7 +1316,7 @@ try {
 
                 {availabilityError && (
                   <div className="mt-2 rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-xs text-red-300">
-                    Ã¢Å¡Â Ã¯Â¸Â {availabilityError}
+                    Warning: {availabilityError}
                   </div>
                 )}
               </div>
