@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import {
   createContext,
@@ -52,7 +52,7 @@ export function BookingProvider({
   const nextStep = () => {
     setBooking((prev) => ({
       ...prev,
-      step: Math.min(prev.step + 1, 8),
+      step: Math.min(prev.step + 1, 7),
     }));
   };
 
@@ -66,7 +66,7 @@ export function BookingProvider({
   const goToStep = (step: number) => {
     setBooking((prev) => ({
       ...prev,
-      step: Math.min(Math.max(step, 1), 8),
+      step: Math.min(Math.max(step, 1), 7),
     }));
   };
 
@@ -171,4 +171,3 @@ export function useBooking() {
 
   return context;
 }
-

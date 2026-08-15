@@ -1,11 +1,10 @@
-"use client";
+﻿"use client";
 
 import { motion } from "framer-motion";
 import {
   Sparkles,
   CalendarDays,
   Clock3,
-  User,
 } from "lucide-react";
 import type { ReactNode } from "react";
 import { useBooking } from "@/context/BookingContext";
@@ -66,7 +65,6 @@ export default function BookingSummary() {
       "
     >
       <div className="relative z-10">
-
         <div className="flex items-center gap-3">
           <Sparkles
             size={17}
@@ -83,64 +81,53 @@ export default function BookingSummary() {
         </h3>
 
         <div className="mt-8 space-y-6">
+          <SummaryItem
+            icon={<Sparkles size={18} />}
+            title="Category"
+            value={
+              booking.category
+                ? formatCategoryName(booking.category)
+                : "Select a category"
+            }
+          />
 
-      <SummaryItem
-        icon={<Sparkles size={18} />}
-        title="Category"
-        value={
-          booking.category
-            ? formatCategoryName(booking.category)
-            : "Select a category"
-        }
-      />
+          <SummaryItem
+            icon={<Sparkles size={18} />}
+            title="Service"
+            value={
+              booking.service?.name ||
+              "Select a service"
+            }
+          />
 
-      <SummaryItem
-        icon={<Sparkles size={18} />}
-        title="Service"
-        value={
-          booking.service?.name ||
-          "Select a service"
-        }
-      />
+          <SummaryItem
+            icon={<Sparkles size={18} />}
+            title="Duration"
+            value={
+              booking.service?.duration ||
+              "--"
+            }
+          />
 
-      <SummaryItem
-        icon={<Sparkles size={18} />}
-        title="Duration"
-        value={
-          booking.service?.duration ||
-          "--"
-        }
-      />
+          <SummaryItem
+            icon={<CalendarDays size={18} />}
+            title="Date"
+            value={formattedDate}
+          />
 
-      <SummaryItem
-        icon={<User size={18} />}
-        title="Specialist"
-        value={
-          booking.staff?.name ||
-          "Choose a specialist"
-        }
-      />
+          <SummaryItem
+            icon={<Clock3 size={18} />}
+            title="Time"
+            value={
+              booking.time ||
+              "Choose a time"
+            }
+          />
+        </div>
 
-      <SummaryItem
-        icon={<CalendarDays size={18} />}
-        title="Date"
-        value={formattedDate}
-      />
-
-      <SummaryItem
-        icon={<Clock3 size={18} />}
-        title="Time"
-        value={
-          booking.time ||
-          "Choose a time"
-        }
-      />
-
-    </div>
-    <div className="my-7 h-px bg-white/10" />
+        <div className="my-7 h-px bg-white/10" />
 
         <div className="flex items-end justify-between gap-5">
-
           <div>
             <p className="text-xs uppercase tracking-[0.25em] text-white/50">
               Total
@@ -166,7 +153,6 @@ export default function BookingSummary() {
           >
             {"\u00A3"}{booking.service?.price ?? 0}
           </motion.p>
-
         </div>
 
         <div className="my-7 h-px bg-white/10" />
@@ -176,7 +162,6 @@ export default function BookingSummary() {
           <Feature text="Secure online booking" />
           <Feature text="Free cancellation policy" />
         </div>
-
       </div>
     </motion.aside>
   );
@@ -221,7 +206,7 @@ function Feature({
   return (
     <div className="flex items-center gap-3">
       <span className="flex h-5 w-5 items-center justify-center rounded-full border border-[#D4AF37]/30 text-xs text-[#D4AF37]">
-        ?
+        ✓
       </span>
 
       <span className="text-white/70">

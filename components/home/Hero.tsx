@@ -49,8 +49,8 @@ export default function Hero() {
           </h1>
 
           <p className="mx-auto mt-8 max-w-2xl text-base leading-7 text-gray-200 md:text-lg">
-            Discover expert nails, lashes, head spa, facials and beauty
-            treatments in a luxurious setting where every appointment
+            Discover expert nails, lashes, japanese head spa, facials and
+            beauty treatments in a luxurious setting where every appointment
             is designed around you.
           </p>
 

@@ -1,9 +1,9 @@
-export const galleryImages = [
+﻿export const galleryImages = [
   {
     id: 1,
-    title: "Head Spa",
+    title: "Japanese Head Spa",
     image: "/images/gallery/head-spa-1.jpg",
-    alt: "Luxury Head Spa Treatment",
+    alt: "Luxury Japanese Head Spa Treatment",
   },
   {
     id: 2,
@@ -37,9 +37,9 @@ export const galleryImages = [
   },
   {
     id: 7,
-    title: "Head Spa",
+    title: "Japanese Head Spa",
     image: "/images/gallery/head-spa-2.jpg",
-    alt: "Luxury Head Spa",
+    alt: "Luxury Japanese Head Spa",
   },
   {
     id: 8,

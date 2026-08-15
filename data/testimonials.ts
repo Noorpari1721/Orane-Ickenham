@@ -1,11 +1,11 @@
-export const testimonials = [
+﻿export const testimonials = [
   {
     id: 1,
     name: "Sarah M.",
-    service: "Luxury Head Spa",
+    service: "Luxury Japanese Head Spa",
     rating: 5,
     review:
-      "Absolutely the best salon experience I've had. The Head Spa treatment was incredibly relaxing and the team made me feel so welcome.",
+      "Absolutely the best salon experience I've had. The Japanese Head Spa treatment was incredibly relaxing and the team made me feel so welcome.",
   },
   {
     id: 2,

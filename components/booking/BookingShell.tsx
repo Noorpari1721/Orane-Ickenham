@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { ReactNode } from "react";
 import { motion } from "framer-motion";
@@ -18,17 +18,13 @@ export default function BookingShell({
 
   return (
     <main className="relative min-h-screen overflow-x-clip bg-[#080808]">
-
-      {/* Booking-only ambient background glow */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <div className="absolute bottom-0 right-0 h-[500px] w-[500px] rounded-full bg-[#D4AF37]/10 blur-[180px]" />
 
         <div className="absolute left-1/2 top-1/3 h-[360px] w-[360px] -translate-x-1/2 rounded-full bg-[#D4AF37]/[0.035] blur-[140px]" />
       </div>
 
-      {/* Booking container */}
       <div className="relative z-10 mx-auto w-full max-w-7xl px-6 py-8">
-
         <div
           data-booking-container="true"
           className="
@@ -42,11 +38,8 @@ export default function BookingShell({
             backdrop-blur-3xl
           "
         >
-
-          {/* Header */}
           <div className="rounded-t-[38px] border-b border-white/10 px-9 py-6">
             <div className="flex items-center justify-between gap-6">
-
               <div>
                 <p className="text-sm uppercase tracking-[0.45em] text-[#D4AF37]">
                   ORANE ICKENHAM
@@ -58,7 +51,6 @@ export default function BookingShell({
               </div>
 
               <div className="flex shrink-0 items-center gap-3">
-
                 <NavigationButtons />
 
                 <motion.div
@@ -85,25 +77,17 @@ export default function BookingShell({
                   "
                 >
                   <span className="text-sm text-[#D4AF37]">
-                    Step {booking.step} / 8
+                    Step {booking.step} / 7
                   </span>
                 </motion.div>
-
               </div>
             </div>
           </div>
 
-          {/* Progress */}
           <div className="border-b border-white/10 px-9 py-6">
             <ProgressStepper />
           </div>
 
-          {/* =====================================================
-              MAIN BOOKING AREA
-
-              The Summary is sticky ONLY inside this area.
-              32px top + 32px bottom are provided by this row.
-             ===================================================== */}
           <div
             data-booking-scroll-area="true"
             className={`
@@ -111,16 +95,13 @@ export default function BookingShell({
               grid
               items-start
               ${
-                booking.step === 8
+                booking.step === 7
                   ? "lg:grid-cols-1"
                   : "lg:grid-cols-[minmax(0,2fr)_380px]"
               }
             `}
           >
-
-            {/* Left booking content */}
             <div className="min-w-0 border-r border-white/10 p-9">
-
               <motion.div
                 initial={{
                   opacity: 0,
@@ -137,11 +118,9 @@ export default function BookingShell({
               >
                 {children}
               </motion.div>
-
             </div>
 
-            {/* Right summary column */}
-            {booking.step !== 8 && (
+            {booking.step !== 7 && (
               <div
                 className="
                   relative
@@ -152,18 +131,12 @@ export default function BookingShell({
                   pt-8
                 "
               >
-
                 <div className="sticky top-8">
-
                   <BookingSummary />
-
                 </div>
-
               </div>
             )}
-
           </div>
-
         </div>
       </div>
     </main>

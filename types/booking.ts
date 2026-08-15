@@ -15,8 +15,12 @@ export interface Treatment {
 
 export interface Staff {
   id: string;
+  techNo?: string;
   name: string;
   role: string;
+  experience?: string;
+  specialties?: string[];
+  status?: string;
   image: string;
 }
 
@@ -60,4 +64,3 @@ export interface BookingContextType {
 
   resetBooking: () => void;
 }
-

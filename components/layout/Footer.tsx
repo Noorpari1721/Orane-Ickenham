@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
 import {
@@ -235,7 +235,7 @@ export default function Footer() {
               </p>
 
               <p className="mt-4 text-[#D4AF37]">
-                Sunday · Closed
+                Sunday · 9:00 AM – 5:00 PM
               </p>
 
             </div>

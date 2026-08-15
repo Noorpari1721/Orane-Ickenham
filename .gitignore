@@ -42,3 +42,18 @@ next-env.d.ts
 
 # Local development backups
 *.backup*
+
+/app/generated/prisma
+
+.vercel
+.env*
+# AI/editor local configuration
+/.agents/
+/.claude/
+/.windsurf/
+
+# Local test files
+/check-services.js
+/check-services.sql
+/payment-transaction-diff.sql
+/fix-orane-booking-step5.ps1

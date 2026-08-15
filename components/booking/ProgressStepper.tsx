@@ -7,7 +7,6 @@ import { useBooking } from "@/context/BookingContext";
 const steps = [
   "Service",
   "Treatment",
-  "Staff",
   "Date",
   "Time",
   "Details",
@@ -83,9 +82,10 @@ export default function ProgressStepper() {
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{
-                    width: booking.step > number
-                      ? "100%"
-                      : "0%",
+                    width:
+                      booking.step > number
+                        ? "100%"
+                        : "0%",
                   }}
                   transition={{
                     duration: 0.7,
