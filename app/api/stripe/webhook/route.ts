@@ -446,6 +446,363 @@ async function sendBookingEmails(
   ]);
 }
 
+
+
+async function sendGiftCardEmails(
+  giftCard: {
+    giftCardNo: string;
+    code: string;
+    amount: unknown;
+    type: string;
+    recipientFirstName: string | null;
+    recipientLastName: string | null;
+    recipientEmail: string | null;
+    purchaserFirstName: string | null;
+    purchaserLastName: string | null;
+    purchaserEmail: string | null;
+    personalMessage: string | null;
+    expiresAt: Date;
+  },
+  paymentReference: string
+) {
+  const transporter = nodemailer.createTransport({
+    host: smtpHost,
+    port: smtpPort,
+    secure: smtpPort === 465,
+    auth: {
+      user: smtpUser,
+      pass: smtpPass,
+    },
+  });
+
+  const recipientEmail =
+    giftCard.recipientEmail?.trim() ||
+    giftCard.purchaserEmail?.trim();
+
+  if (!recipientEmail) {
+    throw new Error(
+      `Gift Card ${giftCard.giftCardNo} has no recipient or purchaser email.`
+    );
+  }
+
+  const recipientName =
+    [
+      giftCard.recipientFirstName,
+      giftCard.recipientLastName,
+    ]
+      .filter(Boolean)
+      .join(" ") ||
+    "there";
+
+  const purchaserEmail =
+    giftCard.purchaserEmail?.trim();
+
+  const purchaserName =
+    [
+      giftCard.purchaserFirstName,
+      giftCard.purchaserLastName,
+    ]
+      .filter(Boolean)
+      .join(" ") ||
+    "Customer";
+
+  const amount = Number(giftCard.amount).toFixed(2);
+
+  const expiry = giftCard.expiresAt.toLocaleDateString(
+    "en-GB",
+    {
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
+    }
+  );
+
+  const personalMessage =
+    giftCard.personalMessage?.trim();
+
+  const recipientHtml = `
+    <div style="margin:0;padding:40px 20px;background:#f7f4ef;font-family:Arial,sans-serif;color:#222;">
+      <div style="max-width:620px;margin:0 auto;background:#ffffff;border:1px solid #e7dfd0;">
+        <div style="padding:36px 32px;text-align:center;background:#111111;color:#ffffff;">
+          <div style="font-size:11px;letter-spacing:4px;color:#d4af5a;">
+            ORANE ICKENHAM
+          </div>
+          <h1 style="margin:14px 0 0;font-family:Georgia,serif;font-weight:400;font-size:34px;">
+            A Gift of Luxury
+          </h1>
+        </div>
+
+        <div style="padding:34px 32px;">
+          <p style="font-size:16px;line-height:1.7;">
+            Dear ${escapeHtml(recipientName)},
+          </p>
+
+          <p style="font-size:15px;line-height:1.8;color:#555;">
+            You have received an ORANE Ickenham Gift Card.
+            We look forward to welcoming you for a beautiful
+            salon experience.
+          </p>
+
+          ${
+            personalMessage
+              ? `
+                <div style="margin:24px 0;padding:20px;border-left:3px solid #d4af5a;background:#faf8f4;">
+                  <p style="margin:0;font-size:14px;line-height:1.7;color:#555;">
+                    ${escapeHtml(personalMessage)}
+                  </p>
+                </div>
+              `
+              : ""
+          }
+
+          <div style="margin:28px 0;padding:28px;text-align:center;background:#111111;color:#ffffff;">
+            <div style="font-size:10px;letter-spacing:3px;color:#d4af5a;">
+              GIFT CARD VALUE
+            </div>
+
+            <div style="margin:10px 0;font-family:Georgia,serif;font-size:40px;color:#d4af5a;">
+              £${amount}
+            </div>
+
+            <div style="font-size:10px;letter-spacing:2px;color:#aaa;">
+              ${escapeHtml(giftCard.giftCardNo)}
+            </div>
+          </div>
+
+          <div style="padding:22px;background:#faf8f4;">
+            <p style="margin:0 0 10px;font-size:10px;letter-spacing:2px;color:#999;">
+              YOUR GIFT CARD CODE
+            </p>
+
+            <p style="margin:0;font-size:24px;letter-spacing:3px;font-weight:bold;color:#222;">
+              ${escapeHtml(giftCard.code)}
+            </p>
+          </div>
+
+          <p style="margin-top:26px;font-size:13px;line-height:1.7;color:#777;">
+            Valid until ${escapeHtml(expiry)}.
+            Please present your Gift Card code when redeeming
+            your voucher at ORANE Ickenham.
+          </p>
+
+          <p style="margin-top:28px;font-size:14px;line-height:1.7;">
+            With warm regards,<br />
+            <strong>ORANE Ickenham</strong>
+          </p>
+        </div>
+      </div>
+    </div>
+  `;
+
+  const purchaserHtml = `
+    <div style="margin:0;padding:40px 20px;background:#f7f4ef;font-family:Arial,sans-serif;color:#222;">
+      <div style="max-width:620px;margin:0 auto;background:#ffffff;padding:36px 32px;">
+        <div style="text-align:center;">
+          <div style="font-size:11px;letter-spacing:4px;color:#b28a32;">
+            ORANE ICKENHAM
+          </div>
+
+          <h1 style="font-family:Georgia,serif;font-weight:400;">
+            Gift Card Purchase Confirmed
+          </h1>
+        </div>
+
+        <p style="font-size:15px;line-height:1.8;color:#555;">
+          Dear ${escapeHtml(purchaserName)},
+        </p>
+
+        <p style="font-size:15px;line-height:1.8;color:#555;">
+          Your ORANE Ickenham Gift Card purchase has been
+          successfully completed.
+        </p>
+
+        <div style="margin:25px 0;padding:22px;background:#faf8f4;">
+          <p style="margin:0 0 8px;color:#777;">
+            Gift Card
+          </p>
+
+          <p style="margin:0;font-size:20px;font-weight:bold;">
+            ${escapeHtml(giftCard.giftCardNo)}
+          </p>
+
+          <p style="margin:12px 0 0;font-size:18px;color:#b28a32;">
+            £${amount}
+          </p>
+
+          <p style="margin:8px 0 0;color:#777;">
+            Code: ${escapeHtml(giftCard.code)}
+          </p>
+        </div>
+
+        <p style="font-size:12px;color:#888;">
+          Stripe payment reference: ${escapeHtml(paymentReference)}
+        </p>
+
+        <p style="margin-top:25px;font-size:14px;line-height:1.7;">
+          Thank you for choosing ORANE Ickenham.
+        </p>
+      </div>
+    </div>
+  `;
+
+  const messages = [
+    transporter.sendMail({
+      from: `"ORANE Ickenham" <${fromEmail}>`,
+      to: recipientEmail,
+      subject:
+        "Your ORANE Ickenham Gift Card 🎁",
+      html: recipientHtml,
+    }),
+  ];
+
+  if (
+    purchaserEmail &&
+    purchaserEmail.toLowerCase() !==
+      recipientEmail.toLowerCase()
+  ) {
+    messages.push(
+      transporter.sendMail({
+        from: `"ORANE Ickenham" <${fromEmail}>`,
+        to: purchaserEmail,
+        subject:
+          "Your ORANE Ickenham Gift Card purchase is confirmed",
+        html: purchaserHtml,
+      })
+    );
+  }
+
+  await Promise.all(messages);
+
+  console.log(
+    "Gift Card emails sent successfully:",
+    giftCard.giftCardNo
+  );
+}
+async function processGiftCardPayment(
+  prisma: PrismaClient,
+  session: Stripe.Checkout.Session,
+  paymentReference: string,
+  amountPaid: number
+) {
+  const metadata = session.metadata ?? {};
+
+  const giftCardId =
+    metadata.giftCardId?.trim();
+
+  if (!giftCardId) {
+    throw new Error(
+      "Gift Card payment is missing giftCardId metadata."
+    );
+  }
+
+  const giftCard =
+    await prisma.giftCard.findUnique({
+      where: {
+        id: giftCardId,
+      },
+    });
+
+  if (!giftCard) {
+    throw new Error(
+      `Gift Card ${giftCardId} was not found.`
+    );
+  }
+
+  /*
+   * Stripe webhook events can be delivered more than once.
+   * If this Gift Card has already been activated, do not
+   * create or modify it again.
+   */
+  if (
+    giftCard.status === "ACTIVE" ||
+    giftCard.status === "PARTIALLY_REDEEMED" ||
+    giftCard.status === "REDEEMED"
+  ) {
+    console.log(
+      "Gift Card payment already processed:",
+      giftCard.giftCardNo
+    );
+
+    return {
+      alreadyProcessed: true,
+      giftCard,
+    };
+  }
+
+  if (giftCard.status !== "PENDING") {
+    throw new Error(
+      `Gift Card ${giftCard.giftCardNo} cannot be activated because its current status is ${giftCard.status}.`
+    );
+  }
+
+  /*
+   * Never trust the browser amount.
+   * The amount stored in our database must match the
+   * amount actually paid through Stripe.
+   */
+  const databaseAmount =
+    Number(giftCard.amount);
+
+  const difference =
+    Math.abs(
+      databaseAmount - amountPaid
+    );
+
+  if (difference > 0.01) {
+    throw new Error(
+      `Gift Card payment amount mismatch for ${giftCard.giftCardNo}. Database: £${databaseAmount.toFixed(
+        2
+      )}, Stripe: £${amountPaid.toFixed(2)}`
+    );
+  }
+
+  const stripePaymentIntent =
+    session.payment_intent
+      ? String(session.payment_intent)
+      : null;
+
+  const activatedGiftCard =
+    await prisma.giftCard.update({
+      where: {
+        id: giftCard.id,
+      },
+      data: {
+        status: "ACTIVE",
+        paidAt: new Date(),
+        issuedAt: new Date(),
+        remainingAmount:
+          giftCard.amount,
+        stripePaymentIntent,
+        stripeSessionId:
+          session.id,
+      },
+    });
+
+  console.log(
+    "Gift Card activated successfully:",
+    {
+      giftCardNo:
+        activatedGiftCard.giftCardNo,
+      code:
+        activatedGiftCard.code,
+      amount:
+        activatedGiftCard.amount.toString(),
+      stripeSessionId:
+        session.id,
+      stripePaymentIntent,
+    }
+  );
+
+  await sendGiftCardEmails(
+    activatedGiftCard,
+    paymentReference
+  );
+
+  return {
+    alreadyProcessed: false,
+    giftCard: activatedGiftCard,
+  };
+}
 async function createBookingRecords(
   metadata: BookingMetadata,
   paymentReference: string,
@@ -960,6 +1317,38 @@ export async function POST(
       const amountPaid =
         (session.amount_total ?? 0) /
         100;
+
+      /*
+       * Gift Card payments use the same Stripe webhook
+       * but have paymentType=gift_card in metadata.
+       *
+       * Handle them separately so the existing booking
+       * payment flow remains unchanged.
+       */
+      if (
+        metadata.paymentType ===
+        "gift_card"
+      ) {
+        const prisma = getPrisma();
+
+        const result =
+          await processGiftCardPayment(
+            prisma,
+            session,
+            paymentReference,
+            amountPaid
+          );
+
+        return NextResponse.json({
+          received: true,
+          processed: true,
+          type: "gift_card",
+          giftCardNo:
+            result.giftCard.giftCardNo,
+          alreadyProcessed:
+            result.alreadyProcessed,
+        });
+      }
 
       const result =
         await createBookingRecords(

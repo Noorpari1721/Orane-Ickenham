@@ -57,3 +57,14 @@ next-env.d.ts
 /check-services.sql
 /payment-transaction-diff.sql
 /fix-orane-booking-step5.ps1
+# Project-local backup and diagnostic files
+/build-error-latest.txt
+/navbar-build-error.txt
+/services-build-error.txt
+/*-build-error.txt
+/components/home/*-before-*.tsx
+/data/*-before-*.ts
+/giftcard-backups/
+/giftcards-before-*/
+image-fix-backup/
+/image-fix-backup-*/

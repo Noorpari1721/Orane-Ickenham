@@ -1,4 +1,4 @@
-﻿export const serviceCategories = [
+export const serviceCategories = [
   {
     id: "head-spa",
     title: "Japanese Head Spa",
@@ -168,7 +168,7 @@
   {
     id: "hand-additions",
     title: "Hand Additionals",
-    image: "/images/services/nails.jpg",
+    image: "/images/services/hand-additions.png",
     description:
       "Complete your manicure with thoughtful finishing touches, colour details and nail care additions.",
     services: [
@@ -234,7 +234,7 @@
   {
     id: "tint",
     title: "Tint",
-    image: "/images/services/lashes.jpg",
+    image: "/images/services/tint.jpg",
     description:
       "Define and enhance your natural features with beautifully finished brow and lash treatments.",
     services: [
@@ -286,7 +286,7 @@
   {
     id: "manicure",
     title: "Manicure",
-    image: "/images/services/beauty.jpg",
+    image: "/images/services/manicure.jpg",
     description:
       "Give your hands the attention they deserve with classic, express and luxury manicure experiences.",
     services: [
@@ -384,7 +384,7 @@
   {
     id: "pedicure",
     title: "Pedicure",
-    image: "/images/services/beauty.jpg",
+    image: "/images/services/pedicure.jpg",
     description:
       "Relax, refresh and give your feet the care they deserve with our range of classic, express and luxury pedicures.",
     services: [

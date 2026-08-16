@@ -39,6 +39,20 @@ enum TechStatus {
   UNAVAILABLE
 }
 
+enum GiftCardType {
+  SERVICE_VOUCHER
+  CUSTOM_GIFT_CARD
+}
+
+enum GiftCardStatus {
+  PENDING
+  ACTIVE
+  PARTIALLY_REDEEMED
+  REDEEMED
+  EXPIRED
+  CANCELLED
+}
+
 model Customer {
   id         String         @id @default(cuid())
   customerNo String         @unique
@@ -87,7 +101,8 @@ model Service {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  bookings Booking[]
+  bookings  Booking[]
+  giftCards GiftCard[]
 
   @@index([category])
   @@index([active])
@@ -127,7 +142,7 @@ model Payment {
   amount        Decimal       @db.Decimal(10, 2)
   method        PaymentMethod
   status        PaymentStatus @default(PENDING)
-  transactionId String? @unique
+  transactionId String?       @unique
   paidAt        DateTime?
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
@@ -159,4 +174,60 @@ model SalonWorkingHour {
   closeTime String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model GiftCard {
+  id                  String         @id @default(cuid())
+  giftCardNo          String         @unique
+  code                String         @unique
+  type                GiftCardType
+  status              GiftCardStatus @default(PENDING)
+
+  amount              Decimal        @db.Decimal(10, 2)
+  remainingAmount     Decimal        @db.Decimal(10, 2)
+
+  serviceId           String?
+  service             Service?       @relation(fields: [serviceId], references: [id], onDelete: Restrict)
+
+  purchaserFirstName  String?
+  purchaserLastName   String?
+  purchaserEmail      String?
+
+  recipientFirstName  String?
+  recipientLastName   String?
+  recipientEmail      String?
+  personalMessage     String?
+
+  stripeSessionId     String?        @unique
+  stripePaymentIntent String?        @unique
+
+  issuedAt            DateTime?
+  paidAt              DateTime?
+  expiresAt           DateTime
+
+  createdAt            DateTime       @default(now())
+  updatedAt            DateTime       @updatedAt
+
+  redemptions          GiftCardRedemption[]
+
+  @@index([status])
+  @@index([type])
+  @@index([expiresAt])
+  @@index([recipientEmail])
+  @@index([createdAt])
+}
+
+model GiftCardRedemption {
+  id             String   @id @default(cuid())
+  redemptionNo   String   @unique
+
+  giftCardId     String
+  giftCard       GiftCard @relation(fields: [giftCardId], references: [id], onDelete: Cascade)
+
+  amount         Decimal  @db.Decimal(10, 2)
+  redeemedAt     DateTime @default(now())
+  notes          String?
+
+  @@index([giftCardId])
+  @@index([redeemedAt])
 }
