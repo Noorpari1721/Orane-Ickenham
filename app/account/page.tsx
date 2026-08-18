@@ -222,13 +222,51 @@ export default function AccountPage() {
             HERO
            =================================================== */}
 
-        <section className="mb-8">
+        <section className="-mt-10 mb-8">
 
-          <div className="flex flex-col gap-7 lg:flex-row lg:items-end lg:justify-between">
+          <div className="flex flex-col gap-7 lg:items-start lg:justify-start">
 
             <div>
 
-              <div className="flex items-center gap-3">
+              <button
+                type="button"
+                aria-label="Go back"
+                onClick={() => {
+                  if (window.history.length > 1) {
+                    window.history.back();
+                  } else {
+                    window.location.href = "/";
+                  }
+                }}
+                className="
+                  mb-6
+                  inline-flex
+                  items-center
+                  gap-2
+                  rounded-full
+                  border
+                  border-white/15
+                  bg-white/[0.06]
+                  px-4
+                  py-2
+                  text-sm
+                  font-medium
+                  text-white/80
+                  backdrop-blur-xl
+                  transition-all
+                  duration-300
+                  hover:-translate-y-0.5
+                  hover:border-[#D4AF37]/50
+                  hover:bg-[#D4AF37]/10
+                  hover:text-[#D4AF37]
+                  hover:shadow-[0_8px_25px_rgba(212,175,55,.16)]
+                "
+              >
+                <span className="text-base leading-none">←</span>
+                <span>Back</span>
+              </button>
+
+              <div className="flex items-center gap-3 text-left">
 
                 <span
                   className="
@@ -1149,8 +1187,7 @@ function AppointmentsPanel() {
           flex-col
           gap-6
           lg:flex-row
-          lg:items-end
-          lg:justify-between
+          lg:items-start lg:justify-start
         "
       >
 

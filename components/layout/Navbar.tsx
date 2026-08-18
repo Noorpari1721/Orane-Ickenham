@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Menu, X } from "lucide-react";
 
 import GlassPill from "./GlassPill";
@@ -20,6 +20,9 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
+  const mobileMenuButtonRef = useRef<HTMLButtonElement>(null);
+
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
 
@@ -28,6 +31,36 @@ export default function Navbar() {
 
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  useEffect(() => {
+    if (!mobileOpen) return;
+
+    const handleOutsidePointerDown = (event: PointerEvent) => {
+      const target = event.target as Node;
+
+      const clickedInsideMenu =
+        mobileMenuRef.current?.contains(target);
+
+      const clickedMenuButton =
+        mobileMenuButtonRef.current?.contains(target);
+
+      if (!clickedInsideMenu && !clickedMenuButton) {
+        setMobileOpen(false);
+      }
+    };
+
+    document.addEventListener(
+      "pointerdown",
+      handleOutsidePointerDown
+    );
+
+    return () => {
+      document.removeEventListener(
+        "pointerdown",
+        handleOutsidePointerDown
+      );
+    };
+  }, [mobileOpen]);
 
   const scrollToSection = (
     e: React.MouseEvent<HTMLAnchorElement>,
@@ -116,6 +149,7 @@ export default function Navbar() {
           {/* MOBILE MENU BUTTON */}
 
           <button
+            ref={mobileMenuButtonRef}
             type="button"
             onClick={() => setMobileOpen((value) => !value)}
             aria-label={mobileOpen ? "Close menu" : "Open menu"}
@@ -190,6 +224,7 @@ export default function Navbar() {
         {/* APPLE GLASS MOBILE MENU */}
 
         <div
+          ref={mobileMenuRef}
           className={`
             lg:hidden
             overflow-hidden

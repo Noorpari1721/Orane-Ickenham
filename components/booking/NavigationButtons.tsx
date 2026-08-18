@@ -15,16 +15,28 @@ export default function NavigationButtons() {
       type="button"
       onClick={previousStep}
       className="
-        group flex items-center gap-2
+        group
+        inline-flex
+        shrink-0
+        items-center
+        gap-1.5
         rounded-full
-        border border-white/15
+        border
+        border-white/15
         bg-white/5
-        px-5 py-2.5
-        text-sm font-medium
+        px-3.5
+        py-2
+        text-xs
+        font-medium
         text-white/75
         shadow-[0_8px_30px_rgba(0,0,0,.25)]
         backdrop-blur-xl
-        transition-all duration-300
+        transition-all
+        duration-300
+        sm:gap-2
+        sm:px-5
+        sm:py-2.5
+        sm:text-sm
         hover:border-[#D4AF37]/60
         hover:bg-[#D4AF37]/10
         hover:text-[#D4AF37]
@@ -33,12 +45,11 @@ export default function NavigationButtons() {
       "
     >
       <ArrowLeft
-        size={16}
-        className="transition-transform duration-300 group-hover:-translate-x-1"
+        size={15}
+        className="transition-transform duration-300 group-hover:-translate-x-1 sm:h-4 sm:w-4"
       />
 
       <span>Back</span>
     </button>
   );
 }
-

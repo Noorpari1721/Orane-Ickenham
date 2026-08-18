@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import {
   useEffect,
@@ -332,7 +332,7 @@ export default function Step5Time() {
       {!loading &&
         !error &&
         slots.length > 0 && (
-          <div className="mt-10 grid grid-cols-2 gap-5 md:grid-cols-3 lg:grid-cols-4">
+          <div className="mt-10 grid grid-cols-4 gap-2 sm:grid-cols-2 sm:gap-5 md:grid-cols-3 lg:grid-cols-4">
             {slots.map((slot) => {
               const selected =
                 booking.time ===
@@ -345,7 +345,7 @@ export default function Step5Time() {
                   onClick={() =>
                     handleSelectTime(slot)
                   }
-                  className={`rounded-2xl border px-6 py-5 transition-all duration-300 ${
+                  className={`rounded-2xl border px-6 py-5 max-sm:rounded-xl max-sm:px-1 max-sm:py-4 max-sm:text-xs transition-all duration-300 ${
                     selected
                       ? "border-[#D4AF37] bg-[#D4AF37]/15 text-[#D4AF37] shadow-[0_0_30px_rgba(212,175,55,.3)]"
                       : "border-white/10 bg-white/5 text-white hover:border-[#D4AF37] hover:bg-[#D4AF37]/5"

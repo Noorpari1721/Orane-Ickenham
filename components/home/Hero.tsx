@@ -13,7 +13,7 @@ export default function Hero() {
   return (
     <section
       id="home"
-      className="relative h-screen w-full overflow-hidden"
+      className="relative h-screen w-full overflow-hidden border-b border-[#C49A45]"
     >
       {/* Background Video */}
 
@@ -38,7 +38,7 @@ export default function Hero() {
         <div className="max-w-4xl text-center text-white">
 
           <p className="mb-6 text-sm font-medium uppercase tracking-[0.45em] text-[#C49A45]">
-            ORANE ICKENHAM • LUXURY BEAUTY SALON
+            ORANE ICKENHAM â€¢ LUXURY BEAUTY SALON
           </p>
 
           <h1 className="text-4xl font-light leading-tight md:text-6xl lg:text-7xl">
@@ -95,7 +95,7 @@ export default function Hero() {
       {/* Scroll Indicator */}
 
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce text-white">
-        ↓
+        â†“
       </div>
     </section>
   );

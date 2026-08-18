@@ -1,5 +1,7 @@
-﻿"use client";
+"use client";
 
+
+import BackToDashboard from "@/components/admin/BackToDashboard";
 import Link from "next/link";
 import {
   ChevronLeft,
@@ -391,15 +393,10 @@ export default function AdminCalendarPage() {
     <main className="min-h-screen bg-[#090909] text-white">
       <div className="p-5 sm:p-8 lg:p-10">
         {/* HEADER */}
+        <BackToDashboard />
+
         <header className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
   <div>
-    <Link
-      href="/admin"
-      className="mb-5 inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-white/40 transition hover:text-[#D4AF37]"
-    >
-      <span aria-hidden="true">←</span>
-      Admin Dashboard
-    </Link>
 
     <p className="text-xs uppercase tracking-[0.3em] text-[#D4AF37]">
       Management

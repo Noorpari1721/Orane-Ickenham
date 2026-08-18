@@ -22,13 +22,17 @@ export default function MyAccountButton({
           flex
           shrink-0
           items-center
-          gap-3
+          gap-1.5
           rounded-full
-          px-4
-          py-2.5
-          text-lg
+          px-1.5
+          py-2
+          text-sm
           font-medium
           tracking-wide
+          sm:gap-3
+          sm:px-4
+          sm:py-2.5
+          sm:text-lg
           text-white/80
           transition-all
           duration-500
@@ -40,11 +44,16 @@ export default function MyAccountButton({
         "
       >
         <UserRound
-          size={21}
+          size={18}
           aria-hidden="true"
           className="
+            h-[18px]
+            w-[18px]
+            shrink-0
             transition-all
             duration-500
+            sm:h-[21px]
+            sm:w-[21px]
             group-hover:scale-110
             group-hover:rotate-3
             group-hover:drop-shadow-[0_0_9px_rgba(212,175,55,.6)]

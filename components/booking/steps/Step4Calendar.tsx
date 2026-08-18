@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useMemo, useState } from "react";
 import { useBooking } from "@/context/BookingContext";
@@ -158,7 +158,14 @@ export default function Step4Calendar() {
       </div>
 
       {loading ? (
-        <div className="mt-10 grid grid-cols-7 gap-4">
+        <div className="
+            mt-10
+            grid
+            grid-cols-7
+            gap-4
+            max-sm:mt-8
+            max-sm:gap-2
+          ">
           {Array.from({ length: 21 }).map(
             (_, index) => (
               <div
@@ -169,7 +176,14 @@ export default function Step4Calendar() {
           )}
         </div>
       ) : (
-        <div className="mt-10 grid grid-cols-7 gap-4">
+        <div className="
+            mt-10
+            grid
+            grid-cols-7
+            gap-4
+            max-sm:mt-8
+            max-sm:gap-2
+          ">
           {[
             "Mon",
             "Tue",
@@ -229,7 +243,7 @@ export default function Step4Calendar() {
                   }, 250);
                 }}
                 className={[
-                  "booking-card min-h-[120px] rounded-2xl border p-5",
+                  "booking-card min-h-[120px] rounded-2xl border p-5 max-sm:min-h-[76px] max-sm:rounded-xl max-sm:p-2",
                   "transition-all duration-300",
                   closed
                     ? "cursor-not-allowed border-white/5 bg-white/[0.02] text-white/20"
@@ -238,7 +252,7 @@ export default function Step4Calendar() {
                     : "border-white/10 bg-white/5 text-white hover:border-[#D4AF37] hover:bg-[#D4AF37]/10",
                 ].join(" ")}
               >
-                <div className="text-xs uppercase tracking-[0.2em] text-white/40">
+                <div className="text-xs uppercase tracking-[0.2em] text-white/40 max-sm:text-[8px] max-sm:tracking-normal">
                   {date.toLocaleDateString(
                     "en-GB",
                     {
@@ -248,7 +262,7 @@ export default function Step4Calendar() {
                 </div>
 
                 <div
-                  className={`mt-2 text-2xl ${
+                  className={`mt-2 text-2xl max-sm:mt-1 max-sm:text-xl ${
                     selected
                       ? "text-[#D4AF37]"
                       : "text-white"
@@ -257,7 +271,7 @@ export default function Step4Calendar() {
                   {date.getDate()}
                 </div>
 
-                <div className="mt-2 text-xs text-white/50">
+                <div className="mt-2 text-xs text-white/50 max-sm:mt-1 max-sm:text-[9px]">
                   {date.toLocaleDateString(
                     "en-GB",
                     {
@@ -267,7 +281,7 @@ export default function Step4Calendar() {
                 </div>
 
                 <div
-                  className={`mt-3 text-[10px] ${
+                  className={`mt-3 text-[10px] max-sm:hidden ${
                     closed
                       ? "text-white/20"
                       : "text-white/35"

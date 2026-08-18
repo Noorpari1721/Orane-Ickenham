@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { motion } from "framer-motion";
 import {
@@ -47,20 +47,21 @@ export default function BookingSummary() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
       className="
-        sticky
-        top-8
         w-full
         overflow-hidden
-        rounded-[34px]
+        rounded-[26px]
         border
         border-[#D4AF37]/30
         bg-gradient-to-b
         from-white/10
         via-white/5
         to-black/20
-        p-6
+        p-5
         shadow-[0_0_35px_rgba(212,175,55,.14),0_25px_70px_rgba(0,0,0,.35)]
         backdrop-blur-3xl
+        sm:rounded-[30px]
+        sm:p-6
+        lg:rounded-[34px]
         lg:p-8
       "
     >
@@ -71,16 +72,16 @@ export default function BookingSummary() {
             className="shrink-0 text-[#D4AF37]"
           />
 
-          <p className="text-xs uppercase tracking-[0.35em] text-[#D4AF37]">
+          <p className="text-[10px] uppercase tracking-[0.28em] text-[#D4AF37] sm:text-xs sm:tracking-[0.35em]">
             Your Experience
           </p>
         </div>
 
-        <h3 className="mt-2 text-2xl font-light text-white">
+        <h3 className="mt-2 text-xl font-light text-white sm:text-2xl">
           Booking Summary
         </h3>
 
-        <div className="mt-8 space-y-6">
+        <div className="mt-6 grid grid-cols-1 gap-5 sm:mt-8 sm:space-y-6">
           <SummaryItem
             icon={<Sparkles size={18} />}
             title="Category"
@@ -104,8 +105,9 @@ export default function BookingSummary() {
             icon={<Sparkles size={18} />}
             title="Duration"
             value={
-              booking.service?.duration ||
-              "--"
+              booking.service?.duration
+                ? `${booking.service.duration} minutes`
+                : "--"
             }
           />
 
@@ -125,11 +127,11 @@ export default function BookingSummary() {
           />
         </div>
 
-        <div className="my-7 h-px bg-white/10" />
+        <div className="my-6 h-px bg-white/10 sm:my-7" />
 
-        <div className="flex items-end justify-between gap-5">
+        <div className="flex items-end justify-between gap-4">
           <div>
-            <p className="text-xs uppercase tracking-[0.25em] text-white/50">
+            <p className="text-[10px] uppercase tracking-[0.22em] text-white/50 sm:text-xs sm:tracking-[0.25em]">
               Total
             </p>
 
@@ -149,15 +151,15 @@ export default function BookingSummary() {
               opacity: 1,
             }}
             transition={{ duration: 0.35 }}
-            className="whitespace-nowrap text-3xl font-light text-[#D4AF37]"
+            className="whitespace-nowrap text-2xl font-light text-[#D4AF37] sm:text-3xl"
           >
             {"\u00A3"}{booking.service?.price ?? 0}
           </motion.p>
         </div>
 
-        <div className="my-7 h-px bg-white/10" />
+        <div className="my-6 h-px bg-white/10 sm:my-7" />
 
-        <div className="space-y-4 text-sm">
+        <div className="grid grid-cols-1 gap-3 text-sm sm:space-y-4">
           <Feature text="Instant confirmation" />
           <Feature text="Secure online booking" />
           <Feature text="Free cancellation policy" />
@@ -179,14 +181,14 @@ function SummaryItem({
   return (
     <motion.div
       layout
-      className="flex min-w-0 gap-4"
+      className="flex min-w-0 gap-3 sm:gap-4"
     >
-      <div className="shrink-0 text-[#D4AF37]">
+      <div className="shrink-0 pt-0.5 text-[#D4AF37]">
         {icon}
       </div>
 
       <div className="min-w-0">
-        <p className="text-xs uppercase tracking-[0.25em] text-white/45">
+        <p className="text-[10px] uppercase tracking-[0.2em] text-white/45 sm:text-xs sm:tracking-[0.25em]">
           {title}
         </p>
 
@@ -205,7 +207,7 @@ function Feature({
 }) {
   return (
     <div className="flex items-center gap-3">
-      <span className="flex h-5 w-5 items-center justify-center rounded-full border border-[#D4AF37]/30 text-xs text-[#D4AF37]">
+      <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-[#D4AF37]/30 text-xs text-[#D4AF37]">
         ✓
       </span>
 

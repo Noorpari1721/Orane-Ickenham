@@ -18,6 +18,7 @@ import {
   CircleAlert,
   XCircle,
   UserPlus,
+Gift,
 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
@@ -30,6 +31,7 @@ const menu = [
   { label: "Services", icon: Sparkles, path: "/admin/services" },
   { label: "Techs", icon: UserRound, path: "/admin/techs" },
   { label: "Payments", icon: CreditCard, path: "/admin/payments" },
+  { label: "Gift Cards", icon: Gift, path: "/admin/gift-cards" },
   { label: "Settings", icon: Settings, path: "/admin/settings" },
 ];
 

@@ -1,4 +1,7 @@
-﻿import Image from "next/image";
+"use client";
+
+import Image from "next/image";
+import { useEffect, useState } from "react";
 
 const galleryImages = [
   {
@@ -35,13 +38,55 @@ const galleryImages = [
   },
 ];
 
+const slidePositions = [-2, -1, 0, 1, 2];
+
 export default function Gallery() {
+  const [current, setCurrent] = useState(0);
+
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      setCurrent((previous) => previous + 1);
+    }, 4000);
+
+    return () => window.clearInterval(timer);
+  }, []);
+
+  const activeDot =
+    ((current % galleryImages.length) + galleryImages.length) %
+    galleryImages.length;
+
+  const goToSlide = (targetIndex: number) => {
+    const length = galleryImages.length;
+    const currentIndex = activeDot;
+
+    let forwardDistance = targetIndex - currentIndex;
+
+    if (forwardDistance < 0) {
+      forwardDistance += length;
+    }
+
+    let backwardDistance = currentIndex - targetIndex;
+
+    if (backwardDistance < 0) {
+      backwardDistance += length;
+    }
+
+    if (forwardDistance <= backwardDistance) {
+      setCurrent((previous) => previous + forwardDistance);
+    } else {
+      setCurrent((previous) => previous - backwardDistance);
+    }
+  };
+
   return (
     <section
       id="gallery"
-      className="bg-[#F8F5F2] py-28"
+      className="relative overflow-hidden border-b border-[#C49A45] bg-[#1C1B19] py-28"
     >
-      <div className="mx-auto max-w-7xl px-6">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_15%,rgba(196,154,69,0.09),transparent_35%),radial-gradient(circle_at_20%_85%,rgba(196,154,69,0.06),transparent_35%)]" />
+
+      <div className="relative mx-auto max-w-7xl px-6">
+
         <div className="mx-auto mb-16 max-w-3xl text-center">
           <div className="mx-auto mb-5 h-[2px] w-20 bg-[#C49A45]" />
 
@@ -49,39 +94,82 @@ export default function Gallery() {
             OUR WORK
           </p>
 
-          <h2 className="text-4xl font-medium text-[#1A1A1A] md:text-6xl">
+          <h2 className="text-4xl font-medium text-white md:text-6xl">
             Beauty Created
             <br />
             With Precision
           </h2>
 
-          <p className="mt-6 text-lg leading-8 text-gray-600">
+          <p className="mt-6 text-lg leading-8 text-white/60">
             Explore our latest beauty transformations and luxury salon
             experiences.
           </p>
         </div>
 
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {galleryImages.map((image) => (
-            <div
-              key={image.src}
-              className="group relative overflow-hidden rounded-[30px]"
-            >
-              <div className="relative aspect-[4/3]">
-                <Image
-                  src={image.src}
-                  alt={image.alt}
-                  fill
-                  sizes="(max-width: 768px) 100vw, 33vw"
-                  className="object-cover transition duration-700 group-hover:scale-110"
-                />
-              </div>
+        <div className="mx-auto max-w-7xl">
 
-              <div className="absolute inset-0 bg-black/0 transition duration-500 group-hover:bg-black/20" />
+          <div className="relative h-[260px] overflow-hidden sm:h-[340px] md:h-[440px] lg:h-[500px]">
 
-              <div className="absolute bottom-0 left-0 h-1 w-0 bg-[#C49A45] transition-all duration-500 group-hover:w-full" />
-            </div>
-          ))}
+            {slidePositions.map((position) => {
+              const virtualIndex = current + position;
+              const imageIndex =
+                ((virtualIndex % galleryImages.length) +
+                  galleryImages.length) %
+                galleryImages.length;
+
+              const image = galleryImages[imageIndex];
+
+              const translateOffset = position * 100;
+              const gapOffset = position * 24;
+
+              const transform = `translateX(calc(-50% + ${translateOffset}% + ${gapOffset}px))`;
+
+              return (
+                <div
+                  key={virtualIndex}
+                  className={`absolute left-1/2 top-0 h-full w-[86%] overflow-hidden rounded-[30px] transition-transform duration-1000 ease-in-out md:w-[72%] ${
+                    position === 0
+                      ? "z-20 shadow-2xl"
+                      : "z-10 shadow-lg"
+                  }`}
+                  style={{
+                    transform,
+                  }}
+                >
+                  <Image
+                    src={image.src}
+                    alt={image.alt}
+                    fill
+                    sizes="(max-width: 768px) 86vw, 72vw"
+                    className="object-cover"
+                    priority={position === 0}
+                  />
+
+                  <div className="absolute inset-0 bg-black/0" />
+
+                  <div className="absolute bottom-0 left-0 h-1 w-full bg-[#C49A45]" />
+                </div>
+              );
+            })}
+
+          </div>
+
+          <div className="mt-7 flex justify-center gap-3">
+            {galleryImages.map((image, index) => (
+              <button
+                key={image.src}
+                type="button"
+                aria-label={`Show gallery image ${index + 1}`}
+                onClick={() => goToSlide(index)}
+                className={`h-2.5 rounded-full transition-all duration-500 ${
+                  activeDot === index
+                    ? "w-8 bg-[#C49A45]"
+                    : "w-2.5 bg-white/20"
+                }`}
+              />
+            ))}
+          </div>
+
         </div>
       </div>
     </section>

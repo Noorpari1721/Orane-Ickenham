@@ -22,44 +22,42 @@ export default function WhyChooseUs() {
   return (
     <section
       id="about"
-      className="bg-white py-28"
+      className="relative overflow-hidden border-b border-[#C49A45] bg-[#1C1B19] py-28"
     >
-      <div className="mx-auto max-w-7xl px-6">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_15%_35%,rgba(196,154,69,0.09),transparent_35%),radial-gradient(circle_at_85%_75%,rgba(196,154,69,0.06),transparent_35%)]" />
 
-        <div className="grid items-center gap-14 lg:grid-cols-2">
+      <div className="relative mx-auto max-w-7xl px-6">
 
-          <div className="overflow-hidden rounded-[35px]">
+        <div className="mb-5 h-[2px] w-20 bg-[#C49A45]" />
+
+        <p className="mb-5 text-sm font-semibold uppercase tracking-[0.45em] text-[#C49A45]">
+          WHY CHOOSE US
+        </p>
+
+        <div className="grid items-stretch gap-14 lg:grid-cols-2">
+
+          <div className="relative aspect-[4/3] overflow-hidden rounded-[35px] lg:h-full lg:aspect-auto">
             <Image
               src="/images/why-choose-us.jpg"
               alt="Luxury Beauty Salon Experience"
-              width={900}
-              height={700}
-              className="h-full w-full object-cover"
+              fill
+              sizes="(min-width: 1024px) 50vw, 100vw"
+              className="object-cover"
             />
           </div>
 
-
           <div>
 
-            <div className="mb-5 h-[2px] w-20 bg-[#C49A45]" />
-
-            <p className="mb-5 text-sm font-semibold uppercase tracking-[0.45em] text-[#C49A45]">
-              WHY CHOOSE US
-            </p>
-
-
-            <h2 className="text-4xl font-medium leading-tight text-[#1A1A1A] md:text-6xl">
+            <h2 className="text-4xl font-medium leading-tight text-white md:text-6xl">
               Your Beauty,
               <br />
               Our Passion
             </h2>
 
-
-            <p className="mt-6 text-lg leading-8 text-gray-600">
+            <p className="mt-6 text-lg leading-8 text-white/60">
               At Orane Ickenham, every treatment is designed to give you a
               relaxing luxury experience with professional care and attention.
             </p>
-
 
             <div className="mt-10 space-y-7">
 
@@ -68,11 +66,11 @@ export default function WhyChooseUs() {
 
                   <div className="mb-3 h-[2px] w-10 bg-[#C49A45]" />
 
-                  <h3 className="text-2xl font-medium text-[#1A1A1A]">
+                  <h3 className="text-2xl font-medium text-white">
                     {reason.title}
                   </h3>
 
-                  <p className="mt-2 leading-7 text-gray-600">
+                  <p className="mt-2 leading-7 text-white/60">
                     {reason.description}
                   </p>
 

@@ -1,5 +1,7 @@
-﻿"use client";
+"use client";
 
+
+import BackToDashboard from "@/components/admin/BackToDashboard";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import {
@@ -286,14 +288,10 @@ export default function SettingsPage() {
       <div className="p-5 sm:p-8 lg:p-10">
         <div className="mx-auto max-w-[1500px]">
 
+          <BackToDashboard />
+
+
           <header className="mb-8">
-            <Link
-              href="/admin"
-              className="mb-5 inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-white/40 transition hover:text-[#D4AF37]"
-            >
-              <ArrowLeft size={14} />
-              Admin Dashboard
-            </Link>
 
             <p className="text-xs uppercase tracking-[0.3em] text-[#D4AF37]">
               Management

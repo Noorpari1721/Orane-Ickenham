@@ -1,4 +1,4 @@
-﻿import Image from "next/image";
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { serviceCategories } from "@/data/services";
@@ -7,9 +7,11 @@ export default function Services() {
   return (
     <section
       id="services"
-      className="bg-white py-28"
+      className="relative overflow-hidden border-b border-[#C49A45] bg-[#1C1B19] py-28"
     >
-      <div className="mx-auto max-w-7xl px-6">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,rgba(196,154,69,0.10),transparent_35%),radial-gradient(circle_at_85%_80%,rgba(196,154,69,0.07),transparent_35%)]" />
+
+      <div className="relative mx-auto max-w-7xl px-6">
         <div className="mb-16 text-center">
           <div className="mx-auto mb-5 h-[2px] w-20 bg-[#C49A45]" />
 
@@ -17,13 +19,13 @@ export default function Services() {
             OUR SERVICES
           </p>
 
-          <h2 className="text-4xl font-medium text-[#1A1A1A] md:text-6xl">
+          <h2 className="text-4xl font-medium text-white md:text-6xl">
             Luxury Beauty
             <br />
             Treatments
           </h2>
 
-          <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-gray-600">
+          <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-white/60">
             Discover personalised beauty treatments designed around your
             comfort, confidence and style.
           </p>
@@ -33,7 +35,7 @@ export default function Services() {
           {serviceCategories.map((service) => (
             <article
               key={service.id}
-              className="group overflow-hidden rounded-[30px] bg-[#F8F5F2] transition duration-500 hover:-translate-y-3 hover:shadow-xl"
+              className="group overflow-hidden rounded-[30px] border border-white/10 bg-[#24221F] transition duration-500 hover:-translate-y-3 hover:border-[#C49A45]/30 hover:shadow-[0_20px_50px_rgba(0,0,0,.35)]"
             >
               <Link
                 href={`/services/${service.id}`}
@@ -55,26 +57,26 @@ export default function Services() {
 
                 <div className="p-8">
                   <div className="flex items-center justify-between gap-4">
-                    <h3 className="min-w-0 text-2xl font-medium text-[#1A1A1A]">
+                    <h3 className="min-w-0 text-2xl font-medium text-white">
                       {service.title}
                     </h3>
 
-                    <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-[#C49A45]/50 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#9A752D] transition group-hover:bg-[#C49A45] group-hover:text-white">
+                    <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-[#C49A45]/50 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#D2A94F] transition group-hover:bg-[#C49A45] group-hover:text-white">
                       Catalog
                       <ArrowRight size={12} />
                     </span>
                   </div>
 
-                  <p className="mt-4 leading-7 text-gray-600">
+                  <p className="mt-4 leading-7 text-white/60">
                     {service.description}
                   </p>
 
-                  <div className="mt-6 flex items-center justify-between border-t border-black/10 pt-5">
-                    <span className="text-sm text-gray-500">
+                  <div className="mt-6 flex items-center justify-between border-t border-white/10 pt-5">
+                    <span className="text-sm text-white/40">
                       {service.services.length} treatments
                     </span>
 
-                    <span className="text-sm font-medium text-[#9A752D]">
+                    <span className="text-sm font-medium text-[#D2A94F]">
                       Explore Services
                     </span>
                   </div>
