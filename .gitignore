@@ -68,3 +68,8 @@ next-env.d.ts
 /giftcards-before-*/
 image-fix-backup/
 /image-fix-backup-*/
+
+# Local backups and audit files
+homepage-backups/
+orane-prisma-full-file-fix/
+production-audit-*.txt
