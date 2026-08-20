@@ -12,6 +12,13 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+
+    // Project backup/archive folders — never lint archived source copies.
+    "giftcard-backups/**",
+    "homepage-backups/**",
+    "image-fix-backup-*/**",
+    "**/*.backup.tsx",
+    "**/*.backup.ts",
   ]),
 ]);
 

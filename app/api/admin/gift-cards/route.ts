@@ -246,7 +246,7 @@ export async function POST(request: Request) {
       amount <= 0
     ) {
       return NextResponse.json(
-        { error: "Redemption amount must be greater than £0." },
+        { error: "Redemption amount must be greater than ┬ú0." },
         { status: 400 }
       );
     }
@@ -319,7 +319,7 @@ export async function POST(request: Request) {
 
         if (amount > remaining + 0.0001) {
           throw new Error(
-            `Maximum redeemable amount is £${remaining.toFixed(2)}.`
+            `Maximum redeemable amount is ┬ú${remaining.toFixed(2)}.`
           );
         }
 

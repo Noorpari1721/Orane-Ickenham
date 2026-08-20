@@ -454,4 +454,77 @@ export const serviceCategories = [
       },
     ],
   },
+  {
+    id: "massage",
+    title: "Massage",
+    image: "/images/services/massage.jpg",
+    description:
+      "Relaxing massage treatments designed to ease tension, restore comfort and help you unwind.",
+    services: [
+      {
+        id: 48,
+        name: "Swedish Full Body Massage — 45 Minutes",
+        price: 45,
+        duration: "45 min",
+        description:
+          "A relaxing full-body treatment using flowing massage techniques to ease everyday tension and leave you feeling refreshed.",
+      },
+      {
+        id: 49,
+        name: "Swedish Full Body Massage — 60 Minutes",
+        price: 55,
+        duration: "1 hr",
+        description:
+          "A longer full-body massage using flowing techniques to ease everyday tension and promote deep relaxation.",
+      },
+      {
+        id: 50,
+        name: "Deep Tissue Massage — 45 Minutes",
+        price: 50,
+        duration: "45 min",
+        description:
+          "A firmer, more focused massage designed to work on areas of muscular tension and stiffness.",
+      },
+      {
+        id: 51,
+        name: "Deep Tissue Massage — 60 Minutes",
+        price: 60,
+        duration: "1 hr",
+        description:
+          "A longer, focused deep tissue treatment designed to work on areas of muscular tension and stiffness.",
+      },
+      {
+        id: 52,
+        name: "Indian Head Massage — 30 Minutes",
+        price: 30,
+        duration: "30 min",
+        description:
+          "A deeply relaxing treatment focusing on the head, scalp, neck and shoulders to help release everyday tension.",
+      },
+      {
+        id: 53,
+        name: "Indian Head Massage — 45 Minutes",
+        price: 40,
+        duration: "45 min",
+        description:
+          "An extended head massage focusing on the head, scalp, neck and shoulders to help release everyday tension.",
+      },
+      {
+        id: 54,
+        name: "Back, Neck & Shoulder Massage",
+        price: 30,
+        duration: "30 min",
+        description:
+          "A targeted treatment to relieve tension in the back, neck and shoulders. Perfect for stress relief and relaxation.",
+      },
+      {
+        id: 55,
+        name: "Hand & Foot Relaxation Massage",
+        price: 30,
+        duration: "30 min",
+        description:
+          "A soothing massage focusing on tired hands and feet, perfect for relaxation and unwinding.",
+      },
+    ],
+  },
 ];

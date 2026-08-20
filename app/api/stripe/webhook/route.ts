@@ -561,7 +561,7 @@ async function sendGiftCardEmails(
             </div>
 
             <div style="margin:10px 0;font-family:Georgia,serif;font-size:40px;color:#d4af5a;">
-              £${amount}
+              ┬ú${amount}
             </div>
 
             <div style="font-size:10px;letter-spacing:2px;color:#aaa;">
@@ -626,7 +626,7 @@ async function sendGiftCardEmails(
           </p>
 
           <p style="margin:12px 0 0;font-size:18px;color:#b28a32;">
-            £${amount}
+            ┬ú${amount}
           </p>
 
           <p style="margin:8px 0 0;color:#777;">
@@ -650,7 +650,7 @@ async function sendGiftCardEmails(
       from: `"ORANE Ickenham" <${fromEmail}>`,
       to: recipientEmail,
       subject:
-        "Your ORANE Ickenham Gift Card 🎁",
+        "Your ORANE Ickenham Gift Card ­ƒÄü",
       html: recipientHtml,
     }),
   ];
@@ -750,9 +750,9 @@ async function processGiftCardPayment(
 
   if (difference > 0.01) {
     throw new Error(
-      `Gift Card payment amount mismatch for ${giftCard.giftCardNo}. Database: £${databaseAmount.toFixed(
+      `Gift Card payment amount mismatch for ${giftCard.giftCardNo}. Database: ┬ú${databaseAmount.toFixed(
         2
-      )}, Stripe: £${amountPaid.toFixed(2)}`
+      )}, Stripe: ┬ú${amountPaid.toFixed(2)}`
     );
   }
 

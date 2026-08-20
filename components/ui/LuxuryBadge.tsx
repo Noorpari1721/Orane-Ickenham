@@ -1,8 +1,7 @@
 import { HTMLAttributes } from "react";
 import clsx from "clsx";
 
-interface LuxuryBadgeProps
-  extends HTMLAttributes<HTMLSpanElement> {}
+type LuxuryBadgeProps = HTMLAttributes<HTMLSpanElement>;
 
 export default function LuxuryBadge({
   children,

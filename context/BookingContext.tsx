@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import {
   createContext,
@@ -16,15 +16,15 @@ import type {
   Staff,
 } from "@/types/booking";
 
-const emptyCustomer: Customer = {
+const createEmptyCustomer = (): Customer => ({
   firstName: "",
   lastName: "",
   email: "",
   phone: "",
   notes: "",
-};
+});
 
-const initialState: BookingState = {
+const createInitialState = (): BookingState => ({
   step: 1,
   category: "",
   service: null,
@@ -32,10 +32,10 @@ const initialState: BookingState = {
   staff: null,
   date: null,
   time: "",
-  customer: emptyCustomer,
+  customer: createEmptyCustomer(),
   completed: false,
   editingReview: false,
-};
+});
 
 const BookingContext = createContext<
   BookingContextType | undefined
@@ -47,7 +47,7 @@ export function BookingProvider({
   children: ReactNode;
 }) {
   const [booking, setBooking] =
-    useState<BookingState>(initialState);
+    useState<BookingState>(createInitialState);
 
   const nextStep = () => {
     setBooking((prev) => ({
@@ -84,6 +84,9 @@ export function BookingProvider({
       ...prev,
       service,
       treatment: null,
+      staff: null,
+      date: null,
+      time: "",
     }));
   };
 
@@ -135,7 +138,7 @@ export function BookingProvider({
   };
 
   const resetBooking = () => {
-    setBooking(initialState);
+    setBooking(createInitialState());
   };
 
   return (

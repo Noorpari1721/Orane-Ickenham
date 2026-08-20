@@ -1,8 +1,7 @@
 import { HTMLAttributes } from "react";
 import clsx from "clsx";
 
-interface LuxuryCardProps
-  extends HTMLAttributes<HTMLDivElement> {}
+type LuxuryCardProps = HTMLAttributes<HTMLDivElement>;
 
 export default function LuxuryCard({
   children,

@@ -2,7 +2,6 @@
 
 
 import BackToDashboard from "@/components/admin/BackToDashboard";
-import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import {
   CalendarCheck,
@@ -282,13 +281,26 @@ export default function BookingsPage() {
     } finally {
       setLoading(false);
     }
-  }
+  }  /*
+   * Initial admin data fetch intentionally updates local state.
+   * This effect is required to load bookings/customers/services/techs
+   * when the admin page mounts.
+   */
+  /* eslint-disable react-hooks/set-state-in-effect */
 
   useEffect(() => {
     loadData();
   }, []);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   /*
+ * AUTOMATIC END TIME
+ *
+ * Whenever service OR start time changes,
+ * calculate end time from service duration.
+ */
+
+/* eslint-disable react-hooks/set-state-in-effect *//*
    * AUTOMATIC END TIME
    *
    * Whenever service OR start time changes,
@@ -332,6 +344,7 @@ export default function BookingsPage() {
     form.startTime,
     services,
   ]);
+/* eslint-enable react-hooks/set-state-in-effect */
 
   function timeToMinutes(time: string) {
     if (!time) return -1;

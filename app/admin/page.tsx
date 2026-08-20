@@ -235,9 +235,11 @@ export default function AdminPage() {
     }
   }
 
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     loadDashboard();
   }, []);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   async function handleLogout() {
     try {

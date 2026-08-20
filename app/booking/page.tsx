@@ -1,6 +1,6 @@
-﻿"use client";
+"use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 
 import BookingShell from "@/components/booking/BookingShell";
@@ -14,10 +14,95 @@ import Step7Review from "@/components/booking/steps/Step7Review";
 import Step7Payment from "@/components/booking/steps/Step7Payment";
 
 import { useBooking } from "@/context/BookingContext";
+import { serviceCategories } from "@/data/services";
 
 export default function BookingPage() {
-  const { booking } = useBooking();
+  const { booking, updateBooking } = useBooking();
 
+  const initializedFromUrl = useRef(false);
+
+  /*
+   * BOOKING ENTRY FLOW
+   *
+   * Generic booking:
+   * /booking
+   * -> Step 1
+   *
+   * Service-specific booking:
+   * /booking?category=...&service=...
+   * -> selected category + service
+   * -> Step 3 (Date)
+   *
+   * The URL initialization runs once per page mount.
+   */
+  useEffect(() => {
+    if (initializedFromUrl.current) {
+      return;
+    }
+
+    initializedFromUrl.current = true;
+
+    const params = new URLSearchParams(
+      window.location.search
+    );
+
+    const categoryId =
+      params.get("category")?.trim() || "";
+
+    const serviceIdValue =
+      params.get("service")?.trim() || "";
+
+    /*
+     * No service-specific URL:
+     * keep the normal booking flow starting at Step 1.
+     */
+    if (!categoryId || !serviceIdValue) {
+      return;
+    }
+
+    const category = serviceCategories.find(
+      (item) => item.id === categoryId
+    );
+
+    if (!category) {
+      return;
+    }
+
+    const serviceId = Number(serviceIdValue);
+
+    if (!Number.isInteger(serviceId)) {
+      return;
+    }
+
+    const selectedService = category.services.find(
+      (service) => service.id === serviceId
+    );
+
+    if (!selectedService) {
+      return;
+    }
+
+    /*
+     * Service-specific booking:
+     * category + service are already selected.
+     * Start directly from Date selection.
+     */
+    updateBooking({
+      category: category.id,
+      service: selectedService,
+      treatment: null,
+      staff: null,
+      date: null,
+      time: "",
+      step: 3,
+      completed: false,
+      editingReview: false,
+    });
+  }, [updateBooking]);
+
+  /*
+   * Scroll to the top whenever the booking step changes.
+   */
   useEffect(() => {
     window.scrollTo({
       top: 0,

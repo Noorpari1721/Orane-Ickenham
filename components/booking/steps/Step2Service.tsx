@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useBooking } from "@/context/BookingContext";
 import { serviceCategories } from "@/data/services";
@@ -13,7 +13,6 @@ export default function Step2Service() {
     booking,
     updateBooking,
     nextStep,
-    goToStep,
   } = useBooking();
 
   const category = serviceCategories.find(

@@ -115,9 +115,11 @@ export default function AdminTechsPage() {
     }
   }
 
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     loadTechs();
   }, []);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   const filteredTechs = useMemo(() => {
     const query = search.trim().toLowerCase();

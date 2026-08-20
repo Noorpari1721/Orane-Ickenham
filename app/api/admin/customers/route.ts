@@ -1,4 +1,4 @@
-﻿import { NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { ADMIN_COOKIE, verifyAdminSession } from "@/lib/adminAuth";
 import { PrismaClient } from "@/app/generated/prisma/client";

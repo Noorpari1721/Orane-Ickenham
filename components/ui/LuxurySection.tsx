@@ -1,8 +1,7 @@
 import { HTMLAttributes } from "react";
 import clsx from "clsx";
 
-interface LuxurySectionProps
-  extends HTMLAttributes<HTMLElement> {}
+type LuxurySectionProps = HTMLAttributes<HTMLElement>;
 
 export default function LuxurySection({
   children,

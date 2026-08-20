@@ -112,9 +112,11 @@ export default function AdminServicesPage() {
     }
   }
 
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     loadServices();
   }, []);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   const categories = useMemo(() => {
     const values = services

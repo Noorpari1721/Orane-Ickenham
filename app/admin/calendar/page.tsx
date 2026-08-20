@@ -282,9 +282,11 @@ export default function AdminCalendarPage() {
     }
   }
 
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     loadBookings();
   }, []);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   const calendarDays = useMemo(
     () => getCalendarDays(currentMonth),

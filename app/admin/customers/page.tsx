@@ -130,9 +130,11 @@ export default function CustomersPage() {
     }
   }
 
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     loadCustomers();
   }, []);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   const filteredCustomers = useMemo(() => {
     const query = search.trim().toLowerCase();

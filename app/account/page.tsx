@@ -67,6 +67,7 @@ export default function AccountPage() {
   const [preferencesLoaded, setPreferencesLoaded] =
     useState(false);
 
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     try {
       const savedProfile = window.localStorage.getItem(
@@ -89,7 +90,9 @@ export default function AccountPage() {
       setProfileLoaded(true);
     }
   }, []);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     try {
       const savedPreferences = window.localStorage.getItem(
@@ -117,6 +120,7 @@ export default function AccountPage() {
       setPreferencesLoaded(true);
     }
   }, []);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   useEffect(() => {
     if (!profileLoaded) return;

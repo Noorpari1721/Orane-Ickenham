@@ -101,6 +101,15 @@ const services = [
   ["SRV-045", "Luxury Pedicure + Gel", "Pedicure", 60, 70],
   ["SRV-046", "Paraffin Wax Pedicure", "Pedicure", 60, 48],
   ["SRV-047", "Paraffin Wax Pedicure + Gel", "Pedicure", 60, 53],
+
+  ["SRV-048", "Swedish Full Body Massage — 45 Minutes", "Massage", 45, 45],
+  ["SRV-049", "Swedish Full Body Massage — 60 Minutes", "Massage", 60, 55],
+  ["SRV-050", "Deep Tissue Massage — 45 Minutes", "Massage", 45, 50],
+  ["SRV-051", "Deep Tissue Massage — 60 Minutes", "Massage", 60, 60],
+  ["SRV-052", "Indian Head Massage — 30 Minutes", "Massage", 30, 30],
+  ["SRV-053", "Indian Head Massage — 45 Minutes", "Massage", 45, 40],
+  ["SRV-054", "Back, Neck & Shoulder Massage", "Massage", 30, 30],
+  ["SRV-055", "Hand & Foot Relaxation Massage", "Massage", 30, 30],
 ] as const;
 
 async function main() {

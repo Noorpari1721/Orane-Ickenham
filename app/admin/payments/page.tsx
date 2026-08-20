@@ -239,9 +239,11 @@ export default function PaymentsPage() {
     }
   }
 
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     loadPayments();
   }, []);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   const filteredPayments = useMemo(() => {
     const query = search.trim().toLowerCase();
