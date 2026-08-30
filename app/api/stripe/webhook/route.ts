@@ -1,4 +1,4 @@
-﻿import { NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import nodemailer from "nodemailer";
 import { PrismaClient } from "@/app/generated/prisma/client";
@@ -351,6 +351,11 @@ async function sendBookingEmails(
     metadata.duration || "Not provided"
   );
 
+  const customerDuration =
+    /^\d+$/.test((metadata.duration || "").trim())
+      ? `${escapeHtml((metadata.duration || "").trim())} mins`
+      : duration;
+
   const customerPhone = escapeHtml(
     metadata.customerPhone || "Not provided"
   );
@@ -507,6 +512,53 @@ async function sendBookingEmails(
     </div>
   `;
 
+  const customerBillingHtml = `
+    <div style="margin:28px 0;padding:24px;background:#faf8f4;border:1px solid #e7dfd0;">
+      <h2 style="margin:0 0 18px;font-weight:400;color:#222;">
+        Payment / Billing
+      </h2>
+
+      <table style="width:100%;border-collapse:collapse;font-family:Arial,sans-serif;font-size:14px;">
+        <thead>
+          <tr>
+            <th style="padding:0 0 10px;text-align:left;color:#888;font-weight:400;">
+              Service
+            </th>
+            <th style="padding:0 0 10px;text-align:right;color:#888;font-weight:400;">
+              Amount
+            </th>
+          </tr>
+        </thead>
+
+        <tbody>
+          ${billingRows}
+        </tbody>
+
+        <tfoot>
+          <tr>
+            <td style="padding:16px 0 0;font-weight:bold;color:#222;">
+              Total Paid
+            </td>
+            <td style="padding:16px 0 0;text-align:right;font-size:18px;font-weight:bold;color:#b28a32;">
+              £${paidAmount.toFixed(2)}
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+
+      <div style="margin-top:18px;padding-top:16px;border-top:1px solid #e7dfd0;font-size:13px;color:#666;">
+
+        <p style="margin:5px 0;">
+          <strong>Payment Status:</strong> PAID
+        </p>
+
+        <p style="margin:5px 0;">
+          <strong>Payment Method:</strong> Stripe
+        </p>
+
+      </div>
+    </div>
+  `;
   const customerHtml = `
     <div style="font-family:Arial,sans-serif;line-height:1.6;color:#222;max-width:680px;margin:0 auto;">
 
@@ -546,7 +598,7 @@ async function sendBookingEmails(
 
         <p>
           <strong>Duration:</strong>
-          ${duration}
+          ${customerDuration}
         </p>
 
         <p>
@@ -559,7 +611,7 @@ async function sendBookingEmails(
           ${appointmentTime}
         </p>
 
-        ${billingHtml}
+        ${customerBillingHtml}
 
         <h2 style="font-weight:400;">
           Your Details
@@ -1814,5 +1866,3 @@ export async function POST(
     );
   }
 }
-
-

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useMemo, useRef, useState } from "react";
 import {
@@ -24,12 +24,81 @@ export default function Step1Services() {
   } = useBooking();
 
   const categoryScroller = useRef<HTMLDivElement | null>(null);
+  /*
+   * BookingContext is the single source of truth for the
+   * currently selected category.
+   *
+   * This is intentionally derived from booking.category
+   * instead of maintaining a second local category state.
+   *
+   * Therefore:
+   * Home Services -> category -> treatment -> Book Now
+   * will always open the same category here on both
+   * mobile and desktop.
+   */
+  /*
+   * FINAL CATEGORY RESOLUTION
+   *
+   * Priority:
+   *
+   * 1. booking.category
+   * 2. If booking.category does not match the selected
+   *    service, derive the category from that service.
+   * 3. Fall back to the first category only when there
+   *    is no usable booking/service category.
+   *
+   * This prevents:
+   *
+   * Home Services
+   * -> Category
+   * -> Treatment
+   * -> Book Now
+   *
+   * from opening the correct treatment while displaying
+   * the wrong active category capsule.
+   */
+  const selectedServices =
+    booking.services?.length
+      ? booking.services
+      : booking.service
+        ? [booking.service]
+        : [];
 
-  const [activeCategoryId, setActiveCategoryId] = useState(
-    booking.category ||
-      serviceCategories[0]?.id ||
-      ""
-  );
+  const selectedService =
+    selectedServices.length === 1
+      ? selectedServices[0]
+      : null;
+
+  const categoryFromSelectedService =
+    selectedService
+      ? serviceCategories.find((category) =>
+          category.services.some(
+            (service) => service.id === selectedService.id
+          )
+        )
+      : undefined;
+
+  const bookingCategory =
+    serviceCategories.find(
+      (category) => category.id === booking.category
+    );
+
+  const bookingCategoryContainsSelectedService =
+    !!bookingCategory &&
+    (!selectedService ||
+      bookingCategory.services.some(
+        (service) => service.id === selectedService.id
+      ));
+
+  const activeCategoryId =
+    bookingCategoryContainsSelectedService && bookingCategory
+      ? bookingCategory.id
+      : categoryFromSelectedService?.id ||
+        bookingCategory?.id ||
+        serviceCategories[0]?.id ||
+        "";
+
+
 
   // Only one treatment card can be expanded at a time.
   const [expandedServiceId, setExpandedServiceId] = useState<number | string | null>(null);
@@ -53,12 +122,6 @@ export default function Step1Services() {
     [activeCategory]
   );
 
-  const selectedServices =
-    booking.services?.length
-      ? booking.services
-      : booking.service
-        ? [booking.service]
-        : [];
 
   const selectedIds = useMemo(
     () => new Set(selectedServices.map((service) => service.id)),
@@ -110,7 +173,6 @@ export default function Step1Services() {
   }, [totalMinutes]);
 
   const selectCategory = (categoryId: string) => {
-    setActiveCategoryId(categoryId);
     setExpandedServiceId(null);
 
     updateBooking({
@@ -159,7 +221,7 @@ export default function Step1Services() {
         <button
           type="button"
           onClick={() => scrollCategories("left")}
-          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/[0.025] text-white/60 transition-all duration-300 hover:border-[#D4AF37]/60 hover:bg-[#D4AF37]/10 hover:text-[#D4AF37]"
+          className="hidden md:flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/[0.025] text-white/60 transition-all duration-300 hover:border-[#D4AF37]/60 hover:bg-[#D4AF37]/10 hover:text-[#D4AF37]"
           aria-label="Scroll categories left"
         >
           <ChevronLeft size={19} />
@@ -208,7 +270,7 @@ export default function Step1Services() {
         <button
           type="button"
           onClick={() => scrollCategories("right")}
-          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/[0.025] text-white/60 transition-all duration-300 hover:border-[#D4AF37]/60 hover:bg-[#D4AF37]/10 hover:text-[#D4AF37]"
+          className="hidden md:flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/[0.025] text-white/60 transition-all duration-300 hover:border-[#D4AF37]/60 hover:bg-[#D4AF37]/10 hover:text-[#D4AF37]"
           aria-label="Scroll categories right"
         >
           <ChevronRight size={19} />
@@ -406,4 +468,3 @@ export default function Step1Services() {
     </div>
   );
 }
-

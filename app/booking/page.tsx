@@ -22,79 +22,120 @@ export default function BookingPage() {
     updateBooking,
   } = useBooking();
 
-  const initializedFromUrl =
-    useRef(false);
+  const initializedFromUrl = useRef(false);
 
+  /*
+   * Home Services routing
+   *
+   * Supported URLs:
+   *
+   * /booking?category=packages
+   *
+   * /booking?category=packages&service=123
+   *
+   * The category must always be respected instead of
+   * allowing Step1Services to fall back to Japanese Head Spa.
+   */
   useEffect(() => {
-    if (
-      initializedFromUrl.current
-    ) {
+    if (initializedFromUrl.current) {
       return;
     }
 
-    initializedFromUrl.current =
-      true;
+    initializedFromUrl.current = true;
 
-    const params =
-      new URLSearchParams(
-        window.location.search
-      );
+    const params = new URLSearchParams(
+      window.location.search
+    );
 
     const categoryId =
-      params.get("category")?.trim() ||
-      "";
+      params.get("category")?.trim() || "";
 
     const serviceIdValue =
-      params.get("service")?.trim() ||
-      "";
+      params.get("service")?.trim() || "";
 
-    if (
-      !categoryId ||
-      !serviceIdValue
-    ) {
+    if (!categoryId) {
       return;
     }
 
-    const category =
-      serviceCategories.find(
-        (item) =>
-          item.id === categoryId
-      );
+    const category = serviceCategories.find(
+      (item) => item.id === categoryId
+    );
 
     if (!category) {
       return;
     }
 
-    const serviceId =
-      Number(serviceIdValue);
+    /*
+     * Category only:
+     * open the requested category and keep the user
+     * on Step 1.
+     */
+    if (!serviceIdValue) {
+      updateBooking({
+        category: category.id,
+        service: null,
+        services: [],
+        treatment: null,
+        staff: null,
+        date: null,
+        time: "",
+        step: 1,
+        completed: false,
+        editingReview: false,
+      });
 
-    if (
-      !Number.isInteger(
-        serviceId
-      )
-    ) {
       return;
     }
 
-    const selectedService =
-      category.services.find(
-        (service) =>
-          service.id ===
-          serviceId
-      );
+    /*
+     * Category + treatment:
+     * open the requested category and preserve the
+     * treatment selected from Home Services.
+     */
+    const serviceId = Number(serviceIdValue);
+
+    if (!Number.isInteger(serviceId)) {
+      updateBooking({
+        category: category.id,
+        service: null,
+        services: [],
+        treatment: null,
+        staff: null,
+        date: null,
+        time: "",
+        step: 1,
+        completed: false,
+        editingReview: false,
+      });
+
+      return;
+    }
+
+    const selectedService = category.services.find(
+      (service) => service.id === serviceId
+    );
 
     if (!selectedService) {
+      updateBooking({
+        category: category.id,
+        service: null,
+        services: [],
+        treatment: null,
+        staff: null,
+        date: null,
+        time: "",
+        step: 1,
+        completed: false,
+        editingReview: false,
+      });
+
       return;
     }
 
     updateBooking({
-      category:
-        category.id,
-      service:
-        selectedService,
-      services: [
-        selectedService,
-      ],
+      category: category.id,
+      service: selectedService,
+      services: [selectedService],
       treatment: null,
       staff: null,
       date: null,
@@ -114,9 +155,7 @@ export default function BookingPage() {
   }, [booking.step]);
 
   const renderStep = () => {
-    switch (
-      booking.step
-    ) {
+    switch (booking.step) {
       case 1:
         return <Step1Services />;
 
@@ -177,8 +216,3 @@ export default function BookingPage() {
     </BookingShell>
   );
 }
-
-
-
-
-
