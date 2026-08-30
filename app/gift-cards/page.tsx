@@ -1,46 +1,64 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import {
   ArrowLeft,
   ArrowRight,
   Check,
+  ChevronLeft,
+  ChevronRight,
   Gift,
   Heart,
   Mail,
+  Search,
   Sparkles,
   User,
+  X,
 } from "lucide-react";
 
 type GiftType = "service" | "custom";
 type RecipientType = "self" | "someone";
 
-const services = [
-  { name: "Hydra Cleanse", price: 50 },
-  { name: "Sakura Head Spa", price: 80 },
-  { name: "Ultimate Indulgence", price: 120 },
-  { name: "Deep Cleansing Facial", price: 45 },
-  { name: "ELEMIS Expert Facial", price: 70 },
-  { name: "Express Facial", price: 30 },
-  { name: "Herbal Facial", price: 60 },
-  { name: "Acrylic Extension Full Set With Gel", price: 45 },
-  { name: "Acrylic Extension Full Set Colour", price: 40 },
-  { name: "Acrylic Infill With Gel", price: 40 },
-  { name: "BIAB Infill With Gel", price: 39 },
-];
+type Service = {
+  id: string;
+  name: string;
+  category: string;
+  price: number;
+  active?: boolean;
+};
 
 const customAmounts = [25, 50, 75, 100, 150, 200, 250, 500];
 
+const categoryLabels: Record<string, string> = {
+  all: "All",
+};
+
+function cleanServiceText(value: string) {
+  return String(value || "")
+    .replace(/Â£/g, "£")
+    .replace(/Â/g, "")
+    .replace(/â€™/g, "'")
+    .replace(/â€œ/g, '"')
+    .replace(/â€�/g, '"')
+    .replace(/â€“/g, "–")
+    .replace(/â€”/g, "—")
+    .replace(/â€¦/g, "…")
+    .trim();
+}
+
 export default function GiftCardsPage() {
   const [giftType, setGiftType] =
-    useState<GiftType>("custom");
+    useState<GiftType>("service");
 
   const [recipientType, setRecipientType] =
     useState<RecipientType>("someone");
 
-  const [selectedService, setSelectedService] =
-    useState(services[0].name);
+  const [services, setServices] =
+    useState<Service[]>([]);
+
+  const [selectedServiceIds, setSelectedServiceIds] =
+    useState<string[]>([]);
 
   const [customAmount, setCustomAmount] =
     useState("100");
@@ -60,30 +78,224 @@ export default function GiftCardsPage() {
   const [personalMessage, setPersonalMessage] =
     useState("");
 
+  const [searchQuery, setSearchQuery] =
+    useState("");
+
+  const [activeCategory, setActiveCategory] =
+    useState("all");
+
   const [isLoading, setIsLoading] =
     useState(false);
 
   const [error, setError] =
     useState("");
 
-  const selectedServiceData = useMemo(
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadServices() {
+      try {
+        const response = await fetch(
+          "/api/gift-cards/services",
+          {
+            cache: "no-store",
+          }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(
+            data?.error ||
+              "Unable to load treatments."
+          );
+        }
+
+        const activeServices: Service[] =
+          (data.services || [])
+            .filter(
+              (service: { active?: boolean }) =>
+                service.active !== false
+            )
+            .map(
+              (service: Service) => ({
+                ...service,
+                id: String(service.id),
+                name: cleanServiceText(service.name),
+                category: cleanServiceText(
+                  service.category
+                ),
+                price: Number(service.price),
+              })
+            )
+            .filter(
+              (service: Service) =>
+                Number.isFinite(service.price)
+            )
+            .sort(
+              (a: Service, b: Service) =>
+                String(a.category || "").localeCompare(
+                  String(b.category || "")
+                ) ||
+                String(a.name || "").localeCompare(
+                  String(b.name || "")
+                )
+            );
+
+        if (cancelled) return;
+
+        setServices(activeServices);
+
+        setSelectedServiceIds(
+          (current) =>
+            current.filter((id) =>
+              activeServices.some(
+                (service) =>
+                  service.id === id
+              )
+            )
+        );
+      } catch (loadError) {
+        console.error(
+          "Gift voucher treatments error:",
+          loadError
+        );
+
+        if (!cancelled) {
+          setError(
+            "Unable to load treatments. Please refresh and try again."
+          );
+        }
+      }
+    }
+
+    loadServices();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const categories = useMemo(() => {
+    const unique = Array.from(
+      new Set(
+        services
+          .map((service) =>
+            String(service.category || "").trim()
+          )
+          .filter(Boolean)
+      )
+    );
+
+    return ["all", ...unique];
+  }, [services]);
+
+  const filteredServices = useMemo(() => {
+    const query = searchQuery
+      .trim()
+      .toLowerCase();
+
+    return services.filter((service) => {
+      const categoryMatch =
+        activeCategory === "all" ||
+        service.category === activeCategory;
+
+      const queryMatch =
+        !query ||
+        service.name
+          .toLowerCase()
+          .includes(query) ||
+        service.category
+          .toLowerCase()
+          .includes(query);
+
+      return categoryMatch && queryMatch;
+    });
+  }, [
+    services,
+    searchQuery,
+    activeCategory,
+  ]);
+
+  const selectedServices = useMemo(
     () =>
-      services.find(
-        (service) =>
-          service.name === selectedService
+      services.filter((service) =>
+        selectedServiceIds.includes(
+          service.id
+        )
       ),
-    [selectedService]
+    [
+      services,
+      selectedServiceIds,
+    ]
+  );
+
+  const serviceTotal = useMemo(
+    () =>
+      selectedServices.reduce(
+        (total, service) =>
+          total + Number(service.price),
+        0
+      ),
+    [selectedServices]
   );
 
   const amount =
     giftType === "service"
-      ? selectedServiceData?.price ?? 0
+      ? serviceTotal
       : Number(customAmount) || 0;
 
-  async function handleCheckout() {
-    if (isLoading) {
+  const selectedServiceNames =
+    selectedServices
+      .map((service) =>
+        cleanServiceText(service.name)
+      )
+      .join(", ");
+
+  function toggleService(
+    serviceId: string
+  ) {
+    setSelectedServiceIds(
+      (current) =>
+        current.includes(serviceId)
+          ? current.filter(
+              (id) =>
+                id !== serviceId
+            )
+          : [
+              ...current,
+              serviceId,
+            ]
+    );
+  }
+
+  function clearSelection() {
+    setSelectedServiceIds([]);
+  }
+
+  const categoryScroller =
+    useRef<HTMLDivElement>(null);
+
+  function scrollCategories(
+    direction: "left" | "right"
+  ) {
+    const container =
+      categoryScroller.current;
+
+    if (!container) {
       return;
     }
+
+    container.scrollBy({
+      left:
+        direction === "left"
+          ? -260
+          : 260,
+      behavior: "smooth",
+    });
+  }
+  async function handleCheckout() {
+    if (isLoading) return;
 
     setError("");
 
@@ -102,7 +314,9 @@ export default function GiftCardsPage() {
     }
 
     if (
-      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
+        email
+      )
     ) {
       setError(
         "Please enter a valid email address."
@@ -122,10 +336,10 @@ export default function GiftCardsPage() {
 
     if (
       giftType === "service" &&
-      !selectedServiceData
+      selectedServices.length === 0
     ) {
       setError(
-        "Please select a valid service."
+        "Please select at least one treatment."
       );
       return;
     }
@@ -133,53 +347,73 @@ export default function GiftCardsPage() {
     setIsLoading(true);
 
     try {
-      const response = await fetch(
-        "/api/gift-cards/checkout",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            giftType,
+      const response =
+        await fetch(
+          "/api/gift-cards/checkout",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type":
+                "application/json",
+            },
+            body: JSON.stringify({
+              giftType,
 
-            serviceName:
-              giftType === "service"
-                ? selectedService
-                : undefined,
+              serviceNames:
+                giftType === "service"
+                  ? selectedServices.map(
+                      (service) =>
+                        cleanServiceText(
+                          service.name
+                        )
+                    )
+                  : undefined,
 
-            amount:
-              giftType === "custom"
-                ? amount
-                : undefined,
+              serviceIds:
+                giftType === "service"
+                  ? selectedServices.map(
+                      (service) =>
+                        service.id
+                    )
+                  : undefined,
 
-            purchaserEmail:
-              recipientType === "self"
-                ? purchaserEmail.trim()
-                : undefined,
+              serviceName:
+                giftType === "service"
+                  ? selectedServiceNames
+                  : undefined,
 
-            recipientFirstName:
-              recipientType === "someone"
-                ? recipientFirstName.trim()
-                : undefined,
+              amount:
+                giftType === "custom"
+                  ? amount
+                  : undefined,
 
-            recipientLastName:
-              recipientType === "someone"
-                ? recipientLastName.trim()
-                : undefined,
+              purchaserEmail:
+                recipientType === "self"
+                  ? purchaserEmail.trim()
+                  : undefined,
 
-            recipientEmail:
-              recipientType === "someone"
-                ? recipientEmail.trim()
-                : undefined,
+              recipientFirstName:
+                recipientType === "someone"
+                  ? recipientFirstName.trim()
+                  : undefined,
 
-            personalMessage:
-              recipientType === "someone"
-                ? personalMessage.trim()
-                : undefined,
-          }),
-        }
-      );
+              recipientLastName:
+                recipientType === "someone"
+                  ? recipientLastName.trim()
+                  : undefined,
+
+              recipientEmail:
+                recipientType === "someone"
+                  ? recipientEmail.trim()
+                  : undefined,
+
+              personalMessage:
+                recipientType === "someone"
+                  ? personalMessage.trim()
+                  : undefined,
+            }),
+          }
+        );
 
       const data =
         await response.json();
@@ -197,7 +431,8 @@ export default function GiftCardsPage() {
         );
       }
 
-      window.location.href = data.url;
+      window.location.href =
+        data.url;
     } catch (checkoutError) {
       console.error(
         "Gift Card checkout error:",
@@ -214,45 +449,60 @@ export default function GiftCardsPage() {
     }
   }
 
+  const inputClass =
+    "w-full rounded-2xl border border-white/10 bg-white/[0.035] px-5 py-4 text-sm text-white outline-none placeholder:text-white/25 transition focus:border-[#D4AF5A]/60 focus:bg-white/[0.05]";
+
+  const selectedCount =
+    selectedServices.length;
+
   return (
     <main className="min-h-screen bg-[#050505] text-white">
-      <div
-        aria-hidden="true"
-        className="pointer-events-none fixed inset-0 -z-0 bg-[radial-gradient(circle_at_15%_20%,rgba(196,154,69,.14),transparent_30%),radial-gradient(circle_at_85%_75%,rgba(196,154,69,.08),transparent_30%),linear-gradient(135deg,#090909,#030303)]"
-      />
+      <div className="pointer-events-none fixed inset-0 -z-0 overflow-hidden">
+        <div className="absolute left-[-15%] top-[5%] h-[520px] w-[520px] rounded-full bg-[#C49A45]/10 blur-[130px]" />
+        <div className="absolute bottom-[5%] right-[-15%] h-[500px] w-[500px] rounded-full bg-[#C49A45]/8 blur-[130px]" />
+        <div className="absolute inset-0 bg-[linear-gradient(135deg,#090909,#030303_55%,#070707)]" />
+      </div>
 
-      <header className="relative z-10 border-b border-white/10">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-6 sm:px-8">
+      <header className="relative z-20 border-b border-white/[0.08] bg-black/20 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-5 sm:px-8">
           <Link
             href="/"
-            className="inline-flex items-center gap-3 text-xs uppercase tracking-[0.2em] text-white/60 transition hover:text-[#DDB45C]"
+            className="group inline-flex items-center gap-3 text-[10px] font-semibold uppercase tracking-[0.25em] text-white/50 transition hover:text-[#DDB45C]"
           >
-            <ArrowLeft size={16} />
-            Back to ORANE
+            <span className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 transition group-hover:border-[#D4AF5A]/50">
+              <ArrowLeft size={15} />
+            </span>
+            <span className="hidden sm:inline">
+              Back to ORANE
+            </span>
           </Link>
 
-          <div className="text-right">
-            <p className="text-sm font-semibold tracking-[0.35em] text-[#DDB45C]">
+          <div className="text-center">
+            <p className="text-sm font-semibold tracking-[0.42em] text-[#DDB45C]">
               ORANE
             </p>
-            <p className="mt-1 text-[8px] uppercase tracking-[0.35em] text-white/35">
+            <p className="mt-1 text-[7px] uppercase tracking-[0.5em] text-white/30">
               ICKENHAM
             </p>
           </div>
+
+          <div className="w-9 sm:w-[110px]" />
         </div>
       </header>
 
-      <section className="relative z-10 mx-auto max-w-7xl px-5 py-12 sm:px-8 sm:py-16 lg:py-20">
-        <div className="mx-auto max-w-3xl text-center">
-          <div className="mb-5 flex items-center justify-center gap-4">
-            <span className="h-px w-10 bg-[#D4AF5A]" />
-            <span className="text-[10px] font-semibold uppercase tracking-[0.35em] text-[#D4AF5A]">
+      <section className="relative z-10 mx-auto max-w-7xl px-5 pb-20 pt-12 sm:px-8 sm:pt-16">
+        <div className="mx-auto max-w-4xl text-center">
+          <div className="mb-6 flex items-center justify-center gap-4">
+            <span className="h-px w-8 bg-[#D4AF5A]/60 sm:w-14" />
+
+            <span className="text-[9px] font-semibold uppercase tracking-[0.35em] text-[#D4AF5A]">
               THE ORANE GIFT COLLECTION
             </span>
-            <span className="h-px w-10 bg-[#D4AF5A]" />
+
+            <span className="h-px w-8 bg-[#D4AF5A]/60 sm:w-14" />
           </div>
 
-          <h1 className="font-serif text-5xl leading-none sm:text-6xl lg:text-7xl">
+          <h1 className="font-serif text-5xl leading-[0.95] sm:text-7xl">
             Give the gift
             <br />
             <span className="text-[#D4AF5A]">
@@ -260,257 +510,554 @@ export default function GiftCardsPage() {
             </span>
           </h1>
 
-          <p className="mx-auto mt-6 max-w-2xl text-sm leading-7 text-white/50 sm:text-base">
-            Choose a signature ORANE experience or
-            create a gift of your own. Perfect for
-            yourself or someone special.
+          <p className="mx-auto mt-6 max-w-2xl text-sm leading-7 text-white/45 sm:text-base">
+            Choose one or more signature ORANE
+            experiences, or create a beautiful
+            gift card with a value of your choice.
           </p>
+
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3 text-[9px] uppercase tracking-[0.22em] text-white/35">
+            <span className="rounded-full border border-white/10 bg-white/[0.025] px-4 py-2">
+              Instant digital delivery
+            </span>
+            <span className="rounded-full border border-white/10 bg-white/[0.025] px-4 py-2">
+              Secure checkout
+            </span>
+            <span className="rounded-full border border-white/10 bg-white/[0.025] px-4 py-2">
+              Valid for 2 years
+            </span>
+          </div>
         </div>
 
-        <div className="mt-14 grid gap-8 lg:grid-cols-[1fr_380px]">
-          <div className="rounded-[28px] border border-white/10 bg-white/[0.035] p-6 shadow-[0_30px_80px_rgba(0,0,0,.35)] backdrop-blur-2xl sm:p-8 lg:p-10">
-            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-white/45">
-              01 — Choose your gift
-            </p>
-
-            <div className="mt-5 grid gap-3 sm:grid-cols-2">
-              {[
-                {
-                  type: "service" as const,
-                  icon: Sparkles,
-                  title: "Service Gift Voucher",
-                  text: "Gift a specific ORANE treatment.",
-                },
-                {
-                  type: "custom" as const,
-                  icon: Gift,
-                  title: "Custom Gift Card",
-                  text: "Choose your own amount with no service restriction.",
-                },
-              ].map((option) => {
-                const Icon = option.icon;
-                const active =
-                  giftType === option.type;
-
-                return (
-                  <button
-                    key={option.type}
-                    type="button"
-                    onClick={() =>
-                      setGiftType(option.type)
-                    }
-                    className={`rounded-2xl border p-5 text-left transition-all duration-300 ${
-                      active
-                        ? "border-[#D4AF5A]/70 bg-[#C49A45]/10"
-                        : "border-white/10 bg-white/[0.025] hover:border-white/20"
-                    }`}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-full border border-[#D4AF5A]/30 bg-[#C49A45]/10">
-                        <Icon
-                          size={18}
-                          className="text-[#DDB45C]"
-                        />
-                      </div>
-
-                      {active && (
-                        <Check
-                          size={18}
-                          className="text-[#DDB45C]"
-                        />
-                      )}
-                    </div>
-
-                    <h2 className="mt-5 font-serif text-2xl">
-                      {option.title}
-                    </h2>
-
-                    <p className="mt-2 text-xs leading-6 text-white/40">
-                      {option.text}
+        <div className="mx-auto mt-14 grid max-w-7xl gap-7 lg:grid-cols-[minmax(0,1fr)_380px] lg:items-start">
+          <div className="overflow-hidden rounded-[30px] border border-white/[0.09] bg-white/[0.025] shadow-2xl shadow-black/30">
+            <div className="border-b border-white/[0.08] p-6 sm:p-8">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <div className="flex items-center gap-3">
+                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#D4AF5A] text-[10px] font-bold text-black">
+                      01
+                    </span>
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-white/45">
+                      Choose your gift
                     </p>
-                  </button>
-                );
-              })}
-            </div>
+                  </div>
 
-            <div className="mt-10 border-t border-white/10 pt-10">
-              <p className="text-xs font-semibold uppercase tracking-[0.25em] text-white/45">
-                02 —{" "}
-                {giftType === "service"
-                  ? "Select treatment"
-                  : "Choose amount"}
-              </p>
-
-              {giftType === "service" ? (
-                <div className="mt-5 grid gap-3 sm:grid-cols-2">
-                  {services.map((service) => (
-                    <button
-                      key={service.name}
-                      type="button"
-                      onClick={() =>
-                        setSelectedService(
-                          service.name
-                        )
-                      }
-                      className={`flex items-center justify-between gap-4 rounded-2xl border px-5 py-4 text-left transition-all ${
-                        selectedService ===
-                        service.name
-                          ? "border-[#D4AF5A]/70 bg-[#C49A45]/10"
-                          : "border-white/10 bg-white/[0.025] hover:border-white/20"
-                      }`}
-                    >
-                      <span className="text-sm text-white/80">
-                        {service.name}
-                      </span>
-
-                      <span className="shrink-0 text-sm font-semibold text-[#DDB45C]">
-                        £{service.price}
-                      </span>
-                    </button>
-                  ))}
+                  <p className="mt-4 max-w-xl text-sm leading-6 text-white/35">
+                    Select a treatment voucher or
+                    create your own flexible-value
+                    gift card.
+                  </p>
                 </div>
-              ) : (
-                <>
-                  <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
-                    {customAmounts.map(
-                      (value) => (
-                        <button
-                          key={value}
-                          type="button"
-                          onClick={() =>
-                            setCustomAmount(
-                              String(value)
-                            )
-                          }
-                          className={`rounded-2xl border px-4 py-4 text-sm font-semibold transition-all ${
-                            Number(
-                              customAmount
-                            ) === value
-                              ? "border-[#D4AF5A]/70 bg-[#C49A45]/10 text-[#DDB45C]"
-                              : "border-white/10 bg-white/[0.025] text-white/70 hover:border-white/20"
-                          }`}
-                        >
-                          £{value}
-                        </button>
-                      )
-                    )}
-                  </div>
 
-                  <div className="mt-4">
-                    <label className="mb-3 block text-[10px] uppercase tracking-[0.25em] text-white/35">
-                      Or enter your own amount
-                    </label>
+                <Gift
+                  size={22}
+                  strokeWidth={1.5}
+                  className="hidden text-[#DDB45C] sm:block"
+                />
+              </div>
 
-                    <div className="flex items-center rounded-2xl border border-white/10 bg-white/[0.025] px-5">
-                      <span className="text-xl text-[#DDB45C]">
-                        £
-                      </span>
-
-                      <input
-                        type="number"
-                        min="25"
-                        max="500"
-                        step="1"
-                        value={customAmount}
-                        onChange={(event) =>
-                          setCustomAmount(
-                            event.target.value
-                          )
-                        }
-                        className="w-full bg-transparent px-3 py-4 text-white outline-none"
-                      />
-                    </div>
-
-                    <p className="mt-2 text-[10px] text-white/30">
-                      Custom Gift Cards: £25–£500
-                    </p>
-                  </div>
-                </>
-              )}
-            </div>
-
-            <div className="mt-10 border-t border-white/10 pt-10">
-              <p className="text-xs font-semibold uppercase tracking-[0.25em] text-white/45">
-                03 — Who is it for?
-              </p>
-
-              <div className="mt-5 grid gap-3 sm:grid-cols-2">
+              <div className="mt-7 grid gap-3 sm:grid-cols-2">
                 {[
                   {
-                    type: "self" as const,
-                    icon: User,
-                    title: "For myself",
-                    text: "Keep the gift for your own ORANE visit.",
+                    type: "service" as const,
+                    icon: Sparkles,
+                    title: "Service Gift Voucher",
+                    text: "Gift one or multiple ORANE treatments.",
                   },
                   {
-                    type: "someone" as const,
-                    icon: Heart,
-                    title: "Gift it to someone",
-                    text: "Send the gift to someone special.",
+                    type: "custom" as const,
+                    icon: Gift,
+                    title: "Custom Gift Card",
+                    text: "Choose any value from £25 to £500.",
                   },
                 ].map((option) => {
                   const Icon = option.icon;
                   const active =
-                    recipientType ===
-                    option.type;
+                    giftType === option.type;
 
                   return (
                     <button
                       key={option.type}
                       type="button"
-                      onClick={() =>
-                        setRecipientType(
-                          option.type
-                        )
-                      }
-                      className={`flex items-center gap-4 rounded-2xl border p-5 text-left transition-all ${
+                      onClick={() => {
+                        setGiftType(option.type);
+                        setError("");
+                      }}
+                      className={`group relative overflow-hidden rounded-[22px] border p-5 text-left transition-all duration-300 ${
                         active
-                          ? "border-[#D4AF5A]/70 bg-[#C49A45]/10"
-                          : "border-white/10 bg-white/[0.025]"
+                          ? "border-[#D4AF5A]/70 bg-[#C49A45]/10 shadow-lg shadow-[#C49A45]/5"
+                          : "border-white/10 bg-white/[0.02] hover:border-[#D4AF5A]/35 hover:bg-white/[0.04]"
                       }`}
                     >
-                      <Icon
-                        size={19}
-                        className="text-[#DDB45C]"
-                      />
+                      <div className="flex items-center justify-between">
+                        <span
+                          className={`flex h-10 w-10 items-center justify-center rounded-full border ${
+                            active
+                              ? "border-[#D4AF5A]/40 bg-[#D4AF5A]/10"
+                              : "border-white/10 bg-white/[0.025]"
+                          }`}
+                        >
+                          <Icon
+                            size={18}
+                            strokeWidth={1.5}
+                            className="text-[#DDB45C]"
+                          />
+                        </span>
 
-                      <div>
-                        <p className="text-sm font-medium">
-                          {option.title}
-                        </p>
-
-                        <p className="mt-1 text-xs text-white/35">
-                          {option.text}
-                        </p>
+                        {active && (
+                          <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#DDB45C] text-black">
+                            <Check size={14} />
+                          </span>
+                        )}
                       </div>
+
+                      <h2 className="mt-5 font-serif text-[22px]">
+                        {option.title}
+                      </h2>
+
+                      <p className="mt-2 text-xs leading-5 text-white/35">
+                        {option.text}
+                      </p>
                     </button>
                   );
                 })}
               </div>
+            </div>
 
-              {recipientType === "self" ? (
-                <div className="mt-5">
+            <div className="border-b border-white/[0.08] p-6 sm:p-8">
+              <div className="flex items-end justify-between gap-4">
+                <div>
+                  <div className="flex items-center gap-3">
+                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-[10px] font-bold text-[#DDB45C]">
+                      02
+                    </span>
+
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-white/45">
+                      {giftType === "service"
+                        ? "Select treatments"
+                        : "Choose amount"}
+                    </p>
+                  </div>
+
+                  {giftType === "service" && (
+                    <p className="mt-4 text-xs text-white/35">
+                      {selectedCount === 0
+                        ? "Choose one or more experiences"
+                        : `${selectedCount} treatment${selectedCount === 1 ? "" : "s"} selected`}
+                    </p>
+                  )}
+                </div>
+
+                {giftType === "service" &&
+                  selectedCount > 0 && (
+                    <button
+                      type="button"
+                      onClick={clearSelection}
+                      className="inline-flex items-center gap-2 text-[9px] font-semibold uppercase tracking-[0.18em] text-white/35 transition hover:text-[#DDB45C]"
+                    >
+                      <X size={13} />
+                      Clear
+                    </button>
+                  )}
+              </div>
+
+              {giftType === "service" ? (
+                <div className="mt-7">
                   <div className="relative">
-                    <Mail
-                      size={17}
-                      className="absolute left-5 top-1/2 -translate-y-1/2 text-[#D4AF5A]"
+                    <Search
+                      size={16}
+                      className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-white/25"
                     />
 
                     <input
-                      type="email"
-                      value={purchaserEmail}
+                      value={searchQuery}
                       onChange={(event) =>
-                        setPurchaserEmail(
+                        setSearchQuery(
                           event.target.value
                         )
                       }
-                      placeholder="Your email address"
-                      className="w-full rounded-2xl border border-white/10 bg-white/[0.025] py-4 pl-12 pr-5 text-sm text-white outline-none placeholder:text-white/25 focus:border-[#D4AF5A]/50"
+                      placeholder="Search treatments..."
+                      className={`${inputClass} pl-11`}
                     />
+
+                    {searchQuery && (
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setSearchQuery("")
+                        }
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-white/30 transition hover:text-white"
+                      >
+                        <X size={15} />
+                      </button>
+                    )}
                   </div>
+
+                                  <div className="mt-4 flex items-center gap-4">
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      scrollCategories("left")
+                    }
+                    className="
+                      flex
+                      h-12
+                      w-12
+                      shrink-0
+                      items-center
+                      justify-center
+                      rounded-full
+                      border
+                      border-white/10
+                      bg-white/[0.025]
+                      text-white/55
+                      transition-all
+                      duration-200
+                      hover:border-[#D4AF5A]/50
+                      hover:bg-[#D4AF5A]/10
+                      hover:text-[#DDB45C]
+                    "
+                    aria-label="Scroll treatment categories left"
+                  >
+                    <ChevronLeft size={19} />
+                  </button>
+
+                  <div
+                    ref={categoryScroller}
+                    className="
+                      flex
+                      min-w-0
+                      flex-1
+                      items-center
+                      gap-2
+                      overflow-x-auto
+                      rounded-full
+                      border
+                      border-white/10
+                      bg-white/[0.018]
+                      px-2
+                      py-2
+                      scroll-smooth
+                      [-ms-overflow-style:none]
+                      [scrollbar-width:none]
+                      [&::-webkit-scrollbar]:hidden
+                    "
+                  >
+                    {categories.map(
+                      (category) => {
+                        const active =
+                          activeCategory ===
+                          category;
+
+                        return (
+                          <button
+                            key={category}
+                            type="button"
+                            onClick={() =>
+                              setActiveCategory(
+                                category
+                              )
+                            }
+                            className={`shrink-0 rounded-full border px-4 py-2 text-[9px] font-semibold uppercase tracking-[0.15em] transition ${
+                              active
+                                ? "border-[#D4AF5A]/60 bg-[#D4AF5A] text-black"
+                                : "border-white/10 bg-white/[0.025] text-white/40 hover:border-[#D4AF5A]/35 hover:text-white"
+                            }`}
+                          >
+                            {category === "all"
+                              ? "All treatments"
+                              : category}
+                          </button>
+                        );
+                      }
+                    )}
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      scrollCategories("right")
+                    }
+                    className="
+                      flex
+                      h-12
+                      w-12
+                      shrink-0
+                      items-center
+                      justify-center
+                      rounded-full
+                      border
+                      border-white/10
+                      bg-white/[0.025]
+                      text-white/55
+                      transition-all
+                      duration-200
+                      hover:border-[#D4AF5A]/50
+                      hover:bg-[#D4AF5A]/10
+                      hover:text-[#DDB45C]
+                    "
+                    aria-label="Scroll treatment categories right"
+                  >
+                    <ChevronRight size={19} />
+                  </button>
+
+                </div>
+
+                  <div className="mt-6 flex items-center justify-between">
+                    <p className="text-[9px] uppercase tracking-[0.18em] text-white/25">
+                      {filteredServices.length}{" "}
+                      available
+                    </p>
+
+                    {selectedCount > 0 && (
+                      <p className="text-[9px] uppercase tracking-[0.18em] text-[#DDB45C]">
+                        £{serviceTotal.toFixed(2)}{" "}
+                        selected
+                      </p>
+                    )}
+                  </div>
+
+                  {filteredServices.length === 0 ? (
+                    <div className="mt-4 rounded-[22px] border border-dashed border-white/10 bg-white/[0.015] px-6 py-12 text-center">
+                      <Search
+                        size={22}
+                        className="mx-auto text-white/20"
+                      />
+                      <p className="mt-4 font-serif text-xl">
+                        No treatments found
+                      </p>
+                      <p className="mt-2 text-xs text-white/30">
+                        Try another search or category.
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="mt-4 grid gap-2.5 sm:grid-cols-2">
+                      {filteredServices.map(
+                        (service) => {
+                          const active =
+                            selectedServiceIds.includes(
+                              service.id
+                            );
+
+                          return (
+                            <button
+                              key={service.id}
+                              type="button"
+                              onClick={() => {
+                                toggleService(
+                                  service.id
+                                );
+                                setError("");
+                              }}
+                              className={`group flex min-h-[82px] items-center justify-between gap-4 rounded-[18px] border px-4 py-3.5 text-left transition-all duration-200 ${
+                                active
+                                  ? "border-[#D4AF5A]/65 bg-[#C49A45]/10 shadow-lg shadow-[#C49A45]/5"
+                                  : "border-white/[0.09] bg-white/[0.018] hover:border-[#D4AF5A]/30 hover:bg-white/[0.035]"
+                              }`}
+                            >
+                              <div className="flex min-w-0 items-center gap-3">
+                                <span
+                                  className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border transition ${
+                                    active
+                                      ? "border-[#DDB45C] bg-[#DDB45C] text-black"
+                                      : "border-white/20 text-transparent group-hover:border-[#D4AF5A]/50"
+                                  }`}
+                                >
+                                  <Check size={13} />
+                                </span>
+
+                                <div className="min-w-0">
+                                  <span className="block truncate text-sm font-medium text-white/90">
+                                    {cleanServiceText(
+                                      service.name
+                                    )}
+                                  </span>
+
+                                  <span className="mt-1 block truncate text-[8px] font-semibold uppercase tracking-[0.16em] text-white/25">
+                                    {cleanServiceText(
+                                      service.category
+                                    )}
+                                  </span>
+                                </div>
+                              </div>
+
+                              <span className="shrink-0 font-serif text-base text-[#DDB45C]">
+                                £
+                                {Number(
+                                  service.price
+                                ).toFixed(2)}
+                              </span>
+                            </button>
+                          );
+                        }
+                      )}
+                    </div>
+                  )}
                 </div>
               ) : (
-                <div className="mt-5 grid gap-4 sm:grid-cols-2">
+                <div className="mt-7">
+                  <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
+                    {customAmounts.map(
+                      (value) => {
+                        const active =
+                          Number(customAmount) ===
+                          value;
+
+                        return (
+                          <button
+                            key={value}
+                            type="button"
+                            onClick={() =>
+                              setCustomAmount(
+                                String(value)
+                              )
+                            }
+                            className={`rounded-[18px] border px-4 py-5 font-serif text-lg transition ${
+                              active
+                                ? "border-[#D4AF5A]/65 bg-[#C49A45]/10 text-[#DDB45C]"
+                                : "border-white/10 bg-white/[0.02] text-white/70 hover:border-[#D4AF5A]/35"
+                            }`}
+                          >
+                            £{value}
+                          </button>
+                        );
+                      }
+                    )}
+                  </div>
+
+                  <div className="relative mt-4">
+                    <span className="pointer-events-none absolute left-5 top-1/2 -translate-y-1/2 font-serif text-xl text-[#DDB45C]">
+                      £
+                    </span>
+
+                    <input
+                      type="number"
+                      min="25"
+                      max="500"
+                      value={customAmount}
+                      onChange={(event) =>
+                        setCustomAmount(
+                          event.target.value
+                        )
+                      }
+                      className={`${inputClass} pl-10 text-lg`}
+                      placeholder="Enter custom amount"
+                    />
+                  </div>
+
+                  <p className="mt-3 text-[10px] text-white/25">
+                    Gift cards can be created from £25
+                    up to £500.
+                  </p>
+                </div>
+              )}
+            </div>
+
+            <div className="p-6 sm:p-8">
+              <div className="flex items-center gap-3">
+                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-[10px] font-bold text-[#DDB45C]">
+                  03
+                </span>
+
+                <div>
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-white/45">
+                    Who is it for?
+                  </p>
+                  <p className="mt-1 text-xs text-white/25">
+                    Tell us where to send your gift.
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-7 grid gap-3 sm:grid-cols-2">
+                <button
+                  type="button"
+                  onClick={() =>
+                    setRecipientType("self")
+                  }
+                  className={`rounded-[20px] border p-5 text-left transition ${
+                    recipientType === "self"
+                      ? "border-[#D4AF5A]/65 bg-[#C49A45]/10"
+                      : "border-white/10 bg-white/[0.02] hover:border-[#D4AF5A]/30"
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <User
+                      size={19}
+                      className="text-[#DDB45C]"
+                    />
+
+                    {recipientType === "self" && (
+                      <Check
+                        size={16}
+                        className="text-[#DDB45C]"
+                      />
+                    )}
+                  </div>
+
+                  <p className="mt-5 text-sm font-medium">
+                    For myself
+                  </p>
+
+                  <p className="mt-1 text-[10px] text-white/30">
+                    Send the gift directly to me.
+                  </p>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    setRecipientType("someone")
+                  }
+                  className={`rounded-[20px] border p-5 text-left transition ${
+                    recipientType === "someone"
+                      ? "border-[#D4AF5A]/65 bg-[#C49A45]/10"
+                      : "border-white/10 bg-white/[0.02] hover:border-[#D4AF5A]/30"
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <Heart
+                      size={19}
+                      className="text-[#DDB45C]"
+                    />
+
+                    {recipientType ===
+                      "someone" && (
+                      <Check
+                        size={16}
+                        className="text-[#DDB45C]"
+                      />
+                    )}
+                  </div>
+
+                  <p className="mt-5 text-sm font-medium">
+                    Gift it to someone
+                  </p>
+
+                  <p className="mt-1 text-[10px] text-white/30">
+                    Add their details and a message.
+                  </p>
+                </button>
+              </div>
+
+              {recipientType === "self" ? (
+                <div className="mt-4">
+                  <input
+                    type="email"
+                    value={purchaserEmail}
+                    onChange={(event) =>
+                      setPurchaserEmail(
+                        event.target.value
+                      )
+                    }
+                    placeholder="Your email address"
+                    className={inputClass}
+                  />
+                </div>
+              ) : (
+                <div className="mt-4 grid gap-3.5 sm:grid-cols-2">
                   <input
                     value={recipientFirstName}
                     onChange={(event) =>
@@ -519,7 +1066,7 @@ export default function GiftCardsPage() {
                       )
                     }
                     placeholder="Recipient first name"
-                    className="rounded-2xl border border-white/10 bg-white/[0.025] px-5 py-4 text-sm text-white outline-none placeholder:text-white/25 focus:border-[#D4AF5A]/50"
+                    className={inputClass}
                   />
 
                   <input
@@ -530,194 +1077,181 @@ export default function GiftCardsPage() {
                       )
                     }
                     placeholder="Recipient last name"
-                    className="rounded-2xl border border-white/10 bg-white/[0.025] px-5 py-4 text-sm text-white outline-none placeholder:text-white/25 focus:border-[#D4AF5A]/50"
+                    className={inputClass}
                   />
 
-                  <div className="sm:col-span-2">
-                    <div className="relative">
-                      <Mail
-                        size={17}
-                        className="absolute left-5 top-1/2 -translate-y-1/2 text-[#D4AF5A]"
-                      />
+                  <input
+                    type="email"
+                    value={recipientEmail}
+                    onChange={(event) =>
+                      setRecipientEmail(
+                        event.target.value
+                      )
+                    }
+                    placeholder="Recipient email address"
+                    className={`${inputClass} sm:col-span-2`}
+                  />
 
-                      <input
-                        type="email"
-                        value={recipientEmail}
-                        onChange={(event) =>
-                          setRecipientEmail(
-                            event.target.value
-                          )
-                        }
-                        placeholder="Recipient email address"
-                        className="w-full rounded-2xl border border-white/10 bg-white/[0.025] py-4 pl-12 pr-5 text-sm text-white outline-none placeholder:text-white/25 focus:border-[#D4AF5A]/50"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="sm:col-span-2">
-                    <textarea
-                      value={personalMessage}
-                      onChange={(event) =>
-                        setPersonalMessage(
-                          event.target.value
-                        )
-                      }
-                      placeholder="Add a personal message (optional)"
-                      rows={4}
-                      className="w-full resize-none rounded-2xl border border-white/10 bg-white/[0.025] px-5 py-4 text-sm text-white outline-none placeholder:text-white/25 focus:border-[#D4AF5A]/50"
-                    />
-                  </div>
+                  <textarea
+                    value={personalMessage}
+                    onChange={(event) =>
+                      setPersonalMessage(
+                        event.target.value
+                      )
+                    }
+                    placeholder="Personal message (optional)"
+                    rows={4}
+                    className={`${inputClass} resize-none sm:col-span-2`}
+                  />
                 </div>
               )}
-            </div>
-
-            <div className="mt-10 rounded-2xl border border-[#D4AF5A]/15 bg-[#C49A45]/[0.04] p-5">
-              <div className="flex gap-4">
-                <Sparkles
-                  className="mt-0.5 shrink-0 text-[#DDB45C]"
-                  size={18}
-                />
-
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#DDB45C]">
-                    ORANE Gift Card
-                  </p>
-
-                  <p className="mt-2 text-xs leading-6 text-white/40">
-                    Valid exclusively at ORANE
-                    Ickenham. Gift Cards are valid
-                    for 2 years from the date of
-                    issue and can be redeemed
-                    against eligible ORANE services.
-                  </p>
-                </div>
-              </div>
             </div>
           </div>
 
-          <aside className="lg:sticky lg:top-8 lg:self-start">
-            <div className="overflow-hidden rounded-[28px] border border-[#D4AF5A]/30 bg-[linear-gradient(145deg,#26241f,#0d0d0c_50%,#050505)] p-7 shadow-[0_30px_80px_rgba(0,0,0,.55),0_0_40px_rgba(196,154,69,.08)]">
-              <div className="flex items-start justify-between">
-                <div>
-                  <p className="text-[9px] uppercase tracking-[0.4em] text-[#DDB45C]">
-                    ORANE ICKENHAM
-                  </p>
+          <aside className="lg:sticky lg:top-6 lg:self-start">
+            <div className="overflow-hidden rounded-[30px] border border-[#D4AF5A]/25 bg-[#0b0b0b]/95 shadow-2xl shadow-black/40 backdrop-blur-xl">
+              <div className="relative overflow-hidden border-b border-white/[0.08] p-7 sm:p-8">
+                <div className="pointer-events-none absolute right-[-40px] top-[-50px] h-40 w-40 rounded-full bg-[#D4AF5A]/10 blur-[55px]" />
 
-                  <p className="mt-2 font-serif text-2xl">
-                    Gift Card
-                  </p>
-                </div>
+                <div className="relative flex items-start justify-between">
+                  <div>
+                    <p className="text-[9px] font-semibold uppercase tracking-[0.35em] text-[#DDB45C]">
+                      ORANE ICKENHAM
+                    </p>
 
-                <div className="flex h-11 w-11 items-center justify-center rounded-full border border-[#D4AF5A]/30 bg-[#C49A45]/10">
-                  <Gift
-                    size={19}
-                    className="text-[#DDB45C]"
-                  />
-                </div>
-              </div>
+                    <p className="mt-3 font-serif text-3xl">
+                      Gift Card
+                    </p>
 
-              <div className="my-7 h-px bg-white/10" />
-
-              <div className="space-y-5">
-                <div className="flex items-start justify-between gap-5">
-                  <span className="text-xs text-white/40">
-                    Gift type
-                  </span>
-
-                  <span className="text-right text-sm text-white/80">
-                    {giftType === "service"
-                      ? "Service Gift Voucher"
-                      : "Custom Gift Card"}
-                  </span>
-                </div>
-
-                <div className="flex items-start justify-between gap-5">
-                  <span className="text-xs text-white/40">
-                    Experience
-                  </span>
-
-                  <span className="max-w-[190px] text-right text-sm text-white/80">
-                    {giftType === "service"
-                      ? selectedService
-                      : "Flexible ORANE value"}
-                  </span>
-                </div>
-
-                <div className="flex items-start justify-between gap-5">
-                  <span className="text-xs text-white/40">
-                    Recipient
-                  </span>
-
-                  <span className="text-right text-sm text-white/80">
-                    {recipientType === "self"
-                      ? "Myself"
-                      : recipientFirstName ||
-                        "Someone special"}
-                  </span>
-                </div>
-              </div>
-
-              <div className="my-7 h-px bg-white/10" />
-
-              <div className="flex items-end justify-between">
-                <span className="text-xs uppercase tracking-[0.2em] text-white/35">
-                  Gift value
-                </span>
-
-                <span className="font-serif text-4xl text-[#DDB45C]">
-                  £{amount.toFixed(2)}
-                </span>
-              </div>
-
-              <div className="mt-6 space-y-3 text-[11px] leading-5 text-white/35">
-                {[
-                  "Valid exclusively at ORANE Ickenham",
-                  "2-year validity from date of issue",
-                  "Secure digital gift card",
-                ].map((text) => (
-                  <div
-                    key={text}
-                    className="flex gap-3"
-                  >
-                    <Check
-                      size={14}
-                      className="mt-0.5 shrink-0 text-[#DDB45C]"
-                    />
-
-                    {text}
+                    <p className="mt-2 text-[10px] leading-5 text-white/30">
+                      A little luxury, beautifully
+                      gifted.
+                    </p>
                   </div>
-                ))}
+
+                  <span className="flex h-11 w-11 items-center justify-center rounded-full border border-[#D4AF5A]/25 bg-[#D4AF5A]/5">
+                    <Gift
+                      size={19}
+                      strokeWidth={1.4}
+                      className="text-[#DDB45C]"
+                    />
+                  </span>
+                </div>
               </div>
 
-              {error && (
-                <div
-                  role="alert"
-                  className="mt-6 rounded-2xl border border-red-400/20 bg-red-400/[0.06] px-4 py-3 text-xs leading-5 text-red-200"
-                >
-                  {error}
+              <div className="p-7 sm:p-8">
+                <div className="space-y-5">
+                  <div className="flex justify-between gap-5">
+                    <span className="text-[10px] uppercase tracking-[0.16em] text-white/30">
+                      Gift type
+                    </span>
+
+                    <span className="text-right text-xs text-white/75">
+                      {giftType === "service"
+                        ? "Service Voucher"
+                        : "Custom Gift Card"}
+                    </span>
+                  </div>
+
+                  <div className="flex items-start justify-between gap-5">
+                    <span className="text-[10px] uppercase tracking-[0.16em] text-white/30">
+                      Experience
+                    </span>
+
+                    <span className="max-w-[205px] text-right text-xs leading-5 text-white/75">
+                      {giftType === "service"
+                        ? selectedServices.length >
+                          0
+                          ? selectedServices
+                              .map((service) =>
+                                cleanServiceText(
+                                  service.name
+                                )
+                              )
+                              .join(", ")
+                          : "No treatments selected"
+                        : "Flexible value"}
+                    </span>
+                  </div>
+
+                  {giftType === "service" &&
+                    selectedCount > 0 && (
+                      <div className="flex justify-between gap-5">
+                        <span className="text-[10px] uppercase tracking-[0.16em] text-white/30">
+                          Treatments
+                        </span>
+
+                        <span className="text-xs text-[#DDB45C]">
+                          {selectedCount}
+                        </span>
+                      </div>
+                    )}
                 </div>
-              )}
 
-              <button
-                type="button"
-                onClick={handleCheckout}
-                disabled={
-                  amount <= 0 || isLoading
-                }
-                className="mt-7 flex w-full items-center justify-center gap-3 rounded-full border border-[#E0B85F]/70 bg-gradient-to-b from-[#E0B85F] to-[#A87825] px-6 py-4 text-xs font-semibold uppercase tracking-[0.16em] text-[#080808] shadow-[0_12px_35px_rgba(196,154,69,.25)] transition-all hover:-translate-y-1 hover:shadow-[0_18px_45px_rgba(196,154,69,.4)] disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                {isLoading
-                  ? "Preparing Secure Checkout..."
-                  : "Continue to Secure Checkout"}
+                <div className="my-7 h-px bg-white/[0.08]" />
 
-                {!isLoading && (
-                  <ArrowRight size={16} />
+                <div className="rounded-[20px] border border-[#D4AF5A]/15 bg-[#D4AF5A]/[0.035] p-5">
+                  <div className="flex items-end justify-between gap-4">
+                    <span className="text-[9px] font-semibold uppercase tracking-[0.22em] text-white/35">
+                      Gift value
+                    </span>
+
+                    <span className="font-serif text-4xl text-[#DDB45C]">
+                      £{amount.toFixed(2)}
+                    </span>
+                  </div>
+                </div>
+
+                {error && (
+                  <div className="mt-5 rounded-2xl border border-red-400/20 bg-red-400/10 p-4 text-xs leading-5 text-red-200">
+                    {error}
+                  </div>
                 )}
-              </button>
 
-              <p className="mt-4 text-center text-[9px] uppercase tracking-[0.18em] text-white/25">
-                Secure checkout powered by Stripe
-              </p>
+                <button
+                  type="button"
+                  onClick={handleCheckout}
+                  disabled={
+                    amount <= 0 ||
+                    isLoading ||
+                    (giftType === "service" &&
+                      selectedCount === 0)
+                  }
+                  className="group mt-5 flex w-full items-center justify-center gap-3 rounded-full bg-[#DDB45C] px-6 py-4 text-[10px] font-bold uppercase tracking-[0.17em] text-black shadow-lg shadow-[#DDB45C]/10 transition-all hover:bg-[#e5c36e] hover:shadow-xl hover:shadow-[#DDB45C]/15 disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  <span>
+                    {isLoading
+                      ? "Preparing checkout..."
+                      : "Continue to secure checkout"}
+                  </span>
+
+                  {!isLoading && (
+                    <ArrowRight
+                      size={15}
+                      className="transition-transform group-hover:translate-x-1"
+                    />
+                  )}
+                </button>
+
+                <div className="mt-5 grid gap-3">
+                  <div className="flex items-center gap-3 text-[10px] text-white/30">
+                    <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white/[0.04]">
+                      <Mail size={13} />
+                    </span>
+                    Secure digital delivery
+                  </div>
+
+                  <div className="flex items-center gap-3 text-[10px] text-white/30">
+                    <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white/[0.04]">
+                      <Check
+                        size={13}
+                        className="text-[#DDB45C]"
+                      />
+                    </span>
+                    Valid for 2 years from issue date
+                  </div>
+                </div>
+              </div>
             </div>
           </aside>
         </div>

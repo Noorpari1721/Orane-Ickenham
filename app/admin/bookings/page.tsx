@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 
 import BackToDashboard from "@/components/admin/BackToDashboard";
@@ -59,8 +59,10 @@ type Booking = {
   endTime: string | null;
   status: BookingStatus;
   notes: string | null;
+  consultationStatus: string | null;
   customer: Customer;
   service: Service;
+  services?: Service[];
   tech: Tech | null;
   payment: {
     id: string;
@@ -73,7 +75,7 @@ type Booking = {
 
 const emptyForm = {
   customerId: "",
-  serviceId: "",
+  serviceIds: [] as string[],
   techId: "",
   date: "",
   startTime: "",
@@ -86,6 +88,37 @@ function formatMoney(value: number) {
     style: "currency",
     currency: "GBP",
   }).format(value);
+}
+function getBookingServices(booking: Booking) {
+  if (booking.services && booking.services.length > 0) {
+    return booking.services;
+  }
+
+  return [booking.service];
+}
+
+function getBookingTotal(booking: Booking) {
+  if (booking.payment?.amount != null) {
+    return Number(booking.payment.amount);
+  }
+
+  return getBookingServices(booking).reduce(
+    (total, service) => total + Number(service.price || 0),
+    0
+  );
+}
+
+function getBookingServiceNames(booking: Booking) {
+  return getBookingServices(booking)
+    .map((service) => service.name)
+    .join(", ");
+}
+
+function getBookingDuration(booking: Booking) {
+  return getBookingServices(booking).reduce(
+    (total, service) => total + Number(service.duration || 0),
+    0
+  );
 }
 
 function getTechName(tech: Tech) {
@@ -307,14 +340,35 @@ export default function BookingsPage() {
    * calculate end time from service duration.
    */
   useEffect(() => {
-    if (!form.serviceId) return;
+    if (form.serviceIds.length === 0) {
+      setForm((current) => {
+        if (!current.endTime) {
+          return current;
+        }
 
-    const selectedService = services.find(
+        return {
+          ...current,
+          endTime: "",
+        };
+      });
+
+      return;
+    }
+
+    const selectedServices = services.filter(
       (service) =>
-        service.id === form.serviceId
+        form.serviceIds.includes(service.id)
     );
 
-    if (!selectedService) return;
+    if (selectedServices.length === 0) {
+      return;
+    }
+
+    const totalDuration = selectedServices.reduce(
+      (total, service) =>
+        total + Number(service.duration || 0),
+      0
+    );
 
     setForm((current) => {
       const startTime =
@@ -323,7 +377,7 @@ export default function BookingsPage() {
       const calculatedEndTime =
         addMinutesToTime(
           startTime,
-          Number(selectedService.duration)
+          totalDuration
         );
 
       if (
@@ -340,12 +394,11 @@ export default function BookingsPage() {
       };
     });
   }, [
-    form.serviceId,
+    form.serviceIds,
     form.startTime,
     services,
   ]);
 /* eslint-enable react-hooks/set-state-in-effect */
-
   function timeToMinutes(time: string) {
     if (!time) return -1;
 
@@ -536,7 +589,7 @@ export default function BookingsPage() {
       .reduce(
         (total, booking) =>
           total +
-          Number(booking.service.price),
+          getBookingTotal(booking),
         0
       );
 
@@ -559,7 +612,10 @@ export default function BookingsPage() {
 
     setForm({
       customerId: booking.customer.id,
-      serviceId: booking.service.id,
+      serviceIds:
+        booking.services && booking.services.length > 0
+          ? booking.services.map((service) => service.id)
+          : [booking.service.id],
       techId: booking.tech?.id ?? "",
       date: booking.date.split("T")[0],
       startTime: booking.startTime,
@@ -581,7 +637,7 @@ export default function BookingsPage() {
 
   function updateForm(
     field: keyof typeof emptyForm,
-    value: string
+    value: string | string[]
   ) {
     setForm((current) => ({
       ...current,
@@ -613,7 +669,7 @@ try {
               ? { id: editingBooking?.id }
               : {}),
             customerId: form.customerId,
-            serviceId: form.serviceId,
+            serviceIds: form.serviceIds,
             techId:
               form.techId || null,
             date: form.date,
@@ -1036,13 +1092,10 @@ try {
 
                     <div>
                       <p className="text-sm">
-                        {booking.service.name}
+                        {getBookingServiceNames(booking)}
                       </p>
 
-                      <p className="mt-1 text-xs text-white/30">
-                        {booking.service.duration} min {"\u00B7"}{" "}
-                        {booking.service.category}
-                      </p>
+                      
                     </div>
 
                     <div>
@@ -1064,7 +1117,7 @@ try {
                     <div>
                       <p className="text-sm">
                         {formatMoney(
-                          Number(booking.service.price)
+                          getBookingTotal(booking)
                         )}
                       </p>
                     </div>
@@ -1082,6 +1135,23 @@ try {
                           -
                         </span>
                       )}
+                    </div>
+                    <div className="min-w-[180px]">
+                      <p className="text-xs uppercase tracking-[0.12em] text-white/30">
+                        Consultation
+                      </p>
+
+                      <p className="mt-1 text-xs text-[#D4AF37]">
+                        {booking.consultationStatus === "online"
+                          ? "Online Consultation"
+                          : booking.consultationStatus === "salon"
+                          ? "Consultation at Salon"
+                          : booking.consultationStatus === "existing-unchanged"
+                          ? "Existing Consultation Confirmed"
+                          : booking.consultationStatus === "update-required"
+                          ? "Consultation Update Required"
+                          : booking.consultationStatus || "Not specified"}
+                      </p>
                     </div>
 
                     <span
@@ -1239,47 +1309,85 @@ try {
                     Service
                   </label>
 
-                  <select
-                    required
-                    value={
-                      form.serviceId
-                    }
-                    onChange={(event) =>
-                      updateForm(
-                        "serviceId",
-                        event.target.value
-                      )
-                    }
-                    className="w-full rounded-xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-white outline-none focus:border-[#D4AF37]/50"
-                  >
-                    <option
-                      value=""
-                      className="bg-[#111]"
-                    >
-                      Select service
-                    </option>
+                  <div className="space-y-3">
+  <div className="max-h-64 space-y-2 overflow-y-auto rounded-xl border border-white/10 bg-black/20 p-3">
+    {services.map((service) => {
+      const selected =
+        form.serviceIds.includes(service.id);
 
-                    {services.map(
-                      (service) => (
-                        <option
-                          key={
-                            service.id
-                          }
-                          value={
-                            service.id
-                          }
-                          className="bg-[#111]"
-                        >
-                          {service.name} {"\u00B7"}{" "}
-                          {formatMoney(
-                            Number(
-                              service.price
-                            )
-                          )}
-                        </option>
-                      )
-                    )}
-                  </select>
+      return (
+        <label
+          key={service.id}
+          className={`flex cursor-pointer items-center justify-between rounded-lg border px-4 py-3 transition ${
+            selected
+              ? "border-[#D4AF37]/60 bg-[#D4AF37]/10"
+              : "border-white/5 bg-white/[0.02]"
+          }`}
+        >
+          <div className="flex items-center gap-3">
+            <input
+              type="checkbox"
+              checked={selected}
+              onChange={() => {
+                setForm((current) => ({
+                  ...current,
+                  serviceIds:
+                    current.serviceIds.includes(service.id)
+                      ? current.serviceIds.filter(
+                          (id) => id !== service.id
+                        )
+                      : [
+                          ...current.serviceIds,
+                          service.id,
+                        ],
+                }));
+              }}
+              className="h-4 w-4 accent-[#D4AF37]"
+            />
+
+            <div>
+              <p className="text-sm">
+                {service.name}
+              </p>
+
+              <p className="text-xs text-white/40">
+                {service.duration} min {" · "}
+                {formatMoney(Number(service.price))}
+              </p>
+            </div>
+          </div>
+        </label>
+      );
+    })}
+  </div>
+
+  {form.serviceIds.length > 0 && (
+    <div className="rounded-xl border border-[#D4AF37]/20 bg-[#D4AF37]/5 p-4">
+      <p className="text-xs uppercase tracking-wider text-[#D4AF37]">
+        Selected Services ({form.serviceIds.length})
+      </p>
+
+      <div className="mt-3 space-y-2">
+        {services
+          .filter((service) =>
+            form.serviceIds.includes(service.id)
+          )
+          .map((service) => (
+            <div
+              key={service.id}
+              className="flex items-center justify-between text-sm"
+            >
+              <span>{service.name}</span>
+
+              <span className="text-white/50">
+                {formatMoney(Number(service.price))}
+              </span>
+            </div>
+          ))}
+      </div>
+    </div>
+  )}
+</div>
                 </div>
               </div>
 
@@ -1369,8 +1477,7 @@ try {
                       const selectedService =
                         services.find(
                           (service) =>
-                            service.id ===
-                            form.serviceId
+                            form.serviceIds.includes(service.id)
                         );
 
                       const newEndTime =
@@ -1429,7 +1536,7 @@ try {
                 />
               </div>
 
-              {form.serviceId && (
+              {form.serviceIds.length > 0 && (
                 <div className="rounded-xl border border-[#D4AF37]/20 bg-[#D4AF37]/5 p-4">
 
                   <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-[#D4AF37]">
@@ -1441,8 +1548,7 @@ try {
                     const service =
                       services.find(
                         (item) =>
-                          item.id ===
-                          form.serviceId
+                          form.serviceIds.includes(item.id)
                       );
 
                     if (!service)
@@ -1705,3 +1811,6 @@ try {
     </main>
   );
 }
+
+
+

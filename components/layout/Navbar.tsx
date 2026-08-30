@@ -19,17 +19,47 @@ const links = [
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [logoOverMap, setLogoOverMap] = useState(false);
 
+  const logoRef = useRef<HTMLAnchorElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const mobileMenuButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
+    const updateNavbar = () => {
+      setScrolled(window.scrollY > 40);
 
-    onScroll();
-    window.addEventListener("scroll", onScroll);
+      const logo = logoRef.current;
+      const map = document.querySelector(
+        'iframe[title="Orane Ickenham Location"]'
+      );
 
-    return () => window.removeEventListener("scroll", onScroll);
+      if (!logo || !map) {
+        setLogoOverMap(false);
+        return;
+      }
+
+      const logoRect = logo.getBoundingClientRect();
+      const mapRect = map.getBoundingClientRect();
+
+      const overlaps =
+        logoRect.right > mapRect.left &&
+        logoRect.left < mapRect.right &&
+        logoRect.bottom > mapRect.top &&
+        logoRect.top < mapRect.bottom;
+
+      setLogoOverMap(overlaps);
+    };
+
+    updateNavbar();
+
+    window.addEventListener("scroll", updateNavbar, { passive: true });
+    window.addEventListener("resize", updateNavbar);
+
+    return () => {
+      window.removeEventListener("scroll", updateNavbar);
+      window.removeEventListener("resize", updateNavbar);
+    };
   }, []);
 
   useEffect(() => {
@@ -108,24 +138,21 @@ export default function Navbar() {
           {/* LOGO */}
 
           <a
+            ref={logoRef}
             href="#home"
             onClick={(e) => scrollToSection(e, "#home")}
-            className={`
-              text-2xl sm:text-3xl
-              font-semibold
-              tracking-[0.25em]
-              transition-all
-              duration-500
-              hover:scale-[1.03]
-              ${
-                scrolled
-                  ? "text-[#C49A45]"
-                  : "text-white"
-              }
-              hover:opacity-90
-            `}
+            className={`flex shrink-0 items-center rounded-full px-3 py-2 transition-all duration-300 hover:scale-[1.03] ${
+              logoOverMap
+                ? "border border-white/10 bg-black/55 shadow-[0_8px_30px_rgba(0,0,0,.45)] backdrop-blur-xl"
+                : ""
+            }`}
+            aria-label="Orane Ickenham Home"
           >
-            ORANE
+            <img
+              src="/images/logo/orane-logo.png"
+              alt="Orane Ickenham"
+              className="h-auto w-[135px] object-contain sm:w-[155px]"
+            />
           </a>
 
           {/* DESKTOP NAVIGATION */}

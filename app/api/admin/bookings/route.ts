@@ -91,6 +91,7 @@ function serializeBooking(booking: any) {
     endTime: booking.endTime,
     status: booking.status,
     notes: booking.notes,
+        consultationStatus: booking.consultationStatus,
     customer: {
       id: booking.customer.id,
       customerNo: booking.customer.customerNo,
@@ -106,6 +107,21 @@ function serializeBooking(booking: any) {
       duration: booking.service.duration,
       price: Number(booking.service.price),
     },
+    services: booking.bookingServices.map(
+      (bookingService: any) => ({
+        id: bookingService.service.id,
+        serviceNo:
+          bookingService.service.serviceNo,
+        name:
+          bookingService.service.name,
+        category:
+          bookingService.service.category,
+        duration:
+          bookingService.service.duration,
+        price:
+          Number(bookingService.service.price),
+      })
+    ),
     tech: booking.tech
       ? {
           id: booking.tech.id,
@@ -130,6 +146,11 @@ function serializeBooking(booking: any) {
 const bookingInclude = {
   customer: true,
   service: true,
+  bookingServices: {
+    include: {
+      service: true,
+    },
+  },
   tech: true,
   payment: true,
 };
@@ -209,29 +230,58 @@ export async function POST(request: Request) {
     const body = await request.json();
 
     const customerId = String(body.customerId ?? "");
-    const serviceId = String(body.serviceId ?? "");
-    const techId = String(body.techId ?? "").trim() || null;
+
+    const rawServiceIds: unknown[] =
+      Array.isArray(body.serviceIds)
+        ? body.serviceIds
+        : body.serviceId
+          ? [body.serviceId]
+          : [];
+
+    const serviceIds: string[] = [
+      ...new Set(
+        rawServiceIds
+          .map((value) =>
+            String(value ?? "").trim()
+          )
+          .filter(
+            (value): value is string =>
+              value.length > 0
+          )
+      ),
+    ];
+
+    const techId =
+      String(body.techId ?? "").trim() || null;
+
     const date = String(body.date ?? "");
-    const startTime = String(body.startTime ?? "").trim();
-    const endTime = String(body.endTime ?? "").trim() || null;
-    const notes = String(body.notes ?? "").trim() || null;
+
+    const startTime =
+      String(body.startTime ?? "").trim();
+
+    const endTime =
+      String(body.endTime ?? "").trim() || null;
+
+    const notes =
+      String(body.notes ?? "").trim() || null;
 
     if (
       !customerId ||
-      !serviceId ||
+      serviceIds.length === 0 ||
       !date ||
       !startTime
     ) {
       return NextResponse.json(
         {
           error:
-            "Customer, service, date and start time are required.",
+            "Customer, at least one service, date and start time are required.",
         },
         { status: 400 }
       );
     }
 
-    const bookingDate = new Date(`${date}T00:00:00`);
+    const bookingDate =
+      new Date(`${date}T00:00:00`);
 
     if (Number.isNaN(bookingDate.getTime())) {
       return NextResponse.json(
@@ -242,13 +292,17 @@ export async function POST(request: Request) {
 
     const prisma = getPrisma();
 
-    const [customer, service, tech] =
+    const [customer, services, tech] =
       await Promise.all([
         prisma.customer.findUnique({
           where: { id: customerId },
         }),
-        prisma.service.findUnique({
-          where: { id: serviceId },
+        prisma.service.findMany({
+          where: {
+            id: {
+              in: serviceIds,
+            },
+          },
         }),
         techId
           ? prisma.tech.findUnique({
@@ -264,19 +318,44 @@ export async function POST(request: Request) {
       );
     }
 
-    if (!service) {
+    if (
+      services.length !== serviceIds.length
+    ) {
       return NextResponse.json(
-        { error: "Service not found." },
+        {
+          error:
+            "One or more selected services were not found.",
+        },
         { status: 404 }
       );
     }
 
-    if (!service.active) {
+    const inactiveService =
+      services.find(
+        (service) => !service.active
+      );
+
+    if (inactiveService) {
       return NextResponse.json(
-        { error: "This service is inactive." },
+        {
+          error:
+            "One or more selected services are inactive.",
+        },
         { status: 400 }
       );
     }
+
+    const orderedServices =
+      serviceIds.map(
+        (serviceId) =>
+          services.find(
+            (service) =>
+              service.id === serviceId
+          )!
+      );
+
+    const primaryService =
+      orderedServices[0];
 
     if (techId && !tech) {
       return NextResponse.json(
@@ -285,7 +364,10 @@ export async function POST(request: Request) {
       );
     }
 
-    if (tech && tech.status === "UNAVAILABLE") {
+    if (
+      tech &&
+      tech.status === "UNAVAILABLE"
+    ) {
       return NextResponse.json(
         {
           error:
@@ -334,14 +416,22 @@ export async function POST(request: Request) {
 
     const existingBookingNumbers =
       await prisma.booking.findMany({
-        select: { bookingNo: true },
+        select: {
+          bookingNo: true,
+        },
       });
 
     const highestBookingNumber =
       existingBookingNumbers.reduce(
         (highest, booking) => {
-          const match = booking.bookingNo.match(/^BK-(\d+)$/);
-          if (!match) return highest;
+          const match =
+            booking.bookingNo.match(
+              /^BK-(\d+)$/
+            );
+
+          if (!match) {
+            return highest;
+          }
 
           return Math.max(
             highest,
@@ -355,32 +445,55 @@ export async function POST(request: Request) {
       highestBookingNumber + 1
     ).padStart(3, "0")}`;
 
-    const booking = await prisma.booking.create({
-      data: {
-        bookingNo,
-        date: bookingDate,
-        startTime,
-        endTime,
-        notes,
-        customerId,
-        serviceId,
-        techId,
-        status: "PENDING",
-      },
-      include: bookingInclude,
-    });
+    const booking =
+      await prisma.booking.create({
+        data: {
+          bookingNo,
+          date: bookingDate,
+          startTime,
+          endTime,
+          notes,
+          customerId,
+          serviceId:
+            primaryService.id,
+          bookingServices: {
+            create:
+              serviceIds.map(
+                (selectedServiceId) => ({
+                  service: {
+                    connect: {
+                      id: selectedServiceId,
+                    },
+                  },
+                })
+              ),
+          },
+          techId,
+          status: "PENDING",
+        },
+        include: bookingInclude,
+      });
 
     return NextResponse.json(
       {
-        booking: serializeBooking(booking),
+        booking:
+          serializeBooking(booking),
       },
       { status: 201 }
     );
   } catch (error) {
-    console.error("POST /api/admin/bookings failed:", error);
+    console.error(
+      "POST /api/admin/bookings failed:",
+      error
+    );
 
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Unable to create booking." },
+      {
+        error:
+          error instanceof Error
+            ? error.message
+            : "Unable to create booking.",
+      },
       { status: 500 }
     );
   }
@@ -397,32 +510,65 @@ export async function PUT(request: Request) {
   try {
     const body = await request.json();
 
-    const id = String(body.id ?? "");
-    const customerId = String(body.customerId ?? "");
-    const serviceId = String(body.serviceId ?? "");
-    const techId = String(body.techId ?? "").trim() || null;
-    const date = String(body.date ?? "");
-    const startTime = String(body.startTime ?? "").trim();
-    const endTime = String(body.endTime ?? "").trim() || null;
-    const notes = String(body.notes ?? "").trim() || null;
+    const id =
+      String(body.id ?? "");
+
+    const customerId =
+      String(body.customerId ?? "");
+
+    const rawServiceIds: unknown[] =
+      Array.isArray(body.serviceIds)
+        ? body.serviceIds
+        : body.serviceId
+          ? [body.serviceId]
+          : [];
+
+    const serviceIds: string[] = [
+      ...new Set(
+        rawServiceIds
+          .map((value) =>
+            String(value ?? "").trim()
+          )
+          .filter(
+            (value): value is string =>
+              value.length > 0
+          )
+      ),
+    ];
+
+    const techId =
+      String(body.techId ?? "").trim() || null;
+
+    const date =
+      String(body.date ?? "");
+
+    const startTime =
+      String(body.startTime ?? "").trim();
+
+    const endTime =
+      String(body.endTime ?? "").trim() || null;
+
+    const notes =
+      String(body.notes ?? "").trim() || null;
 
     if (
       !id ||
       !customerId ||
-      !serviceId ||
+      serviceIds.length === 0 ||
       !date ||
       !startTime
     ) {
       return NextResponse.json(
         {
           error:
-            "Booking ID, customer, service, date and start time are required.",
+            "Booking ID, customer, at least one service, date and start time are required.",
         },
         { status: 400 }
       );
     }
 
-    const bookingDate = new Date(`${date}T00:00:00`);
+    const bookingDate =
+      new Date(`${date}T00:00:00`);
 
     if (Number.isNaN(bookingDate.getTime())) {
       return NextResponse.json(
@@ -445,28 +591,71 @@ export async function PUT(request: Request) {
       );
     }
 
-    const service = await prisma.service.findUnique({
-      where: { id: serviceId },
-    });
+    const [customer, services] =
+      await Promise.all([
+        prisma.customer.findUnique({
+          where: { id: customerId },
+        }),
+        prisma.service.findMany({
+          where: {
+            id: {
+              in: serviceIds,
+            },
+          },
+        }),
+      ]);
 
-    if (!service) {
+    if (!customer) {
       return NextResponse.json(
-        { error: "Service not found." },
+        { error: "Customer not found." },
         { status: 404 }
       );
     }
 
-    if (!service.active) {
+    if (
+      services.length !== serviceIds.length
+    ) {
       return NextResponse.json(
-        { error: "This service is inactive." },
+        {
+          error:
+            "One or more selected services were not found.",
+        },
+        { status: 404 }
+      );
+    }
+
+    const inactiveService =
+      services.find(
+        (service) => !service.active
+      );
+
+    if (inactiveService) {
+      return NextResponse.json(
+        {
+          error:
+            "One or more selected services are inactive.",
+        },
         { status: 400 }
       );
     }
 
+    const orderedServices =
+      serviceIds.map(
+        (serviceId) =>
+          services.find(
+            (service) =>
+              service.id === serviceId
+          )!
+      );
+
+    const primaryService =
+      orderedServices[0];
+
     if (techId) {
-      const tech = await prisma.tech.findUnique({
-        where: { id: techId },
-      });
+      const tech =
+        await prisma.tech.findUnique({
+          where: { id: techId },
+        });
 
       if (!tech) {
         return NextResponse.json(
@@ -475,7 +664,9 @@ export async function PUT(request: Request) {
         );
       }
 
-      if (tech.status === "UNAVAILABLE") {
+      if (
+        tech.status === "UNAVAILABLE"
+      ) {
         return NextResponse.json(
           {
             error:
@@ -494,7 +685,10 @@ export async function PUT(request: Request) {
             techId,
             date: bookingDate,
             status: {
-              in: ["PENDING", "CONFIRMED"],
+              in: [
+                "PENDING",
+                "CONFIRMED",
+              ],
             },
           },
           select: {
@@ -524,25 +718,44 @@ export async function PUT(request: Request) {
       }
     }
 
-    const booking = await prisma.booking.update({
-      where: { id },
-      data: {
-        customerId,
-        serviceId,
-        techId,
-        date: bookingDate,
-        startTime,
-        endTime,
-        notes,
-      },
-      include: bookingInclude,
-    });
+    const booking =
+      await prisma.booking.update({
+        where: { id },
+        data: {
+          customerId,
+          serviceId:
+            primaryService.id,
+          bookingServices: {
+            deleteMany: {},
+            create:
+              serviceIds.map(
+                (selectedServiceId) => ({
+                  service: {
+                    connect: {
+                      id: selectedServiceId,
+                    },
+                  },
+                })
+              ),
+          },
+          techId,
+          date: bookingDate,
+          startTime,
+          endTime,
+          notes,
+        },
+        include: bookingInclude,
+      });
 
     return NextResponse.json({
-      booking: serializeBooking(booking),
+      booking:
+        serializeBooking(booking),
     });
   } catch (error) {
-    console.error("PUT /api/admin/bookings failed:", error);
+    console.error(
+      "PUT /api/admin/bookings failed:",
+      error
+    );
 
     return NextResponse.json(
       { error: "Unable to update booking." },
@@ -550,7 +763,6 @@ export async function PUT(request: Request) {
     );
   }
 }
-
 export async function PATCH(request: Request) {
   if (!(await requireAdmin())) {
     return NextResponse.json(

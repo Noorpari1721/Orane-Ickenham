@@ -1,4 +1,4 @@
-﻿import { NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { PrismaClient } from "@/app/generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 
@@ -160,6 +160,28 @@ async function findService(
   return null;
 }
 
+async function findServices(
+  prisma: PrismaClient,
+  rawServiceIds: string[]
+) {
+  const services = [];
+
+  for (const rawServiceId of rawServiceIds) {
+    const service = await findService(
+      prisma,
+      rawServiceId
+    );
+
+    if (!service || !service.active) {
+      return null;
+    }
+
+    services.push(service);
+  }
+
+  return services;
+}
+
 function getTechImage(techNo: string) {
   const avatarMap: Record<string, string> = {
     "TECH-001":
@@ -185,9 +207,24 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
 
     const date = searchParams.get("date");
-    const serviceId = searchParams.get("serviceId");
 
-    if (!date || !serviceId) {
+    const serviceIds = [
+      ...searchParams.getAll("serviceIds"),
+      ...(searchParams.get("serviceId")
+        ? [searchParams.get("serviceId") as string]
+        : []),
+    ];
+
+    const uniqueServiceIds = [
+      ...new Set(
+        serviceIds.filter(Boolean)
+      ),
+    ];
+
+    if (
+      !date ||
+      uniqueServiceIds.length === 0
+    ) {
       return NextResponse.json(
         {
           success: false,
@@ -212,12 +249,15 @@ export async function GET(request: Request) {
       );
     }
 
-    const service = await findService(
+    const services = await findServices(
       prisma,
-      serviceId
+      uniqueServiceIds
     );
 
-    if (!service || !service.active) {
+    if (
+      !services ||
+      services.length === 0
+    ) {
       return NextResponse.json(
         {
           success: false,
@@ -267,7 +307,11 @@ export async function GET(request: Request) {
       workingHours.closeTime
     );
 
-    const duration = Number(service.duration);
+    const duration = services.reduce(
+      (total, service) =>
+        total + Number(service.duration),
+      0
+    );
 
     if (
       openMinutes < 0 ||
@@ -479,13 +523,15 @@ export async function GET(request: Request) {
       slots,
       date,
 
-      service: {
+      services: services.map((service) => ({
         id: service.id,
         serviceNo: service.serviceNo,
         name: service.name,
         duration: service.duration,
         price: Number(service.price),
-      },
+      })),
+
+      totalDuration: duration,
 
       workingHours: {
         dayOfWeek,

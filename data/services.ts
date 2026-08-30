@@ -12,7 +12,7 @@ export const serviceCategories = [
         price: 50,
         duration: "30 min",
         description:
-          "A refreshing scalp treatment designed to cleanse, revive and leave your scalp feeling fresh while giving you a moment to completely unwind.",
+          "A refreshing cleanse featuring gentle facial exfoliation, head and nape massage, deep-cleansing shampoo and a nourishing revitalising conditioner.",
       },
       {
         id: 2,
@@ -20,7 +20,7 @@ export const serviceCategories = [
         price: 80,
         duration: "1 hr",
         description:
-          "A longer, more indulgent head spa experience inspired by the calm and restorative feel of Japanese wellness rituals.",
+          "A relaxing harmonisation ritual with aromatherapy, meridian-release techniques, head, neck, shoulder and hand massage, facial cleanse and mask, scalp exfoliation, deep-cleansing shampoo, nourishing conditioner and a soothing rainbow-waterfall rinse.",
       },
       {
         id: 3,
@@ -28,49 +28,7 @@ export const serviceCategories = [
         price: 120,
         duration: "90 min",
         description:
-          "Our most luxurious head spa experience, created for deep relaxation and an unhurried escape from the everyday.",
-      },
-    ],
-  },
-
-  {
-    id: "facials",
-    title: "Facials",
-    image: "/images/services/facial.jpg",
-    description:
-      "Thoughtfully selected facial treatments designed to refresh your complexion, support your skincare routine and leave your skin looking beautifully cared for.",
-    services: [
-      {
-        id: 4,
-        name: "Deep Cleansing Facial",
-        price: 45,
-        duration: "30 min",
-        description:
-          "A refreshing facial focused on giving the skin a clean, revitalised feel and a fresh-looking finish.",
-      },
-      {
-        id: 5,
-        name: "ELEMIS Expert Facial",
-        price: 70,
-        duration: "1 hr",
-        description:
-          "A luxurious ELEMIS facial experience combining professional skincare with a relaxing treatment designed around your complexion.",
-      },
-      {
-        id: 6,
-        name: "Express Facial",
-        price: 30,
-        duration: "30 min",
-        description:
-          "A convenient facial refresh for when your skin needs a little extra care but your schedule is short on time.",
-      },
-      {
-        id: 7,
-        name: "Herbal Facial",
-        price: 60,
-        duration: "1 hr",
-        description:
-          "A soothing facial experience inspired by botanical care, leaving your skin feeling refreshed and beautifully nurtured.",
+          "An indulgent full-body ritual combining aromatherapy, botanical foot soak, GUA SHA massage, facial cleanse and mask, CO2 bubble detox, scalp steam therapy, protein hair mask, deep-cleansing shampoo, relaxing massage and a herbal-infused waterfall rinse.",
       },
     ],
   },
@@ -83,202 +41,188 @@ export const serviceCategories = [
       "From polished everyday looks to statement extensions, our nail services are designed with precision, finish and your personal style in mind.",
     services: [
       {
-        id: 8,
-        name: "Acrylic Extension Full Set With Gel",
-        price: 45,
-        duration: "1 hr",
-        description:
-          "A full acrylic extension service finished with gel for a polished, durable look tailored to your preferred style.",
-      },
-      {
-        id: 9,
-        name: "Acrylic Extension Full Set Colour",
-        price: 40,
-        duration: "1 hr",
-        description:
-          "A complete acrylic extension set finished with your chosen colour for a clean and beautifully finished result.",
-      },
-      {
-        id: 10,
-        name: "Acrylic Infill With Gel",
-        price: 40,
-        duration: "1 hr",
-        description:
-          "Refresh your existing acrylic extensions with an infill and polished gel finish to bring your nails back to their best.",
-      },
-      {
-        id: 11,
-        name: "Acrylic Infill Without Polish",
-        price: 35,
-        duration: "1 hr",
-        description:
-          "A practical acrylic infill service focused on maintaining the shape and finish of your existing extensions.",
-      },
-      {
-        id: 12,
-        name: "BIAB Infill With Gel",
-        price: 39,
-        duration: "1 hr",
-        description:
-          "Refresh your BIAB manicure with a professional infill and a smooth gel finish.",
-      },
-      {
-        id: 13,
-        name: "BIAB Infill No Polish",
-        price: 34,
-        duration: "1 hr",
-        description:
-          "A BIAB maintenance treatment focused on refreshing your existing set while keeping the finish natural.",
-      },
-      {
-        id: 14,
-        name: "Builder Gel Full Set Extensions",
-        price: 45,
-        duration: "1 hr",
-        description:
-          "Create a beautifully structured nail look with a full builder gel extension service.",
-      },
-      {
-        id: 15,
-        name: "Builder Gel Full Set Extensions Extra",
-        price: 50,
-        duration: "1 hr",
-        description:
-          "A fuller builder gel extension service for clients looking for additional length and a more elevated finish.",
-      },
-      {
-        id: 16,
-        name: "Builder Gel Infill No Polish",
-        price: 34,
-        duration: "1 hr",
-        description:
-          "Maintain your builder gel extensions with a neat, professional infill and natural finish.",
-      },
-      {
-        id: 17,
-        name: "Builder Gel Infill With Gel",
-        price: 39,
-        duration: "1 hr",
-        description:
-          "A builder gel maintenance service completed with a polished gel finish for a fresh, refined look.",
-      },
-    ],
-  },
-
-  {
-    id: "hand-additions",
-    title: "Hand Additionals",
-    image: "/images/services/hand-additions.png",
-    description:
-      "Complete your manicure with thoughtful finishing touches, colour details and nail care additions.",
-    services: [
-      {
-        id: 18,
-        name: "Apply Normal Polish",
-        price: 10,
-        duration: "30 min",
-        description:
-          "A simple polish refresh for a clean, classic finish.",
-      },
-      {
-        id: 19,
-        name: "Chrome / Glitter / Cat Eye",
-        price: 8,
-        duration: "30 min",
-        description:
-          "Add an eye-catching finish with chrome, glitter or a striking cat-eye effect.",
-      },
-      {
-        id: 20,
-        name: "Extension Removal",
-        price: 15,
-        duration: "30 min",
-        description:
-          "Professional removal of existing nail extensions with care and attention to your natural nails.",
-      },
-      {
-        id: 21,
-        name: "French Tips",
-        price: 8,
-        duration: "30 min",
-        description:
-          "The timeless French finish for a clean and effortlessly elegant look.",
-      },
-      {
         id: 22,
         name: "Nail Art",
         price: 2,
-        duration: "30 min",
+        duration: "10 min",
         description:
-          "Add a personalised artistic detail to your manicure.",
+          "Custom decorative nail art added to your chosen nail service.",
       },
       {
         id: 23,
         name: "Nail Repair",
         price: 3,
-        duration: "30 min",
+        duration: "10 min",
         description:
-          "A quick repair service to help restore a damaged nail and keep your manicure looking neat.",
+          "Repair of a damaged or broken nail.",
+      },
+      {
+        id: 19,
+        name: "Chrome / Glitter / Cat Eye",
+        price: 8,
+        duration: "10 min",
+        description:
+          "Add a chrome, glitter or cat-eye effect to your chosen nail service.",
+      },
+      {
+        id: 21,
+        name: "French Tips",
+        price: 8,
+        duration: "10 min",
+        description:
+          "Classic French-tip detailing for a clean and elegant nail finish.",
+      },
+      {
+        id: 18,
+        name: "Apply Normal Polish Only",
+        price: 10,
+        duration: "20 min",
+        description:
+          "Application of normal polish to the nails for a simple, fresh finish.",
       },
       {
         id: 24,
-        name: "Remove Gel Polish",
+        name: "Remove Gel Polish/Shellac Only",
         price: 10,
-        duration: "30 min",
+        duration: "20 min",
         description:
-          "Professional gel polish removal to prepare your nails for their next treatment.",
-      },
-    ],
-  },
-
-  {
-    id: "tint",
-    title: "Tint",
-    image: "/images/services/tint.jpg",
-    description:
-      "Define and enhance your natural features with beautifully finished brow and lash treatments.",
-    services: [
-      {
-        id: 25,
-        name: "Brow Lamination",
-        price: 55,
-        duration: "1 hr",
-        description:
-          "Create a fuller, beautifully shaped brow appearance with a polished laminated finish.",
+          "Professional removal of existing gel polish or shellac.",
       },
       {
-        id: 26,
-        name: "Brow Tint",
+        id: 20,
+        name: "Extensions Removal",
         price: 15,
-        duration: "30 min",
+        duration: "20 min",
         description:
-          "Enhance the natural definition of your brows with a tailored tint.",
+          "Safe removal of existing nail extensions while taking care of the natural nails.",
       },
       {
-        id: 27,
-        name: "Lash Tint",
-        price: 20,
-        duration: "30 min",
+        id: 13,
+        name: "BIAB Infill Without Polish",
+        price: 34,
+        duration: "50 min",
         description:
-          "Add depth and definition to your natural lashes with a professional tint.",
+          "Refreshes the grown-out BIAB while maintaining strength and a smooth finish.",
       },
-    ],
-  },
-
-  {
-    id: "lashes",
-    title: "Lashes",
-    image: "/images/services/lashes.jpg",
-    description:
-      "Enhance your eyes with beautifully applied lash treatments tailored to create an elegant, defined finish.",
-    services: [
       {
-        id: 28,
-        name: "Classic Lash Extensions",
+        id: 16,
+        name: "Builder Gel Infill Without Polish",
+        price: 34,
+        duration: "50 min",
+        description:
+          "Refreshes the grown-out builder gel and restores a smooth, strong finish.",
+      },
+      {
+        id: 11,
+        name: "Acrylic Infill Without Polish",
+        price: 35,
+        duration: "60 min",
+        description:
+          "Refreshes existing acrylic extensions by filling the grown-out area and restoring a neat, balanced finish.",
+      },
+      {
+        id: 60,
+        name: "Acrylic Overlay Without Polish",
+        price: 38,
+        duration: "60 min",
+        description:
+          "Acrylic is applied over the natural nails to add strength and durability, with an optional gel/shellac finish.",
+      },
+      {
+        id: 62,
+        name: "BIAB Overlay Without Polish",
+        price: 38,
+        duration: "60 min",
+        description:
+          "BIAB is applied over the natural nails to provide added strength and a smooth, durable finish.",
+      },
+      {
+        id: 12,
+        name: "BIAB Infill With Gel/Shellac",
+        price: 39,
+        duration: "60 min",
+        description:
+          "Refreshes the grown-out BIAB while maintaining strength and a smooth finish.",
+      },
+      {
+        id: 17,
+        name: "Builder Gel Infill With Gel/Shellac",
+        price: 39,
+        duration: "60 min",
+        description:
+          "Refreshes the grown-out builder gel and restores a smooth, strong finish.",
+      },
+      {
+        id: 9,
+        name: "Acrylic Extension Full Set (Coloured)",
+        price: 40,
+        duration: "60 min",
+        description:
+          "A complete acrylic extension set finished with your choice of colour.",
+      },
+      {
+        id: 64,
+        name: "Builder Gel Overlay Without Polish",
+        price: 40,
+        duration: "60 min",
+        description:
+          "A builder gel overlay strengthens the natural nails while creating a smooth and durable finish.",
+      },
+      {
+        id: 10,
+        name: "Acrylic Infill With Gel/Shellac",
+        price: 40,
+        duration: "70 min",
+        description:
+          "Refreshes existing acrylic extensions by filling the grown-out area and restoring a neat, balanced finish.",
+      },
+      {
+        id: 61,
+        name: "Acrylic Overlay With Gel/Shellac",
+        price: 43,
+        duration: "70 min",
+        description:
+          "Acrylic is applied over the natural nails to add strength and durability, with an optional gel/shellac finish.",
+      },
+      {
+        id: 63,
+        name: "BIAB Overlay With Gel/Shellac",
+        price: 43,
+        duration: "70 min",
+        description:
+          "BIAB is applied over the natural nails to provide added strength and a smooth, durable finish.",
+      },
+      {
+        id: 8,
+        name: "Acrylic Extension Full Set with Gel/Shellac",
+        price: 45,
+        duration: "70 min",
+        description:
+          "A complete acrylic extension set finished with gel/shellac for a polished, long-lasting finish.",
+      },
+      {
+        id: 14,
+        name: "Builder Gel Full Set Extensions",
+        price: 45,
+        duration: "60 min",
+        description:
+          "Full set extensions created using builder gel for strength and a natural-looking finish.",
+      },
+      {
+        id: 65,
+        name: "Builder Gel Overlay With Gel/Shellac",
+        price: 45,
+        duration: "70 min",
+        description:
+          "A builder gel overlay strengthens the natural nails while creating a smooth and durable finish.",
+      },
+      {
+        id: 15,
+        name: "Builder Gel Full Set Extensions with Gel/Shellac",
         price: 50,
-        duration: "1 hr 30 min",
+        duration: "70 min",
         description:
-          "A timeless lash extension look designed to add length and definition while keeping the finish elegant and natural-looking.",
+          "Builder gel full set extensions finished with gel/shellac for added colour and durability.",
       },
     ],
   },
@@ -294,89 +238,131 @@ export const serviceCategories = [
         id: 29,
         name: 'Express "Dry" Manicure',
         price: 15,
-        duration: "30 min",
+        duration: "20 min",
         description:
-          "A quick and refined manicure for beautifully groomed hands when time is limited.",
-      },
-      {
-        id: 30,
-        name: 'Express "Dry" Manicure + Gel',
-        price: 25,
-        duration: "30 min",
-        description:
-          "A speedy manicure finished with gel for a polished and long-lasting look.",
+          "A quick manicure including cut, file and shape, finished with nourishing cuticle oil.",
       },
       {
         id: 31,
-        name: 'Express "Dry" Manicure + Normal Polish',
+        name: 'Express "Dry" Manicure with Normal Polish',
+        price: 20,
+        duration: "25 min",
+        description:
+          "A quick cut, file and shape manicure finished with normal polish and cuticle oil.",
+      },
+      {
+        id: 30,
+        name: 'Express "Dry" Manicure with Gel/Shellac',
         price: 25,
         duration: "30 min",
         description:
-          "An express manicure completed with your chosen normal polish colour.",
+          "A quick cut, file and shape manicure finished with gel/shellac and cuticle oil.",
       },
       {
         id: 32,
         name: "Classic Manicure",
-        price: 25,
-        duration: "30 min",
+        price: 32,
+        duration: "40 min",
         description:
-          "A timeless manicure focused on neat, beautifully groomed hands and nails.",
-      },
-      {
-        id: 33,
-        name: "Classic Manicure + Gel",
-        price: 33,
-        duration: "30 min",
-        description:
-          "A classic manicure finished with gel for a smooth, polished appearance.",
+          "A complete manicure with cut, file, shaping, cuticle care, hand scrub and hydrating cream, finished with complimentary normal polish.",
       },
       {
         id: 34,
         name: "Classic French Manicure",
-        price: 32,
-        duration: "1 hr",
+        price: 40,
+        duration: "50 min",
         description:
-          "A refined French manicure delivering the timeless combination of clean lines and understated elegance.",
+          "A classic manicure with French tips and complimentary normal polish for an elegant finish.",
       },
       {
-        id: 35,
-        name: "Classic French Manicure + Gel",
-        price: 38,
-        duration: "1 hr",
+        id: 38,
+        name: "Paraffin Wax Manicure",
+        price: 40,
+        duration: "45 min",
         description:
-          "The classic French manicure paired with a polished gel finish.",
+          "A classic manicure enhanced with nourishing paraffin wax and complimentary normal polish.",
       },
       {
         id: 36,
         name: "Luxury Manicure",
         price: 45,
-        duration: "1 hr",
+        duration: "60 min",
         description:
-          "A more indulgent manicure experience designed to leave your hands beautifully cared for and polished.",
+          "A complete luxury ritual with copper vessel soak, cuticle care, exfoliation, nourishing mask, relaxation massage, hot towel infusion, cuticle oil and hydration seal, finished with complimentary normal polish.",
       },
       {
-        id: 37,
-        name: "Luxury Manicure + Gel",
-        price: 55,
-        duration: "1 hr 30 min",
+        id: 33,
+        name: "Classic Manicure with Gel/Shellac",
+        price: 37,
+        duration: "45 min",
         description:
-          "Our elevated manicure experience completed with a refined gel finish.",
+          "A relaxing manicure with hand soak, nail shaping, cuticle care and hand scrub, finished with hydrating cream and gel/shellac.",
       },
       {
-        id: 38,
-        name: "Paraffin Wax Manicure",
-        price: 34,
-        duration: "1 hr",
+        id: 35,
+        name: "Classic French Manicure with Gel/Shellac",
+        price: 45,
+        duration: "50 min",
         description:
-          "A comforting manicure experience featuring paraffin wax care for a soft, pampered feel.",
+          "A classic manicure finished with French tips and durable gel/shellac.",
       },
       {
         id: 39,
-        name: "Paraffin Wax Manicure + Gel",
-        price: 40,
-        duration: "1 hr",
+        name: "Paraffin Wax Manicure with Gel/Shellac",
+        price: 45,
+        duration: "50 min",
         description:
-          "A paraffin wax manicure finished with gel for a beautifully polished result.",
+          "A classic manicure with a nourishing paraffin wax treatment, finished with gel/shellac.",
+      },
+      {
+        id: 37,
+        name: "Luxury Manicure with Gel/Shellac",
+        price: 50,
+        duration: "65 min",
+        description:
+          "The full luxury manicure ritual with copper soak, exfoliation, nourishing mask, massage and hot towel infusion, finished with gel/shellac, cuticle oil and hydration seal.",
+      },
+    ],
+  },
+
+  {
+    id: "facials",
+    title: "Facials",
+    image: "/images/services/facial.jpg",
+    description:
+      "Thoughtfully selected facial treatments designed to refresh your complexion, support your skincare routine and leave your skin looking beautifully cared for.",
+    services: [
+      {
+        id: 6,
+        name: "Express Facial",
+        price: 30,
+        duration: "30 min",
+        description:
+          "A refreshing facial designed to give the skin a quick, healthy-looking glow.",
+      },
+      {
+        id: 4,
+        name: "Deep Cleansing Facial",
+        price: 45,
+        duration: "45 min",
+        description:
+          "A purifying facial designed to deeply cleanse the skin and support a clearer, more balanced complexion.",
+      },
+      {
+        id: 7,
+        name: "Herbal Facial",
+        price: 60,
+        duration: "60 min",
+        description:
+          "A botanical nourishing facial designed to restore the skin’s natural glow and leave it feeling calm and refreshed.",
+      },
+      {
+        id: 5,
+        name: "ELEMIS Expert Facial",
+        price: 70,
+        duration: "60 min",
+        description:
+          "A luxury skin-renewing facial using premium ELEMIS skincare and professional treatment methods.",
       },
     ],
   },
@@ -389,141 +375,492 @@ export const serviceCategories = [
       "Relax, refresh and give your feet the care they deserve with our range of classic, express and luxury pedicures.",
     services: [
       {
-        id: 40,
-        name: "Classic Pedicure",
-        price: 45,
-        duration: "30 min",
-        description:
-          "A classic pedicure focused on beautifully groomed feet and neatly finished nails.",
-      },
-      {
-        id: 41,
-        name: "Classic Pedicure + Gel",
-        price: 43,
-        duration: "1 hr",
-        description:
-          "A classic pedicure completed with a polished gel finish.",
-      },
-      {
         id: 42,
         name: "Express Pedicure",
         price: 20,
-        duration: "30 min",
+        duration: "25 min",
         description:
-          "A convenient pedicure refresh for beautifully maintained feet when you're short on time.",
+          "A quick foot treatment including nail cutting, filing, buffing and cuticle pushing, finished with complimentary normal polish.",
       },
       {
         id: 43,
-        name: "Express Pedicure + Gel",
+        name: "Express Pedicure with Gel/Shellac",
         price: 30,
-        duration: "30 min",
+        duration: "35 min",
         description:
-          "An express pedicure finished with gel for a fresh, polished look.",
+          "A quick pedicure with nail cutting, filing, buffing and cuticle pushing, finished with gel/shellac.",
       },
       {
-        id: 44,
-        name: "Luxury Pedicure",
-        price: 65,
-        duration: "1 hr",
+        id: 41,
+        name: "Classic Pedicure",
+        price: 38,
+        duration: "45 min",
         description:
-          "An indulgent pedicure experience designed to leave your feet feeling beautifully cared for and refreshed.",
+          "A complete pedicure with foot cleanse, warm soak, nail and cuticle care, callus removal, exfoliation and relaxation massage, finished with hydrating cream and complimentary normal polish.",
       },
       {
-        id: 45,
-        name: "Luxury Pedicure + Gel",
-        price: 70,
-        duration: "1 hr",
+        id: 40,
+        name: "Classic Pedicure with Gel/Shellac",
+        price: 43,
+        duration: "50 min",
         description:
-          "A luxury pedicure paired with a refined gel finish.",
+          "A complete classic pedicure with warm soak, nail and cuticle care, callus removal, exfoliation and massage, finished with hydrating cream and gel/shellac.",
       },
       {
         id: 46,
         name: "Paraffin Wax Pedicure",
         price: 48,
-        duration: "1 hr",
+        duration: "55 min",
         description:
-          "A comforting pedicure experience with paraffin wax care for a soft, pampered finish.",
+          "A classic pedicure enhanced with nourishing paraffin wax and callus peel treatment, finished with complimentary normal polish.",
       },
       {
         id: 47,
-        name: "Paraffin Wax Pedicure + Gel",
+        name: "Paraffin Wax Pedicure with Gel/Shellac",
         price: 53,
-        duration: "1 hr",
+        duration: "55 min",
         description:
-          "Paraffin wax care combined with a polished gel finish for an elevated pedicure experience.",
+          "A classic pedicure with paraffin wax and callus peel treatment, finished with gel/shellac.",
+      },
+      {
+        id: 44,
+        name: "Luxury Pedicure",
+        price: 65,
+        duration: "60 min",
+        description:
+          "A luxurious foot ritual combining aromatherapy, milk and honey soak, steam and hot towel infusion with an extended relaxation massage, finished with complimentary normal polish.",
+      },
+      {
+        id: 45,
+        name: "Luxury Pedicure with Gel/Shellac",
+        price: 70,
+        duration: "65 min",
+        description:
+          "A luxury pedicure with aromatherapy, milk and honey soak, steam and hot towel infusion, extended relaxation massage and calf massage, finished with gel/shellac.",
       },
     ],
   },
+
   {
-    id: "massage",
-    title: "Massage",
-    image: "/images/services/massage.jpg",
+    id: "packages",
+    title: "Packages",
+    image: "/images/services/packages.jpg",
     description:
-      "Relaxing massage treatments designed to ease tension, restore comfort and help you unwind.",
+      "Beautifully paired treatments designed to give you more complete care in one indulgent experience.",
     services: [
       {
-        id: 48,
-        name: "Swedish Full Body Massage — 45 Minutes",
+        id: 98,
+        name: "Kids Mani & Pedi Combo",
+        price: 25,
+        duration: "30 min",
+        description:
+          "A gentle manicure and pedicure designed for children. No cuticle work or filing; children must be accompanied by a parent or guardian.",
+      },
+      {
+        id: 99,
+        name: "Express Mani & Pedi Combo",
+        price: 33,
+        duration: "45 min",
+        description:
+          "A convenient combination of an express manicure and express pedicure.",
+      },
+      {
+        id: 100,
+        name: "Express Mani & Pedi Combo with Gel/Shellac",
+        price: 50,
+        duration: "55 min",
+        description:
+          "An express manicure and pedicure finished with gel/shellac.",
+      },
+      {
+        id: 101,
+        name: "Classic Mani & Pedi Combo",
+        price: 65,
+        duration: "90 min",
+        description:
+          "A complete classic manicure and pedicure combination for hands and feet.",
+      },
+      {
+        id: 102,
+        name: "Classic Mani & Pedi Combo with Gel/Shellac",
+        price: 75,
+        duration: "100 min",
+        description:
+          "A classic manicure and pedicure combination finished with gel/shellac.",
+      },
+      {
+        id: 103,
+        name: "Luxury Mani & Pedi Combo",
+        price: 105,
+        duration: "110 min",
+        description:
+          "A premium combination of luxury manicure and luxury pedicure treatments.",
+      },
+      {
+        id: 104,
+        name: "Luxury Mani & Pedi Combo with Gel/Shellac",
+        price: 115,
+        duration: "120 min",
+        description:
+          "A complete luxury manicure and pedicure combination finished with gel/shellac.",
+      },
+      {
+        id: 105,
+        name: "Acrylic Pedicure",
+        price: 45,
+        duration: "50 min",
+        description:
+          "A specialised pedicure service using acrylic to enhance and strengthen the toenails.",
+      },
+    ],
+  },
+
+  {
+    id: "lashes",
+    title: "Lashes",
+    image: "/images/services/lashes.jpg",
+    description:
+      "Enhance your eyes with beautifully applied lash treatments tailored to create an elegant, defined finish.",
+    services: [
+      {
+        id: 28,
+        name: "Classic",
+        price: 50,
+        duration: "80 min",
+        description:
+          "Classic lash extensions designed to create a natural, defined enhancement.",
+      },
+      {
+        id: 56,
+        name: "Hybrid",
+        price: 60,
+        duration: "90 min",
+        description:
+          "A blend of classic and lighter volume techniques for added fullness with a natural finish.",
+      },
+      {
+        id: 58,
+        name: "Volume",
+        price: 65,
+        duration: "90 min",
+        description:
+          "Lightweight volume lash extensions designed to create a fuller, enhanced look.",
+      },
+      {
+        id: 59,
+        name: "Korean Lash Lift",
+        price: 65,
+        duration: "90 min",
+        description:
+          "A lash-lifting treatment designed to enhance the natural curl and appearance of the lashes.",
+      },
+      {
+        id: 57,
+        name: "Russian",
+        price: 70,
+        duration: "90 min",
+        description:
+          "Russian-style volume extensions designed to create a fuller, more dramatic lash appearance.",
+      },
+    ],
+  },
+
+  {
+    id: "tint",
+    title: "Tint",
+    image: "/images/services/tint.jpg",
+    description:
+      "Define and enhance your natural features with beautifully finished brow and lash treatments.",
+    services: [
+      {
+        id: 26,
+        name: "Brow Tint",
+        price: 15,
+        duration: "20 min",
+        description:
+          "A brow tint treatment that enhances the colour and definition of the eyebrows.",
+      },
+      {
+        id: 27,
+        name: "Lash Tint",
+        price: 20,
+        duration: "20 min",
+        description:
+          "A lash tint treatment that enhances the natural colour and definition of the lashes.",
+      },
+      {
+        id: 25,
+        name: "Brow Lamination Including Tint",
+        price: 55,
+        duration: "50 min",
+        description:
+          "A brow-shaping treatment that smooths and sets the brow hairs into place, including tint for added definition.",
+      },
+    ],
+  },
+
+  {
+    id: "waxing-threading",
+    title: "Waxing & Threading",
+    image: "/images/services/waxing-threading-v2.jpg",
+    description:
+      "Professional waxing and threading treatments for smooth skin, beautifully defined features and a polished finish.",
+    services: [
+      {
+        id: 67,
+        name: "Upper Lip Threading",
+        price: 5,
+        duration: "15 min",
+        description:
+          "Effective removal of unwanted upper-lip hair using wax or threading.",
+      },
+      {
+        id: 68,
+        name: "Chin Threading",
+        price: 5,
+        duration: "15 min",
+        description:
+          "Targeted hair removal from the chin using wax or threading.",
+      },
+      {
+        id: 66,
+        name: "Forehead Wax",
+        price: 5,
+        duration: "15 min",
+        description:
+          "Gentle waxing to remove unwanted hair from the forehead.",
+      },
+      {
+        id: 75,
+        name: "Sides Threading",
+        price: 6,
+        duration: "15 min",
+        description:
+          "Hair removal from the sides of the face using wax or threading.",
+      },
+      {
+        id: 69,
+        name: "Nose Top Wax",
+        price: 6,
+        duration: "15 min",
+        description:
+          "Waxing to remove unwanted hair from the top of the nose.",
+      },
+      {
+        id: 70,
+        name: "Under Arms Strip Wax",
+        price: 6,
+        duration: "15 min",
+        description:
+          "Effective underarm hair removal using strip or non-strip hard wax.",
+      },
+      {
+        id: 71,
+        name: "Upper Lip Wax",
+        price: 7,
+        duration: "15 min",
+        description:
+          "Effective removal of unwanted upper-lip hair using wax or threading.",
+      },
+      {
+        id: 72,
+        name: "Chin Wax",
+        price: 7,
+        duration: "15 min",
+        description:
+          "Targeted hair removal from the chin using wax or threading.",
+      },
+      {
+        id: 81,
+        name: "Chin Wax",
+        price: 7,
+        duration: "15 min",
+        description:
+          "Targeted hair removal from the chin using wax or threading.",
+      },
+      {
+        id: 73,
+        name: "Brows Threading",
+        price: 8,
+        duration: "15 min",
+        description:
+          "Professional brow shaping using either wax or threading.",
+      },
+      {
+        id: 74,
+        name: "Sides Wax",
+        price: 8,
+        duration: "15 min",
+        description:
+          "Hair removal from the sides of the face using wax or threading.",
+      },
+      {
+        id: 76,
+        name: "Nostril Wax",
+        price: 10,
+        duration: "15 min",
+        description:
+          "Careful waxing to remove unwanted hair around the nostrils.",
+      },
+      {
+        id: 77,
+        name: "Tummy Strip Wax",
+        price: 10,
+        duration: "30 min",
+        description:
+          "Gentle removal of unwanted tummy hair using strip or hard wax.",
+      },
+      {
+        id: 78,
+        name: "Brows Wax",
+        price: 12,
+        duration: "15 min",
+        description:
+          "Professional brow shaping using either wax or threading.",
+      },
+      {
+        id: 79,
+        name: "Bikini Line Strip Wax",
+        price: 12,
+        duration: "30 min",
+        description:
+          "Neat and effective bikini-line hair removal using strip or hard wax.",
+      },
+      {
+        id: 80,
+        name: "Underarms Non-Strip Wax",
+        price: 12,
+        duration: "15 min",
+        description:
+          "Effective underarm hair removal using strip or non-strip hard wax.",
+      },
+      {
+        id: 82,
+        name: "Tummy Non-Strip Wax",
+        price: 15,
+        duration: "30 min",
+        description:
+          "Gentle removal of unwanted tummy hair using strip or hard wax.",
+      },
+      {
+        id: 83,
+        name: "Arms Strip Wax",
+        price: 18,
+        duration: "30 min",
+        description:
+          "Professional hair removal from the arms using your choice of strip or hard wax.",
+      },
+      {
+        id: 84,
+        name: "Half Legs Strip Wax",
+        price: 18,
+        duration: "30 min",
+        description:
+          "Hair removal from the lower or upper half of the legs using strip or hard wax.",
+      },
+      {
+        id: 85,
+        name: "Back Strip Wax",
+        price: 18,
+        duration: "30 min",
+        description:
+          "Professional hair removal across the back using strip or hard wax.",
+      },
+      {
+        id: 86,
+        name: "Bikini Line Non-Strip Wax",
+        price: 18,
+        duration: "30 min",
+        description:
+          "Neat and effective bikini-line hair removal using strip or hard wax.",
+      },
+      {
+        id: 87,
+        name: "Full Face Threading",
+        price: 20,
+        duration: "30 min",
+        description:
+          "Complete facial hair removal using either waxing or threading.",
+      },
+      {
+        id: 88,
+        name: "Half Legs Non-Strip Wax",
+        price: 24,
+        duration: "30 min",
+        description:
+          "Hair removal from the lower or upper half of the legs using strip or hard wax.",
+      },
+      {
+        id: 89,
+        name: "Back Non-Strip Wax",
+        price: 25,
+        duration: "30 min",
+        description:
+          "Professional hair removal across the back using strip or hard wax.",
+      },
+      {
+        id: 90,
+        name: "Full Face Wax",
+        price: 27,
+        duration: "30 min",
+        description:
+          "Complete facial hair removal using either waxing or threading.",
+      },
+      {
+        id: 91,
+        name: "Arms Non-Strip Wax",
+        price: 27,
+        duration: "30 min",
+        description:
+          "Professional hair removal from the arms using your choice of strip or hard wax.",
+      },
+      {
+        id: 92,
+        name: "Legs Strip Wax",
+        price: 25,
+        duration: "45 min",
+        description:
+          "Professional hair removal from the lower or upper half of the legs using strip or hard wax.",
+      },
+      {
+        id: 93,
+        name: "Legs Non-Strip Wax",
+        price: 30,
+        duration: "45 min",
+        description:
+          "Professional hair removal from the lower or upper half of the legs using strip or hard wax.",
+      },
+      {
+        id: 94,
+        name: "Hollywood Strip Wax",
+        price: 35,
+        duration: "45 min",
+        description:
+          "Professional intimate waxing using strip or non-strip hard wax.",
+      },
+      {
+        id: 95,
+        name: "Hollywood Non-Strip Wax",
         price: 45,
         duration: "45 min",
         description:
-          "A relaxing full-body treatment using flowing massage techniques to ease everyday tension and leave you feeling refreshed.",
+          "Professional intimate waxing using strip or non-strip hard wax.",
       },
       {
-        id: 49,
-        name: "Swedish Full Body Massage — 60 Minutes",
-        price: 55,
-        duration: "1 hr",
+        id: 96,
+        name: "Full Body Strip Wax",
+        price: 95,
+        duration: "2 hr",
         description:
-          "A longer full-body massage using flowing techniques to ease everyday tension and promote deep relaxation.",
+          "A comprehensive full-body waxing treatment using strip or non-strip hard wax.",
       },
       {
-        id: 50,
-        name: "Deep Tissue Massage — 45 Minutes",
-        price: 50,
-        duration: "45 min",
+        id: 97,
+        name: "Full Body Non-Strip Wax",
+        price: 120,
+        duration: "2 hr 30 min",
         description:
-          "A firmer, more focused massage designed to work on areas of muscular tension and stiffness.",
-      },
-      {
-        id: 51,
-        name: "Deep Tissue Massage — 60 Minutes",
-        price: 60,
-        duration: "1 hr",
-        description:
-          "A longer, focused deep tissue treatment designed to work on areas of muscular tension and stiffness.",
-      },
-      {
-        id: 52,
-        name: "Indian Head Massage — 30 Minutes",
-        price: 30,
-        duration: "30 min",
-        description:
-          "A deeply relaxing treatment focusing on the head, scalp, neck and shoulders to help release everyday tension.",
-      },
-      {
-        id: 53,
-        name: "Indian Head Massage — 45 Minutes",
-        price: 40,
-        duration: "45 min",
-        description:
-          "An extended head massage focusing on the head, scalp, neck and shoulders to help release everyday tension.",
-      },
-      {
-        id: 54,
-        name: "Back, Neck & Shoulder Massage",
-        price: 30,
-        duration: "30 min",
-        description:
-          "A targeted treatment to relieve tension in the back, neck and shoulders. Perfect for stress relief and relaxation.",
-      },
-      {
-        id: 55,
-        name: "Hand & Foot Relaxation Massage",
-        price: 30,
-        duration: "30 min",
-        description:
-          "A soothing massage focusing on tired hands and feet, perfect for relaxation and unwinding.",
+          "A comprehensive full-body waxing treatment using strip or non-strip hard wax.",
       },
     ],
   },

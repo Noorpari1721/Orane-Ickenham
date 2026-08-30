@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import {
@@ -62,6 +62,13 @@ type Booking = {
     duration: number;
     price: number;
   };
+  services?: {
+    id: string;
+    name: string;
+    category: string;
+    duration: number;
+    price: number;
+  }[];
   tech: {
     id: string;
     name: string;
@@ -167,6 +174,79 @@ function statusIcon(status: BookingStatus) {
 
 function getBookingDate(booking: Booking) {
   return booking.date.split("T")[0];
+}
+
+function getDashboardBookingServices(booking: Booking) {
+  if (booking.services && booking.services.length > 0) {
+    return booking.services;
+  }
+
+  return [booking.service];
+}
+
+function getDashboardBookingServiceNames(booking: Booking) {
+  return getDashboardBookingServices(booking)
+    .map((service) => service.name)
+    .join(", ");
+}
+
+function getDashboardBookingDuration(booking: Booking) {
+  const parseTime = (value: unknown) => {
+    if (typeof value !== "string") {
+      return null;
+    }
+
+    const match = value
+      .trim()
+      .match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
+
+    if (!match) {
+      return null;
+    }
+
+    let hours = Number(match[1]);
+    const minutes = Number(match[2]);
+    const period = match[3].toUpperCase();
+
+    if (period === "PM" && hours !== 12) {
+      hours += 12;
+    }
+
+    if (period === "AM" && hours === 12) {
+      hours = 0;
+    }
+
+    return hours * 60 + minutes;
+  };
+
+  const start = parseTime(booking.startTime);
+  const end = parseTime(booking.endTime);
+
+  if (start != null && end != null) {
+    let duration = end - start;
+
+    if (duration < 0) {
+      duration += 24 * 60;
+    }
+
+    if (duration > 0) {
+      return duration;
+    }
+  }
+
+  return getDashboardBookingServices(booking).reduce(
+    (total, service) =>
+      total + Number(service.duration || 0),
+    0
+  );
+}
+
+function getBookingTotal(booking: Booking) {
+  if (booking.payment?.amount != null) {
+    return Number(booking.payment.amount);
+  }
+
+  return Number(booking.service.price || 0);
 }
 
 export default function AdminPage() {
@@ -615,7 +695,7 @@ export default function AdminPage() {
                             <p className="mt-1 text-xs text-white/30">
                               {booking.endTime
                                 ? `until ${booking.endTime}`
-                                : `${booking.service.duration} min`}
+                                : `${getDashboardBookingDuration(booking)} min`}
                             </p>
                           </div>
 
@@ -631,7 +711,7 @@ export default function AdminPage() {
 
                           <div>
                             <p className="text-sm text-white/80">
-                              {booking.service.name}
+                              {getDashboardBookingServiceNames(booking)}
                             </p>
 
                             <p className="mt-1 text-xs text-white/35">
@@ -644,10 +724,7 @@ export default function AdminPage() {
                           <div className="flex items-center justify-between gap-3 sm:flex-col sm:items-end">
                             <p className="text-sm">
                               {formatMoney(
-                                Number(
-                                  booking.service
-                                    .price
-                                )
+                                getBookingTotal(booking)
                               )}
                             </p>
 
@@ -791,7 +868,7 @@ export default function AdminPage() {
 
                     <div>
                       <p className="text-sm text-white/80">
-                        {booking.service.name}
+                        {getDashboardBookingServiceNames(booking)}
                       </p>
 
                       <p className="mt-1 text-xs text-white/30">
@@ -803,9 +880,7 @@ export default function AdminPage() {
 
                     <p className="text-sm">
                       {formatMoney(
-                        Number(
-                          booking.service.price
-                        )
+                        getBookingTotal(booking)
                       )}
                     </p>
 
@@ -934,3 +1009,6 @@ function StatusRow({
     </div>
   );
 }
+
+
+

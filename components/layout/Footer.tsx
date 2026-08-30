@@ -22,9 +22,17 @@ export default function Footer() {
         {/* Brand */}
         <div>
 
-          <h3 className="text-3xl font-semibold tracking-[0.3em] text-white">
-            ORANE
-          </h3>
+          <Link
+            href="/"
+            aria-label="Orane Ickenham Home"
+            className="inline-flex"
+          >
+            <img
+              src="/images/logo/orane-logo.png"
+              alt="Orane Ickenham"
+              className="h-16 w-auto object-contain"
+            />
+          </Link>
 
           <div className="mt-4 h-[2px] w-16 bg-[#D4AF37]" />
 
@@ -34,62 +42,34 @@ export default function Footer() {
           </p>
 
           {/* Social Media */}
-          <div className="mt-8 flex gap-3">
+          <div className="mt-8 flex items-center gap-4">
 
             <a
-              href="#"
+              href="https://www.instagram.com/oraneickenham?igsh=MWduanFxaG1saHRjeg=="
+              target="_blank"
+              rel="noopener noreferrer"
               aria-label="Instagram"
-              className="
-                flex
-                h-11
-                w-11
-                items-center
-                justify-center
-                rounded-full
-                border
-                border-white/15
-                bg-white/5
-                text-xs
-                font-semibold
-                tracking-wider
-                text-white/60
-                transition-all
-                duration-300
-                hover:-translate-y-1
-                hover:border-[#D4AF37]/60
-                hover:bg-[#D4AF37]/10
-                hover:text-[#D4AF37]
-              "
+              className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-white/5 transition-all duration-300 hover:-translate-y-1 hover:border-[#D4AF37]/60 hover:bg-[#D4AF37]/10"
             >
-              IG
+              <img
+                src="/images/icons/instagram-icon.png"
+                alt=""
+                className="h-7 w-7 object-contain"
+              />
             </a>
 
             <a
-              href="#"
+              href="https://www.facebook.com/share/18yfu5Wsm1/"
+              target="_blank"
+              rel="noopener noreferrer"
               aria-label="Facebook"
-              className="
-                flex
-                h-11
-                w-11
-                items-center
-                justify-center
-                rounded-full
-                border
-                border-white/15
-                bg-white/5
-                text-xs
-                font-semibold
-                tracking-wider
-                text-white/60
-                transition-all
-                duration-300
-                hover:-translate-y-1
-                hover:border-[#D4AF37]/60
-                hover:bg-[#D4AF37]/10
-                hover:text-[#D4AF37]
-              "
+              className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-white/5 transition-all duration-300 hover:-translate-y-1 hover:border-[#D4AF37]/60 hover:bg-[#D4AF37]/10"
             >
-              FB
+              <img
+                src="/images/icons/facebook-icon.png"
+                alt=""
+                className="h-8 w-8 object-contain"
+              />
             </a>
 
           </div>
@@ -143,10 +123,37 @@ export default function Footer() {
 
             <li>
               <Link
+                href="/policies"
+                className="transition-all duration-300 hover:pl-1 hover:text-[#D4AF37]"
+              >
+                Policies & Aftercare
+              </Link>
+            </li>
+
+            <li>
+              <Link
                 href="/booking"
                 className="transition-all duration-300 hover:pl-1 hover:text-[#D4AF37]"
               >
                 Book Appointment
+              </Link>
+            </li>
+
+            <li>
+              <Link
+                href="/policies"
+                className="transition-all duration-300 hover:pl-1 hover:text-[#D4AF37]"
+              >
+                Policies & Aftercare
+              </Link>
+            </li>
+
+            <li>
+              <Link
+                href="/privacy-policy"
+                className="transition-all duration-300 hover:pl-1 hover:text-[#D4AF37]"
+              >
+                Privacy Policy
               </Link>
             </li>
 
@@ -227,15 +234,15 @@ export default function Footer() {
             <div>
 
               <p>
-                Monday – Saturday
+                Monday - Saturday
               </p>
 
               <p className="mt-1">
-                10:00 AM – 7:00 PM
+                10:00 AM - 7:00 PM
               </p>
 
               <p className="mt-4 text-[#D4AF37]">
-                Sunday · 9:00 AM – 5:00 PM
+                Sunday - 9:00 AM - 5:00 PM
               </p>
 
             </div>
@@ -252,7 +259,7 @@ export default function Footer() {
         <div className="mx-auto flex max-w-7xl flex-col gap-3 px-6 py-6 text-sm text-white/35 md:flex-row md:items-center md:justify-between lg:px-10">
 
           <p>
-            © {new Date().getFullYear()} ORANE Ickenham. All rights reserved.
+            Copyright {new Date().getFullYear()} ORANE Ickenham. All rights reserved.
           </p>
 
           <p>

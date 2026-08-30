@@ -1,55 +1,100 @@
-"use client";
+﻿"use client";
 
-import { ArrowLeft } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowRight,
+} from "lucide-react";
+
 import { useBooking } from "@/context/BookingContext";
 
 export default function NavigationButtons() {
-  const { booking, previousStep } = useBooking();
+  const {
+    booking,
+    previousStep,
+    nextStep,
+  } = useBooking();
 
-  if (booking.step <= 1) {
-    return null;
-  }
+  const isFirstStep = booking.step === 1;
+  const isLastStep = booking.step >= 7;
+
+  const selectedServices =
+    booking.services?.length
+      ? booking.services
+      : booking.service
+        ? [booking.service]
+        : [];
+
+  const hasCustomerDetails = Boolean(
+    booking.customer.firstName.trim() &&
+    booking.customer.lastName.trim() &&
+    booking.customer.email.trim() &&
+    booking.customer.phone.trim()
+  );
+
+  const consultationComplete = Boolean(
+    booking.consultationCompleted ||
+    booking.consultationStatus === "salon" ||
+    booking.consultationStatus ===
+      "existing-unchanged"
+  );
+
+  const canContinue =
+    booking.step === 1
+      ? selectedServices.length > 0
+      : booking.step === 2
+        ? Boolean(booking.date)
+        : booking.step === 3
+          ? Boolean(booking.time)
+          : booking.step === 4
+            ? Boolean(
+                hasCustomerDetails &&
+                booking.consultationStatus
+              )
+            : booking.step === 5
+              ? consultationComplete
+              : booking.step === 6
+                ? true
+                : false;
+
+  const handleContinue = () => {
+    if (!canContinue) {
+      window.dispatchEvent(
+        new CustomEvent("booking-continue")
+      );
+      return;
+    }
+
+    nextStep();
+  };
 
   return (
-    <button
-      type="button"
-      onClick={previousStep}
-      className="
-        group
-        inline-flex
-        shrink-0
-        items-center
-        gap-1.5
-        rounded-full
-        border
-        border-white/15
-        bg-white/5
-        px-3.5
-        py-2
-        text-xs
-        font-medium
-        text-white/75
-        shadow-[0_8px_30px_rgba(0,0,0,.25)]
-        backdrop-blur-xl
-        transition-all
-        duration-300
-        sm:gap-2
-        sm:px-5
-        sm:py-2.5
-        sm:text-sm
-        hover:border-[#D4AF37]/60
-        hover:bg-[#D4AF37]/10
-        hover:text-[#D4AF37]
-        hover:shadow-[0_8px_30px_rgba(212,175,55,.15)]
-        active:scale-95
-      "
-    >
-      <ArrowLeft
-        size={15}
-        className="transition-transform duration-300 group-hover:-translate-x-1 sm:h-4 sm:w-4"
-      />
+    <div className="flex items-center justify-between gap-4">
+      {!isFirstStep ? (
+        <button
+          type="button"
+          onClick={previousStep}
+          className="inline-flex items-center gap-2 rounded-full border border-white/10 px-5 py-3 text-xs uppercase tracking-[0.16em] text-white/60 transition hover:border-[#D4AF37]/50 hover:text-[#D4AF37]"
+        >
+          <ArrowLeft size={16} />
+          Back
+        </button>
+      ) : (
+        <div />
+      )}
 
-      <span>Back</span>
-    </button>
+      {!isLastStep && (
+        <button
+          type="button"
+          onClick={handleContinue}
+          className="group inline-flex items-center gap-2 rounded-full bg-[#D4AF37] px-6 py-3 text-xs font-semibold uppercase tracking-[0.16em] text-black transition hover:bg-[#e2c45a]"
+        >
+          Continue
+          <ArrowRight
+            size={16}
+            className="transition-transform group-hover:translate-x-1"
+          />
+        </button>
+      )}
+    </div>
   );
 }

@@ -1,108 +1,110 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 
 import BookingShell from "@/components/booking/BookingShell";
 
-import Step1Category from "@/components/booking/steps/Step1Category";
-import Step2Service from "@/components/booking/steps/Step2Service";
-import Step4Calendar from "@/components/booking/steps/Step4Calendar";
-import Step5Time from "@/components/booking/steps/Step5Time";
-import Step6Customer from "@/components/booking/steps/Step6Customer";
-import Step7Review from "@/components/booking/steps/Step7Review";
+import Step1Services from "@/components/booking/steps/Step1Services";
+import Step2Date from "@/components/booking/steps/Step2Date";
+import Step3Time from "@/components/booking/steps/Step3Time";
+import Step4Customer from "@/components/booking/steps/Step4Customer";
+import Step5Consultation from "@/components/booking/steps/Step5Consultation";
+import Step6Review from "@/components/booking/steps/Step6Review";
 import Step7Payment from "@/components/booking/steps/Step7Payment";
 
 import { useBooking } from "@/context/BookingContext";
 import { serviceCategories } from "@/data/services";
 
 export default function BookingPage() {
-  const { booking, updateBooking } = useBooking();
+  const {
+    booking,
+    updateBooking,
+  } = useBooking();
 
-  const initializedFromUrl = useRef(false);
+  const initializedFromUrl =
+    useRef(false);
 
-  /*
-   * BOOKING ENTRY FLOW
-   *
-   * Generic booking:
-   * /booking
-   * -> Step 1
-   *
-   * Service-specific booking:
-   * /booking?category=...&service=...
-   * -> selected category + service
-   * -> Step 3 (Date)
-   *
-   * The URL initialization runs once per page mount.
-   */
   useEffect(() => {
-    if (initializedFromUrl.current) {
+    if (
+      initializedFromUrl.current
+    ) {
       return;
     }
 
-    initializedFromUrl.current = true;
+    initializedFromUrl.current =
+      true;
 
-    const params = new URLSearchParams(
-      window.location.search
-    );
+    const params =
+      new URLSearchParams(
+        window.location.search
+      );
 
     const categoryId =
-      params.get("category")?.trim() || "";
+      params.get("category")?.trim() ||
+      "";
 
     const serviceIdValue =
-      params.get("service")?.trim() || "";
+      params.get("service")?.trim() ||
+      "";
 
-    /*
-     * No service-specific URL:
-     * keep the normal booking flow starting at Step 1.
-     */
-    if (!categoryId || !serviceIdValue) {
+    if (
+      !categoryId ||
+      !serviceIdValue
+    ) {
       return;
     }
 
-    const category = serviceCategories.find(
-      (item) => item.id === categoryId
-    );
+    const category =
+      serviceCategories.find(
+        (item) =>
+          item.id === categoryId
+      );
 
     if (!category) {
       return;
     }
 
-    const serviceId = Number(serviceIdValue);
+    const serviceId =
+      Number(serviceIdValue);
 
-    if (!Number.isInteger(serviceId)) {
+    if (
+      !Number.isInteger(
+        serviceId
+      )
+    ) {
       return;
     }
 
-    const selectedService = category.services.find(
-      (service) => service.id === serviceId
-    );
+    const selectedService =
+      category.services.find(
+        (service) =>
+          service.id ===
+          serviceId
+      );
 
     if (!selectedService) {
       return;
     }
 
-    /*
-     * Service-specific booking:
-     * category + service are already selected.
-     * Start directly from Date selection.
-     */
     updateBooking({
-      category: category.id,
-      service: selectedService,
+      category:
+        category.id,
+      service:
+        selectedService,
+      services: [
+        selectedService,
+      ],
       treatment: null,
       staff: null,
       date: null,
       time: "",
-      step: 3,
+      step: 1,
       completed: false,
       editingReview: false,
     });
   }, [updateBooking]);
 
-  /*
-   * Scroll to the top whenever the booking step changes.
-   */
   useEffect(() => {
     window.scrollTo({
       top: 0,
@@ -112,30 +114,32 @@ export default function BookingPage() {
   }, [booking.step]);
 
   const renderStep = () => {
-    switch (booking.step) {
+    switch (
+      booking.step
+    ) {
       case 1:
-        return <Step1Category />;
+        return <Step1Services />;
 
       case 2:
-        return <Step2Service />;
+        return <Step2Date />;
 
       case 3:
-        return <Step4Calendar />;
+        return <Step3Time />;
 
       case 4:
-        return <Step5Time />;
+        return <Step4Customer />;
 
       case 5:
-        return <Step6Customer />;
+        return <Step5Consultation />;
 
       case 6:
-        return <Step7Review />;
+        return <Step6Review />;
 
       case 7:
         return <Step7Payment />;
 
       default:
-        return <Step1Category />;
+        return <Step1Services />;
     }
   };
 
@@ -160,7 +164,12 @@ export default function BookingPage() {
         }}
         transition={{
           duration: 0.45,
-          ease: [0.22, 1, 0.36, 1],
+          ease: [
+            0.22,
+            1,
+            0.36,
+            1,
+          ],
         }}
       >
         {renderStep()}
@@ -168,3 +177,8 @@ export default function BookingPage() {
     </BookingShell>
   );
 }
+
+
+
+
+

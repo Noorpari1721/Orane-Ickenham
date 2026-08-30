@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+﻿import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import nodemailer from "nodemailer";
 import { PrismaClient } from "@/app/generated/prisma/client";
@@ -67,7 +67,12 @@ function getPrisma() {
 
 type BookingMetadata = {
   serviceId?: string;
+
+  serviceIds?: string;
   serviceName?: string;
+
+  serviceNames?: string;
+  serviceBilling?: string;
   customerName?: string;
   customerEmail?: string;
   customerPhone?: string;
@@ -78,6 +83,7 @@ type BookingMetadata = {
   appointmentTime?: string;
   duration?: string;
   price?: string;
+  consultationStatus?: string;
 };
 
 function formatAppointmentDate(value: string) {
@@ -320,7 +326,10 @@ async function upsertCustomer(
 
 async function sendBookingEmails(
   metadata: BookingMetadata,
-  paymentReference: string
+  paymentReference: string,
+  amountPaid: number,
+  bookingNo?: string,
+  paymentNo?: string
 ) {
   const customerEmail = metadata.customerEmail;
 
@@ -332,10 +341,6 @@ async function sendBookingEmails(
 
   const customerName = escapeHtml(
     metadata.customerName || "Customer"
-  );
-
-  const serviceName = escapeHtml(
-    metadata.serviceName || "Selected service"
   );
 
   const appointmentTime = escapeHtml(
@@ -358,66 +363,306 @@ async function sendBookingEmails(
 
   const paymentId = escapeHtml(paymentReference);
 
+  const paidAmount = Number(amountPaid || 0);
+
+  let billingItems: Array<{
+    name: string;
+    price: number;
+  }> = [];
+
+  if (metadata.serviceBilling) {
+    try {
+      const parsed = JSON.parse(
+        metadata.serviceBilling
+      );
+
+      if (Array.isArray(parsed)) {
+        billingItems = parsed
+          .map((item) => ({
+            name: String(
+              item?.name || "Service"
+            ),
+            price: Number(
+              item?.price || 0
+            ),
+          }))
+          .filter(
+            (item) =>
+              item.name &&
+              Number.isFinite(item.price)
+          );
+      }
+    } catch (error) {
+      console.warn(
+        "Unable to parse service billing metadata:",
+        error
+      );
+    }
+  }
+
+  if (billingItems.length === 0) {
+    const fallbackNames =
+      metadata.serviceNames ||
+      metadata.serviceName ||
+      "Selected service";
+
+    billingItems = fallbackNames
+      .split(",")
+      .map((name) => ({
+        name: name.trim(),
+        price: 0,
+      }))
+      .filter(
+        (item) => item.name
+      );
+  }
+
+  const billingRows = billingItems
+    .map(
+      (item) => `
+        <tr>
+          <td style="padding:10px 0;border-bottom:1px solid #eeeeee;color:#333;">
+            ${escapeHtml(item.name)}
+          </td>
+          <td style="padding:10px 0;border-bottom:1px solid #eeeeee;text-align:right;color:#333;">
+            £${item.price.toFixed(2)}
+          </td>
+        </tr>
+      `
+    )
+    .join("");
+
+  const billingHtml = `
+    <div style="margin:28px 0;padding:24px;background:#faf8f4;border:1px solid #e7dfd0;">
+      <h2 style="margin:0 0 18px;font-weight:400;color:#222;">
+        Payment / Billing
+      </h2>
+
+      <table style="width:100%;border-collapse:collapse;font-family:Arial,sans-serif;font-size:14px;">
+        <thead>
+          <tr>
+            <th style="padding:0 0 10px;text-align:left;color:#888;font-weight:400;">
+              Service
+            </th>
+            <th style="padding:0 0 10px;text-align:right;color:#888;font-weight:400;">
+              Amount
+            </th>
+          </tr>
+        </thead>
+
+        <tbody>
+          ${billingRows}
+        </tbody>
+
+        <tfoot>
+          <tr>
+            <td style="padding:16px 0 0;font-weight:bold;color:#222;">
+              Total Paid
+            </td>
+            <td style="padding:16px 0 0;text-align:right;font-size:18px;font-weight:bold;color:#b28a32;">
+              £${paidAmount.toFixed(2)}
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+
+      <div style="margin-top:18px;padding-top:16px;border-top:1px solid #e7dfd0;font-size:13px;color:#666;">
+
+        <p style="margin:5px 0;">
+          <strong>Payment Status:</strong> PAID
+        </p>
+
+        <p style="margin:5px 0;">
+          <strong>Payment Method:</strong> Stripe
+        </p>
+
+        ${
+          bookingNo
+            ? `
+              <p style="margin:5px 0;">
+                <strong>Booking No:</strong>
+                ${escapeHtml(bookingNo)}
+              </p>
+            `
+            : ""
+        }
+
+        ${
+          paymentNo
+            ? `
+              <p style="margin:5px 0;">
+                <strong>Payment No:</strong>
+                ${escapeHtml(paymentNo)}
+              </p>
+            `
+            : ""
+        }
+
+        <p style="margin:5px 0;word-break:break-all;">
+          <strong>Payment Reference:</strong>
+          ${paymentId}
+        </p>
+
+      </div>
+    </div>
+  `;
+
   const customerHtml = `
-    <div style="font-family:Arial,sans-serif;line-height:1.6;color:#222;">
-      <h1 style="font-weight:400;">Booking Confirmed</h1>
+    <div style="font-family:Arial,sans-serif;line-height:1.6;color:#222;max-width:680px;margin:0 auto;">
 
-      <p>Dear ${customerName},</p>
+      <div style="padding:28px 24px;background:#111;color:#fff;text-align:center;">
+        <div style="font-size:11px;letter-spacing:4px;color:#d4af5a;">
+          ORANE ICKENHAM
+        </div>
 
-      <p>
-        Thank you for choosing <strong>ORANE Ickenham</strong>.
-        Your appointment and payment have been successfully confirmed.
-      </p>
+        <h1 style="margin:12px 0 0;font-family:Georgia,serif;font-weight:400;">
+          Booking Confirmed
+        </h1>
+      </div>
 
-      <h2 style="font-weight:400;">Appointment Details</h2>
+      <div style="padding:28px 24px;">
 
-      <p><strong>Service:</strong> ${serviceName}</p>
-      <p><strong>Duration:</strong> ${duration}</p>
-      <p><strong>Date:</strong> ${appointmentDate}</p>
-      <p><strong>Time:</strong> ${appointmentTime}</p>
+        <p>
+          Dear ${customerName},
+        </p>
 
-      <h2 style="font-weight:400;">Your Details</h2>
+        <p>
+          Thank you for choosing <strong>ORANE Ickenham</strong>.
+          Your appointment and payment have been successfully confirmed.
+        </p>
 
-      <p><strong>Name:</strong> ${customerName}</p>
-      <p><strong>Email:</strong> ${escapeHtml(customerEmail)}</p>
-      <p><strong>Phone:</strong> ${customerPhone}</p>
+        <h2 style="font-weight:400;">
+          Appointment Details
+        </h2>
 
-      <p><strong>Payment Reference:</strong> ${paymentId}</p>
+        <p>
+          <strong>Services:</strong>
+          ${escapeHtml(
+            metadata.serviceNames ||
+            metadata.serviceName ||
+            "Selected service"
+          )}
+        </p>
 
-      <p>
-        We look forward to welcoming you to ORANE Ickenham.
-      </p>
+        <p>
+          <strong>Duration:</strong>
+          ${duration}
+        </p>
 
-      <p>
-        Kind regards,<br />
-        ORANE Ickenham
-      </p>
+        <p>
+          <strong>Date:</strong>
+          ${appointmentDate}
+        </p>
+
+        <p>
+          <strong>Time:</strong>
+          ${appointmentTime}
+        </p>
+
+        ${billingHtml}
+
+        <h2 style="font-weight:400;">
+          Your Details
+        </h2>
+
+        <p>
+          <strong>Name:</strong>
+          ${customerName}
+        </p>
+
+        <p>
+          <strong>Email:</strong>
+          ${escapeHtml(customerEmail)}
+        </p>
+
+        <p>
+          <strong>Phone:</strong>
+          ${customerPhone}
+        </p>
+
+        <p style="margin-top:28px;">
+          We look forward to welcoming you to ORANE Ickenham.
+        </p>
+
+        <p>
+          Kind regards,<br />
+          <strong>ORANE Ickenham</strong>
+        </p>
+
+      </div>
     </div>
   `;
 
   const salonHtml = `
-    <div style="font-family:Arial,sans-serif;line-height:1.6;color:#222;">
-      <h1 style="font-weight:400;">New Paid Booking</h1>
+    <div style="font-family:Arial,sans-serif;line-height:1.6;color:#222;max-width:680px;margin:0 auto;">
 
-      <p>
-        A new appointment has been successfully paid for through the
-        ORANE Ickenham website.
-      </p>
+      <div style="padding:28px 24px;background:#111;color:#fff;text-align:center;">
+        <div style="font-size:11px;letter-spacing:4px;color:#d4af5a;">
+          ORANE ICKENHAM
+        </div>
 
-      <h2 style="font-weight:400;">Appointment</h2>
+        <h1 style="margin:12px 0 0;font-family:Georgia,serif;font-weight:400;">
+          New Paid Booking
+        </h1>
+      </div>
 
-      <p><strong>Service:</strong> ${serviceName}</p>
-      <p><strong>Duration:</strong> ${duration}</p>
-      <p><strong>Date:</strong> ${appointmentDate}</p>
-      <p><strong>Time:</strong> ${appointmentTime}</p>
+      <div style="padding:28px 24px;">
 
-      <h2 style="font-weight:400;">Customer</h2>
+        <p>
+          A new appointment has been successfully paid for through the
+          ORANE Ickenham website.
+        </p>
 
-      <p><strong>Name:</strong> ${customerName}</p>
-      <p><strong>Email:</strong> ${escapeHtml(customerEmail)}</p>
-      <p><strong>Phone:</strong> ${customerPhone}</p>
+        <h2 style="font-weight:400;">
+          Appointment
+        </h2>
 
-      <p><strong>Stripe Payment:</strong> ${paymentId}</p>
+        <p>
+          <strong>Services:</strong>
+          ${escapeHtml(
+            metadata.serviceNames ||
+            metadata.serviceName ||
+            "Selected service"
+          )}
+        </p>
+
+        <p>
+          <strong>Duration:</strong>
+          ${duration}
+        </p>
+
+        <p>
+          <strong>Date:</strong>
+          ${appointmentDate}
+        </p>
+
+        <p>
+          <strong>Time:</strong>
+          ${appointmentTime}
+        </p>
+
+        ${billingHtml}
+
+        <h2 style="font-weight:400;">
+          Customer
+        </h2>
+
+        <p>
+          <strong>Name:</strong>
+          ${customerName}
+        </p>
+
+        <p>
+          <strong>Email:</strong>
+          ${escapeHtml(customerEmail)}
+        </p>
+
+        <p>
+          <strong>Phone:</strong>
+          ${customerPhone}
+        </p>
+
+      </div>
     </div>
   `;
 
@@ -439,15 +684,14 @@ async function sendBookingEmails(
       to: salonRecipient,
       subject:
         `New paid booking - ${
-          metadata.serviceName || "Appointment"
-        }`,
+          metadata.serviceNames ||
+          metadata.serviceName ||
+          "Appointment"
+        } - £${paidAmount.toFixed(2)}`,
       html: salonHtml,
     }),
   ]);
 }
-
-
-
 async function sendGiftCardEmails(
   giftCard: {
     giftCardNo: string;
@@ -561,7 +805,7 @@ async function sendGiftCardEmails(
             </div>
 
             <div style="margin:10px 0;font-family:Georgia,serif;font-size:40px;color:#d4af5a;">
-              ┬ú${amount}
+              ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âº${amount}
             </div>
 
             <div style="font-size:10px;letter-spacing:2px;color:#aaa;">
@@ -626,7 +870,7 @@ async function sendGiftCardEmails(
           </p>
 
           <p style="margin:12px 0 0;font-size:18px;color:#b28a32;">
-            ┬ú${amount}
+            ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âº${amount}
           </p>
 
           <p style="margin:8px 0 0;color:#777;">
@@ -650,7 +894,7 @@ async function sendGiftCardEmails(
       from: `"ORANE Ickenham" <${fromEmail}>`,
       to: recipientEmail,
       subject:
-        "Your ORANE Ickenham Gift Card ­ƒÄü",
+        "Your ORANE Ickenham Gift Card ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â­ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¾ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¼",
       html: recipientHtml,
     }),
   ];
@@ -750,9 +994,9 @@ async function processGiftCardPayment(
 
   if (difference > 0.01) {
     throw new Error(
-      `Gift Card payment amount mismatch for ${giftCard.giftCardNo}. Database: ┬ú${databaseAmount.toFixed(
+      `Gift Card payment amount mismatch for ${giftCard.giftCardNo}. Database: ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âº${databaseAmount.toFixed(
         2
-      )}, Stripe: ┬ú${amountPaid.toFixed(2)}`
+      )}, Stripe: ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âº${amountPaid.toFixed(2)}`
     );
   }
 
@@ -803,6 +1047,160 @@ async function processGiftCardPayment(
     giftCard: activatedGiftCard,
   };
 }
+function bookingTimeToMinutes(value: string | null | undefined) {
+  if (!value) return -1;
+
+  const match = value.match(
+    /^(\d{1,2}):(\d{2})\s*(AM|PM)?$/i
+  );
+
+  if (!match) return -1;
+
+  let hour = Number(match[1]);
+  const minute = Number(match[2]);
+  const meridiem = match[3]?.toUpperCase();
+
+  if (meridiem === "PM" && hour < 12) {
+    hour += 12;
+  }
+
+  if (meridiem === "AM" && hour === 12) {
+    hour = 0;
+  }
+
+  if (
+    hour < 0 ||
+    hour > 23 ||
+    minute < 0 ||
+    minute > 59
+  ) {
+    return -1;
+  }
+
+  return hour * 60 + minute;
+}
+
+function bookingTimesOverlap(
+  startA: string,
+  endA: string | null,
+  startB: string,
+  endB: string | null
+) {
+  const aStart = bookingTimeToMinutes(startA);
+  const aEnd = bookingTimeToMinutes(endA);
+  const bStart = bookingTimeToMinutes(startB);
+  const bEnd = bookingTimeToMinutes(endB);
+
+  if (
+    aStart < 0 ||
+    bStart < 0
+  ) {
+    return false;
+  }
+
+  if (
+    aEnd < 0 ||
+    bEnd < 0
+  ) {
+    return aStart === bStart;
+  }
+
+  return (
+    aStart < bEnd &&
+    bStart < aEnd
+  );
+}
+
+async function findAvailableTechnicianForBooking(
+  prisma: any,
+  appointmentDate: Date,
+  appointmentTime: string,
+  requestedEndTime: string | null,
+  preferredTechId?: string
+) {
+  const technicians =
+    await prisma.tech.findMany({
+      where: {
+        status: "AVAILABLE",
+      },
+      orderBy: {
+        techNo: "asc",
+      },
+      select: {
+        id: true,
+        techNo: true,
+        firstName: true,
+        lastName: true,
+        role: true,
+      },
+    });
+
+  if (technicians.length === 0) {
+    return null;
+  }
+
+  const techIds =
+    technicians.map(
+      (tech: any) => tech.id
+    );
+
+  const existingBookings =
+    await prisma.booking.findMany({
+      where: {
+        techId: {
+          in: techIds,
+        },
+        date: appointmentDate,
+        status: {
+          in: [
+            "PENDING",
+            "CONFIRMED",
+          ],
+        },
+      },
+      select: {
+        techId: true,
+        startTime: true,
+        endTime: true,
+      },
+      orderBy: {
+        startTime: "asc",
+      },
+    });
+
+  const orderedTechnicians = [
+    ...technicians.filter(
+      (tech: any) =>
+        preferredTechId &&
+        tech.id === preferredTechId
+    ),
+    ...technicians.filter(
+      (tech: any) =>
+        !preferredTechId ||
+        tech.id !== preferredTechId
+    ),
+  ];
+
+  for (const tech of orderedTechnicians) {
+    const conflict =
+      existingBookings.some(
+        (booking: any) =>
+          booking.techId === tech.id &&
+          bookingTimesOverlap(
+            appointmentTime,
+            requestedEndTime,
+            booking.startTime,
+            booking.endTime
+          )
+      );
+
+    if (!conflict) {
+      return tech;
+    }
+  }
+
+  return null;
+}
 async function createBookingRecords(
   metadata: BookingMetadata,
   paymentReference: string,
@@ -820,7 +1218,7 @@ async function createBookingRecords(
   }
 
   if (
-    !metadata.serviceId ||
+    (!metadata.serviceId && !metadata.serviceIds) ||
     !metadata.appointmentDate ||
     !metadata.appointmentTime
   ) {
@@ -865,42 +1263,119 @@ async function createBookingRecords(
     };
   }
 
-  const service =
-    await prisma.service.findUnique({
+  const rawServiceIds =
+    metadata.serviceIds?.trim() ||
+    metadata.serviceId?.trim() ||
+    "";
+
+  let requestedServiceIds: string[] = [];
+
+  /*
+   * Stripe metadata stores multi-treatment IDs as JSON.
+   * Older single-booking sessions may still contain a
+   * single ID or a comma-separated value, so keep those
+   * formats supported as well.
+   */
+  try {
+    const parsed = JSON.parse(rawServiceIds);
+
+    if (Array.isArray(parsed)) {
+      requestedServiceIds = parsed
+        .map((id) => String(id).trim())
+        .filter(Boolean);
+    } else if (typeof parsed === "string") {
+      requestedServiceIds = [parsed.trim()].filter(Boolean);
+    }
+  } catch {
+    requestedServiceIds = rawServiceIds
+      .split(",")
+      .map((id) =>
+        id.trim().replace(/^["\\[]+|["\\]]+$/g, "")
+      )
+      .filter(Boolean);
+  }
+
+  const uniqueServiceIds =
+    [...new Set(requestedServiceIds)];
+
+  if (uniqueServiceIds.length === 0) {
+    throw new Error(
+      "At least one valid service is required."
+    );
+  }
+
+  const services =
+    await prisma.service.findMany({
       where: {
-        id: metadata.serviceId,
+        id: {
+          in: uniqueServiceIds,
+        },
+        active: true,
       },
     });
 
-  if (!service || !service.active) {
-    throw new Error(
-      `Service is no longer available: ${metadata.serviceId}`
-    );
-  }
-
-  const databasePrice = Number(service.price);
-
   if (
-    !Number.isFinite(databasePrice) ||
-    databasePrice <= 0
+    services.length !==
+    uniqueServiceIds.length
   ) {
     throw new Error(
-      "The selected service has an invalid database price."
+      "One or more selected services are no longer available."
     );
   }
 
-  /*
-   * Stripe is the payment source of truth, but the amount
-   * must still match the current database service price.
-   */
+  const orderedServices =
+    uniqueServiceIds.map(
+      (id) =>
+        services.find(
+          (service) =>
+            service.id === id
+        )!
+    );
+
+  const primaryService =
+    orderedServices[0];
+
+  const totalPrice =
+    orderedServices.reduce(
+      (total, service) =>
+        total + Number(service.price),
+      0
+    );
+
+  if (
+    !Number.isFinite(totalPrice) ||
+    totalPrice <= 0
+  ) {
+    throw new Error(
+      "The selected services have an invalid database price."
+    );
+  }
+
+  const totalDuration =
+    orderedServices.reduce(
+      (total, service) =>
+        total + Number(service.duration),
+      0
+    );
+
+  if (
+    !Number.isFinite(totalDuration) ||
+    totalDuration <= 0
+  ) {
+    throw new Error(
+      "The selected services have an invalid total duration."
+    );
+  }
+
   if (
     Math.round(amountPaid * 100) !==
-    Math.round(databasePrice * 100)
+    Math.round(totalPrice * 100)
   ) {
     throw new Error(
-      "Paid amount does not match the current service price."
+      "Paid amount does not match the current service prices."
     );
   }
+
 
   const appointmentDate =
     new Date(metadata.appointmentDate);
@@ -918,140 +1393,45 @@ async function createBookingRecords(
   const requestedEndTime =
     createEndTime(
       metadata.appointmentTime,
-      metadata.duration ||
-        String(service.duration)
+      String(totalDuration)
     );
 
   /*
-   * Internal technician assignment.
+   * INTERNAL TECHNICIAN ASSIGNMENT
    *
-   * The customer never selects a technician.
-   * If the originally assigned technician has become
-   * unavailable or booked during payment processing,
-   * we safely create the paid booking without a technician
-   * instead of losing the booking after payment.
+   * The customer never chooses a technician.
+   *
+   * The technician returned by Step 3 is only a preference.
+   * At payment/webhook time we ALWAYS check the complete
+   * technician pool again.
+   *
+   * This prevents a stale Step 3 selection from creating
+   * overlapping appointments.
    */
-  let tech = null;
+  const tech =
+    await findAvailableTechnicianForBooking(
+      prisma,
+      appointmentDate,
+      metadata.appointmentTime!,
+      requestedEndTime,
+      metadata.staffId
+    );
 
-  if (metadata.staffId) {
-    const candidateTech =
-      await prisma.tech.findUnique({
-        where: {
-          id: metadata.staffId,
-        },
-      });
-
-    if (candidateTech) {
-      if (candidateTech.status === "AVAILABLE") {
-        const existingBookings =
-          await prisma.booking.findMany({
-            where: {
-              techId: candidateTech.id,
-              date: appointmentDate,
-              status: {
-                in: [
-                  "PENDING",
-                  "CONFIRMED",
-                ],
-              },
-            },
-            select: {
-              startTime: true,
-              endTime: true,
-            },
-          });
-
-        const toMinutes = (
-          value: string
-        ) => {
-          const match = value.match(
-            /^(\d{1,2}):(\d{2})\s*(AM|PM)?$/i
-          );
-
-          if (!match) {
-            return 0;
-          }
-
-          let hour = Number(match[1]);
-          const minute = Number(match[2]);
-          const meridiem =
-            match[3]?.toUpperCase();
-
-          if (
-            meridiem === "PM" &&
-            hour < 12
-          ) {
-            hour += 12;
-          }
-
-          if (
-            meridiem === "AM" &&
-            hour === 12
-          ) {
-            hour = 0;
-          }
-
-          return hour * 60 + minute;
-        };
-
-        const timesOverlap = (
-          startA: string,
-          endA: string | null,
-          startB: string,
-          endB: string | null
-        ) => {
-          if (!endA || !endB) {
-            return startA === startB;
-          }
-
-          const aStart =
-            toMinutes(startA);
-          const aEnd =
-            toMinutes(endA);
-          const bStart =
-            toMinutes(startB);
-          const bEnd =
-            toMinutes(endB);
-
-          return (
-            aStart < bEnd &&
-            bStart < aEnd
-          );
-        };
-
-        const conflict =
-          existingBookings.find(
-            (existing) =>
-              timesOverlap(
-                metadata.appointmentTime!,
-                requestedEndTime,
-                existing.startTime,
-                existing.endTime
-              )
-          );
-
-        if (!conflict) {
-          tech = candidateTech;
-        } else {
-          console.warn(
-            "Assigned technician became unavailable because of a booking conflict. Creating booking unassigned:",
-            candidateTech.id
-          );
-        }
-      } else {
-        console.warn(
-          "Assigned technician became unavailable during payment processing. Creating booking unassigned:",
-          candidateTech.id
-        );
+  if (!tech) {
+    console.warn(
+      "No technician is currently free for the paid appointment. Creating booking unassigned for admin allocation:",
+      {
+        appointmentDate:
+          metadata.appointmentDate,
+        appointmentTime:
+          metadata.appointmentTime,
+        duration:
+          totalDuration,
+        serviceIds:
+          uniqueServiceIds,
       }
-    } else {
-      console.warn(
-        "Assigned technician no longer exists. Creating booking unassigned:",
-        metadata.staffId
-      );
-    }
+    );
   }
-
   /*
    * Booking and payment must be created together.
    * If either operation fails, neither record is committed.
@@ -1133,12 +1513,39 @@ async function createBookingRecords(
               endTime:
                 requestedEndTime,
               status: "CONFIRMED",
+              consultationStatus:
+                metadata.consultationStatus ??
+                "existing-unchanged",
               customerId:
                 customer.id,
-              serviceId:
-                service.id,
+
+              /*
+               * serviceId remains the primary treatment for
+               * backwards compatibility with existing admin,
+               * availability and reporting code.
+               */
+              serviceId: primaryService.id,
+
+              /*
+               * Technician is assigned internally after the
+               * final availability check. It is never customer-
+               * selectable.
+               */
               techId:
                 tech?.id ?? null,
+
+              /*
+               * The complete appointment is stored here.
+               * A single booking can therefore contain one
+               * or many treatments.
+               */
+              bookingServices: {
+                create: orderedServices.map(
+                  (service) => ({
+                    serviceId: service.id,
+                  })
+                ),
+              },
             },
           });
 
@@ -1360,7 +1767,10 @@ export async function POST(
       if (!result.alreadyProcessed) {
         await sendBookingEmails(
           metadata,
-          paymentReference
+          paymentReference,
+          amountPaid,
+          result.booking.bookingNo,
+          result.payment.paymentNo
         );
 
         console.log(
@@ -1404,3 +1814,5 @@ export async function POST(
     );
   }
 }
+
+

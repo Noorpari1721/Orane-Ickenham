@@ -1,4 +1,7 @@
-import { NextResponse } from "next/server";
+﻿import { NextResponse } from "next/server";
+import { getDurationMinutes } from "@/lib/duration";
+
+
 import Stripe from "stripe";
 import { PrismaClient } from "@/app/generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
@@ -42,13 +45,14 @@ function getPrisma() {
 }
 
 type CheckoutRequest = {
-  serviceId: string;
+  serviceIds: Array<string | number>;
   customerName: string;
   customerEmail: string;
   customerPhone?: string;
   appointmentDate?: string;
   appointmentTime?: string;
   staffId?: string;
+  consultationStatus?: string;
 };
 
 export async function POST(request: Request) {
@@ -57,18 +61,25 @@ export async function POST(request: Request) {
       (await request.json()) as CheckoutRequest;
 
     const {
-      serviceId,
+      serviceIds,
       customerName,
       customerEmail,
       customerPhone,
       appointmentDate,
       appointmentTime,
       staffId,
+      consultationStatus,
     } = body;
 
-    if (!serviceId) {
+    if (
+      !Array.isArray(serviceIds) ||
+      serviceIds.length === 0
+    ) {
       return NextResponse.json(
-        { error: "Service is required." },
+        {
+          error:
+            "At least one treatment is required.",
+        },
         { status: 400 }
       );
     }
@@ -78,6 +89,26 @@ export async function POST(request: Request) {
         {
           error:
             "Customer name and email are required.",
+        },
+        { status: 400 }
+      );
+    }
+
+    const validConsultationStatuses = new Set([
+      "online",
+      "salon",
+      "existing-unchanged",
+      "update-required",
+    ]);
+
+    if (
+      !consultationStatus ||
+      !validConsultationStatuses.has(consultationStatus)
+    ) {
+      return NextResponse.json(
+        {
+          error:
+            "A valid consultation status is required.",
         },
         { status: 400 }
       );
@@ -95,78 +126,105 @@ export async function POST(request: Request) {
 
     const prisma = getPrisma();
 
-    /*
-     * The booking UI uses numeric service IDs such as "1".
-     *
-     * The database uses:
-     *
-     *   Service.id       = CUID
-     *   Service.serviceNo = SRV-001, SRV-002, ...
-     *
-     * Therefore:
-     *
-     *   "1" -> serviceNo "SRV-001"
-     *
-     * Existing CUID IDs continue to use Service.id.
-     */
+    const normalizedServiceIds = Array.from(
+      new Set(
+        serviceIds
+          .map((id) => String(id).trim())
+          .filter(Boolean)
+      )
+    );
 
-    const rawServiceId =
-      String(serviceId).trim();
-
-    const isNumericServiceId =
-      /^\d+$/.test(rawServiceId);
-
-    const service =
-      isNumericServiceId
-        ? await prisma.service.findUnique({
-            where: {
-              serviceNo:
-                `SRV-${rawServiceId.padStart(3, "0")}`,
-            },
-            select: {
-              id: true,
-              name: true,
-              duration: true,
-              price: true,
-              category: true,
-              active: true,
-            },
-          })
-        : await prisma.service.findUnique({
-            where: {
-              id: rawServiceId,
-            },
-            select: {
-              id: true,
-              name: true,
-              duration: true,
-              price: true,
-              category: true,
-              active: true,
-            },
-          });
-
-    if (!service || !service.active) {
+    if (normalizedServiceIds.length === 0) {
       return NextResponse.json(
         {
           error:
-            "The selected service is no longer available.",
+            "At least one valid treatment is required.",
         },
         { status: 400 }
       );
     }
 
-    const trustedPrice =
-      Number(service.price);
+    const services = await Promise.all(
+      normalizedServiceIds.map(
+        async (rawServiceId) => {
+          const isNumericServiceId =
+            /^\d+$/.test(rawServiceId);
+
+          return isNumericServiceId
+            ? await prisma.service.findUnique({
+                where: {
+                  serviceNo:
+                    `SRV-${rawServiceId.padStart(
+                      3,
+                      "0"
+                    )}`,
+                },
+                select: {
+                  id: true,
+                  name: true,
+                  duration: true,
+                  price: true,
+                  category: true,
+                  active: true,
+                },
+              })
+            : await prisma.service.findUnique({
+                where: {
+                  id: rawServiceId,
+                },
+                select: {
+                  id: true,
+                  name: true,
+                  duration: true,
+                  price: true,
+                  category: true,
+                  active: true,
+                },
+              });
+        }
+      )
+    );
 
     if (
-      !Number.isFinite(trustedPrice) ||
-      trustedPrice <= 0
+      services.some(
+        (service) =>
+          !service || !service.active
+      )
     ) {
       return NextResponse.json(
         {
           error:
-            "The selected service has an invalid price.",
+            "One or more selected treatments are no longer available.",
+        },
+        { status: 400 }
+      );
+    }
+
+    const selectedServices = services.filter(
+      (
+        service
+      ): service is NonNullable<typeof service> =>
+        Boolean(service)
+    );
+
+    const invalidPriceService =
+      selectedServices.find(
+        (service) => {
+          const price =
+            Number(service.price);
+
+          return (
+            !Number.isFinite(price) ||
+            price <= 0
+          );
+        }
+      );
+
+    if (invalidPriceService) {
+      return NextResponse.json(
+        {
+          error:
+            "One or more selected treatments have an invalid price.",
         },
         { status: 400 }
       );
@@ -202,49 +260,120 @@ export async function POST(request: Request) {
     const origin =
       new URL(request.url).origin;
 
+    const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] =
+      selectedServices.map(
+        (service) => ({
+          price_data: {
+            currency: "gbp",
+
+            product_data: {
+              name: service.name,
+              description:
+                `${service.duration} minute appointment at ORANE Ickenham`,
+            },
+
+            unit_amount:
+              Math.round(
+                Number(service.price) * 100
+              ),
+          },
+
+          quantity: 1,
+        })
+      );
+
+    const totalPrice =
+      selectedServices.reduce(
+        (total, service) =>
+          total +
+          Number(service.price),
+        0
+      );
+
+    const totalDuration =
+      selectedServices.reduce(
+        (total, service) =>
+          total +
+          getDurationMinutes(service.duration),
+        0
+      );
+
+    const serviceNames =
+      selectedServices
+        .map(
+          (service) => service.name
+        )
+        .join(", ");
+
+    const serviceCategories =
+      Array.from(
+        new Set(
+          selectedServices
+            .map(
+              (service) =>
+                service.category
+            )
+            .filter(Boolean)
+        )
+      ).join(", ");
+
     const session =
       await stripe.checkout.sessions.create({
         mode: "payment",
 
-        customer_email: customerEmail,
+        customer_email:
+          customerEmail,
 
-        line_items: [
-          {
-            price_data: {
-              currency: "gbp",
-
-              product_data: {
-                name: service.name,
-                description:
-                  `${service.duration} minute appointment at ORANE Ickenham`,
-              },
-
-              unit_amount:
-                Math.round(
-                  trustedPrice * 100
-                ),
-            },
-
-            quantity: 1,
-          },
-        ],
+        line_items:
+          lineItems,
 
         metadata: {
-          serviceId: service.id,
-          serviceName: service.name,
+          serviceIds:
+            JSON.stringify(
+              selectedServices.map(
+                (service) =>
+                  service.id
+              )
+            ),
+
+          serviceNames,
+
+          serviceBilling:
+            JSON.stringify(
+              selectedServices.map((service) => ({
+                name: service.name,
+                price: Number(service.price),
+              }))
+            ),
+
           customerName,
+
           customerEmail,
+
           customerPhone:
             customerPhone ?? "",
+
+          consultationStatus:
+            consultationStatus ??
+            "existing-unchanged",
+
           category:
-            service.category ?? "",
-          staffId: verifiedStaffId,
+            serviceCategories,
+
+          staffId:
+            verifiedStaffId,
+
           appointmentDate,
+
           appointmentTime,
+
           duration:
-            String(service.duration),
+            String(
+              totalDuration
+            ),
+
           price:
-            trustedPrice.toFixed(2),
+            totalPrice.toFixed(2),
         },
 
         success_url:
@@ -284,3 +413,4 @@ export async function POST(request: Request) {
     );
   }
 }
+

@@ -1,4 +1,4 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 import {
   ArrowRight,
   CreditCard,
@@ -530,9 +530,9 @@ export default function GiftCards() {
               "
             >
               Treat someone special to an ORANE experience.
-              From beautiful nails and lashes to Japanese Head Spa
-              and beauty treatments, make their next visit
-              something to remember.
+              From beautiful nails and lashes to Japanese Head Spa,
+              waxing, threading and beauty treatments, make their
+              next visit something to remember.
             </p>
 
             {/* Buttons */}

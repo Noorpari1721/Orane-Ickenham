@@ -43,6 +43,32 @@ type PreferencesData = {
 };
 
 export default function AccountPage() {
+  const [authReady, setAuthReady] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] =
+    useState(false);
+
+  
+  const handleLogout = () => {
+    try {
+      window.localStorage.removeItem(
+        "orane-account-session"
+      );
+    } catch {
+      // Ignore storage errors.
+    }
+
+    setIsAuthenticated(false);
+    setAuthPassword("");
+    setAuthMessage("");
+    setAuthMode("login");
+  };
+const [authMode, setAuthMode] =
+    useState<"login" | "signup">("login");
+
+  const [authName, setAuthName] = useState("");
+  const [authEmail, setAuthEmail] = useState("");
+  const [authPassword, setAuthPassword] = useState("");
+  const [authMessage, setAuthMessage] = useState("");
   const [activeTab, setActiveTab] =
     useState<DashboardTab>("overview");
 
@@ -67,6 +93,118 @@ export default function AccountPage() {
   const [preferencesLoaded, setPreferencesLoaded] =
     useState(false);
 
+  /* eslint-disable react-hooks/set-state-in-effect */
+  useEffect(() => {
+    try {
+      const session = window.localStorage.getItem(
+        "orane-account-session"
+      );
+
+      if (session === "authenticated") {
+        setIsAuthenticated(true);
+      }
+    } catch {
+      // Ignore storage errors.
+    } finally {
+      setAuthReady(true);
+    }
+  }, []);
+  /* eslint-enable react-hooks/set-state-in-effect */
+
+  function handleAuthSubmit(
+    event: React.FormEvent<HTMLFormElement>
+  ) {
+    event.preventDefault();
+
+    const email =
+      authEmail.trim().toLowerCase();
+
+    if (!email || !authPassword.trim()) {
+      setAuthMessage(
+        "Please enter your email and password."
+      );
+      return;
+    }
+
+    try {
+      if (authMode === "signup") {
+        if (!authName.trim()) {
+          setAuthMessage(
+            "Please enter your full name."
+          );
+          return;
+        }
+
+        const account = {
+          name: authName.trim(),
+          email,
+          password: authPassword,
+        };
+
+        window.localStorage.setItem(
+          "orane-account-user",
+          JSON.stringify(account)
+        );
+
+        setProfile((current) => ({
+          ...current,
+          name: account.name,
+          email: account.email,
+        }));
+
+        window.localStorage.setItem(
+          "orane-account-session",
+          "authenticated"
+        );
+
+        setIsAuthenticated(true);
+        return;
+      }
+
+      const savedAccount =
+        window.localStorage.getItem(
+          "orane-account-user"
+        );
+
+      if (!savedAccount) {
+        setAuthMessage(
+          "No account found. Please create an account first."
+        );
+        return;
+      }
+
+      const account =
+        JSON.parse(savedAccount);
+
+      if (
+        String(account.email || "").toLowerCase() !==
+          email ||
+        account.password !== authPassword
+      ) {
+        setAuthMessage(
+          "Incorrect email or password."
+        );
+        return;
+      }
+
+      setProfile((current) => ({
+        ...current,
+        name: account.name ?? current.name,
+        email: account.email ?? current.email,
+      }));
+
+      window.localStorage.setItem(
+        "orane-account-session",
+        "authenticated"
+      );
+
+      setIsAuthenticated(true);
+    } catch {
+      setAuthMessage(
+        "Something went wrong. Please try again."
+      );
+    }
+  }
   /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     try {
@@ -178,6 +316,143 @@ export default function AccountPage() {
 },
   ];
 
+  if (!authReady) {
+    return (
+      <main className="min-h-screen bg-[#151515] px-6 py-24 text-white">
+        <div className="mx-auto flex max-w-xl justify-center">
+          <div className="rounded-full border border-[#D4AF37]/30 px-6 py-3 text-sm text-[#D4AF37]">
+            Loading your ORANE account...
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <main className="relative min-h-screen overflow-hidden bg-[#151515] px-6 py-16 text-white md:py-24">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(212,175,55,0.12),transparent_38%)]" />
+
+        <div className="relative mx-auto flex min-h-[80vh] max-w-md items-center">
+          <div className="w-full rounded-[2rem] border border-white/10 bg-[#1d1d1d]/95 p-7 shadow-2xl sm:p-10">
+
+            <Link
+              href="/"
+              className="mb-10 inline-flex items-center gap-2 text-sm text-white/50 transition hover:text-[#D4AF37]"
+            >
+              <span className="text-base leading-none">&larr;</span>
+              <span>Back to Home</span>
+            </Link>
+
+            <p className="text-xs font-semibold uppercase tracking-[0.35em] text-[#D4AF37]">
+              ORANE ICKENHAM
+            </p>
+
+            <h1 className="mt-4 text-4xl font-light text-white">
+              {authMode === "login"
+                ? "Welcome back"
+                : "Create your account"}
+            </h1>
+
+            <p className="mt-3 text-sm leading-7 text-white/50">
+              {authMode === "login"
+                ? "Sign in to access your personal ORANE space."
+                : "Create your personal ORANE account to manage your beauty journey."}
+            </p>
+
+            <form
+              onSubmit={handleAuthSubmit}
+              className="mt-8 space-y-4"
+            >
+              {authMode === "signup" && (
+                <input
+                  type="text"
+                  value={authName}
+                  onChange={(event) => {
+                    setAuthName(event.target.value);
+                    setAuthMessage("");
+                  }}
+                  placeholder="Full Name"
+                  className="w-full rounded-xl border border-white/10 bg-[#252525] px-4 py-3.5 text-white outline-none placeholder:text-white/30 focus:border-[#D4AF37]/60"
+                />
+              )}
+
+              <input
+                type="email"
+                value={authEmail}
+                onChange={(event) => {
+                  setAuthEmail(event.target.value);
+                  setAuthMessage("");
+                }}
+                placeholder="Email Address"
+                className="w-full rounded-xl border border-white/10 bg-[#252525] px-4 py-3.5 text-white outline-none placeholder:text-white/30 focus:border-[#D4AF37]/60"
+              />
+
+              <input
+                type="password"
+                value={authPassword}
+                onChange={(event) => {
+                  setAuthPassword(event.target.value);
+                  setAuthMessage("");
+                }}
+                placeholder="Password"
+                className="w-full rounded-xl border border-white/10 bg-[#252525] px-4 py-3.5 text-white outline-none placeholder:text-white/30 focus:border-[#D4AF37]/60"
+              />
+
+                  <div className="flex justify-end">
+                    <a
+                      href="/reset-password"
+                      className="text-sm text-[#C49A45] transition hover:text-[#E2C07D]"
+                    >
+                      Forgot Password?
+                    </a>
+                  </div>
+
+              {authMessage && (
+                <p className="text-sm text-red-300">
+                  {authMessage}
+                </p>
+              )}
+<button
+                type="submit"
+                className="w-full rounded-full bg-[#D4AF37] px-6 py-4 font-medium text-black transition hover:bg-[#e3c65c]"
+              >
+                {authMode === "login"
+                  ? "Sign In"
+                  : "Create Account"}
+              </button>
+            </form>
+
+            <div className="mt-7 border-t border-white/10 pt-6 text-center text-sm text-white/50">
+              {authMode === "login"
+                ? "New to ORANE?"
+                : "Already have an account?"}
+
+              <button
+                type="button"
+                onClick={() => {
+                  setAuthMode(
+                    authMode === "login"
+                      ? "signup"
+                      : "login"
+                  );
+
+                  setAuthMessage("");
+                  setAuthPassword("");
+                }}
+                className="ml-2 font-medium text-[#D4AF37] transition hover:text-[#e3c65c]"
+              >
+                {authMode === "login"
+                  ? "Create Account"
+                  : "Sign In"}
+              </button>
+            </div>
+
+          </div>
+        </div>
+      </main>
+    );
+  }
   return (
     <main className="min-h-screen overflow-x-hidden bg-[#070707] text-white">
 
@@ -234,17 +509,14 @@ export default function AccountPage() {
 
               <button
                 type="button"
-                aria-label="Go back"
-                onClick={() => {
-                  if (window.history.length > 1) {
-                    window.history.back();
-                  } else {
-                    window.location.href = "/";
-                  }
-                }}
+                onClick={handleLogout}
                 className="
-                  mb-6
+                  fixed
+                  left-6
+                  top-6
+                  z-50
                   inline-flex
+                  h-10
                   items-center
                   gap-2
                   rounded-full
@@ -252,7 +524,6 @@ export default function AccountPage() {
                   border-white/15
                   bg-white/[0.06]
                   px-4
-                  py-2
                   text-sm
                   font-medium
                   text-white/80
@@ -264,10 +535,12 @@ export default function AccountPage() {
                   hover:bg-[#D4AF37]/10
                   hover:text-[#D4AF37]
                   hover:shadow-[0_8px_25px_rgba(212,175,55,.16)]
+                  md:left-10
+                  md:top-10
                 "
               >
-                <span className="text-base leading-none">←</span>
-                <span>Back</span>
+                <LogOut size={16} />
+                <span>Log Out</span>
               </button>
 
               <div className="flex items-center gap-3 text-left">
@@ -510,9 +783,7 @@ export default function AccountPage() {
                       text-white/50
                     "
                   >
-                    Everything connected to your ORANE
-                    experience will live here — from upcoming
-                    treatments to your personal preferences.
+                    Everything connected to your ORANE experience will live here â€” from upcoming treatments to your personal preferences.
                   </p>
 
                 </div>
@@ -939,7 +1210,7 @@ function ActivityPanel({
                 "
               >
                 {activity.action}
-                <span className="ml-2">→</span>
+                <span className="ml-2">&rarr;</span>
               </span>
 
             </div>

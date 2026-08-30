@@ -1,14 +1,18 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import GlassPill from "./GlassPill";
 import MyAccountButton from "./MyAccountButton";
+import { useBooking } from "@/context/BookingContext";
 
 export default function BookingNavbar() {
+  const router = useRouter();
+  const { goToStep } = useBooking();
   const [navbarVisible, setNavbarVisible] = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -154,8 +158,9 @@ export default function BookingNavbar() {
 
             {/* Desktop Home */}
 
-            <Link
-              href="/"
+            <button
+              type="button"
+              onClick={() => goToStep(1)}
               className="
                 hidden
                 shrink-0
@@ -176,7 +181,7 @@ export default function BookingNavbar() {
               "
             >
               Home
-            </Link>
+            </button>
 
             {/* Desktop Contact */}
 
@@ -278,9 +283,9 @@ export default function BookingNavbar() {
             "
           >
             <nav className="flex flex-col">
-              <Link
-                href="/"
-                onClick={() => setMobileOpen(false)}
+              <button type="button"
+                onClick={() => { setMobileOpen(false); goToStep(1); }}
+                
                 className="
                   flex
                   h-11
@@ -299,7 +304,7 @@ export default function BookingNavbar() {
                 "
               >
                 Home
-              </Link>
+              </button>
 
               <Link
                 href="/contact"

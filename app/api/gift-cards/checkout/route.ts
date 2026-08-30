@@ -1,4 +1,4 @@
-﻿import { NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { randomBytes } from "crypto";
 import { PrismaClient } from "@/app/generated/prisma/client";
@@ -47,6 +47,8 @@ function getPrisma() {
 type GiftCardCheckoutRequest = {
   giftType: "service" | "custom";
   serviceName?: string;
+  serviceNames?: string[];
+  serviceIds?: string[];
   amount?: number | string;
 
   purchaserFirstName?: string;
@@ -117,6 +119,22 @@ export async function POST(request: Request) {
     const serviceName = cleanString(
       body.serviceName
     );
+
+    const serviceIds = Array.isArray(body.serviceIds)
+      ? [
+          ...new Set(
+            body.serviceIds
+              .map((id) => cleanString(id))
+              .filter(Boolean)
+          ),
+        ]
+      : [];
+
+    const serviceNames = Array.isArray(body.serviceNames)
+      ? body.serviceNames
+          .map((name) => cleanString(name))
+          .filter(Boolean)
+      : [];
 
     const purchaserFirstName = cleanString(
       body.purchaserFirstName
@@ -189,51 +207,175 @@ export async function POST(request: Request) {
     const prisma = getPrisma();
 
     let finalAmount = 0;
+
+    let services: Array<{
+      id: string;
+      name: string;
+      price: number;
+      active: boolean;
+    }> = [];
     let linkedServiceId: string | null = null;
     let productName = "ORANE Gift Card";
     let productDescription =
       "Luxury Gift Card for ORANE Ickenham";
 
     if (giftType === "service") {
-      if (!serviceName) {
+
+      if (
+        serviceIds.length === 0 &&
+        !serviceName
+      ) {
         return NextResponse.json(
           {
             error:
-              "Please select a service Gift Voucher.",
+              "Please select at least one service Gift Voucher.",
           },
           { status: 400 }
         );
       }
 
-      const service =
-        await prisma.service.findFirst({
-          where: {
-            name: serviceName,
-            active: true,
-          },
-          select: {
-            id: true,
-            name: true,
-            price: true,
-            active: true,
-          },
-        });
+      if (serviceIds.length > 0) {
 
-      if (!service || !service.active) {
+        const foundServices =
+          await prisma.service.findMany({
+            where: {
+              id: {
+                in: serviceIds,
+              },
+              active: true,
+            },
+            select: {
+              id: true,
+              name: true,
+              price: true,
+              active: true,
+            },
+          });
+
+        if (
+          foundServices.length !==
+          serviceIds.length
+        ) {
+          return NextResponse.json(
+            {
+              error:
+                "One or more selected services are no longer available.",
+            },
+            { status: 400 }
+          );
+        }
+
+        const serviceMap = new Map(
+          foundServices.map(
+            (service) => [
+              service.id,
+              service,
+            ]
+          )
+        );
+
+        services = serviceIds.map(
+          (id) => {
+            const service =
+              serviceMap.get(id);
+
+            if (!service) {
+              throw new Error(
+                "Selected service could not be resolved."
+              );
+            }
+
+            return {
+              id: service.id,
+              name: service.name,
+              price: Number(service.price),
+              active: service.active,
+            };
+          }
+        );
+
+      } else {
+
+        const fallbackService =
+          await prisma.service.findFirst({
+            where: {
+              name: serviceName,
+              active: true,
+            },
+            select: {
+              id: true,
+              name: true,
+              price: true,
+              active: true,
+            },
+          });
+
+        if (
+          !fallbackService ||
+          !fallbackService.active
+        ) {
+          return NextResponse.json(
+            {
+              error:
+                "The selected service is no longer available.",
+            },
+            { status: 400 }
+          );
+        }
+
+        services = [
+          {
+            id: fallbackService.id,
+            name: fallbackService.name,
+            price: Number(
+              fallbackService.price
+            ),
+            active:
+              fallbackService.active,
+          },
+        ];
+      }
+
+      if (services.length === 0) {
         return NextResponse.json(
           {
             error:
-              "The selected service is no longer available.",
+              "No valid services were selected.",
           },
           { status: 400 }
         );
       }
 
-      finalAmount = Number(service.price);
-      linkedServiceId = service.id;
-      productName = `${service.name} — ORANE Gift Voucher`;
+      finalAmount =
+        services.reduce(
+          (
+            total,
+            service
+          ) =>
+            total +
+            service.price,
+          0
+        );
+
+      linkedServiceId =
+        services[0]?.id ?? null;
+
+      const serviceDisplayNames =
+        services
+          .map(
+            (service) =>
+              service.name
+          )
+          .join(", ");
+
+      productName =
+        services.length === 1
+          ? `${services[0].name} — ORANE Gift Voucher`
+          : `ORANE Gift Voucher — ${services.length} Treatments`;
+
       productDescription =
-        `Gift voucher for ${service.name} at ORANE Ickenham`;
+        `Gift voucher for ${serviceDisplayNames} at ORANE Ickenham`;
+
     } else {
       const numericAmount =
         typeof body.amount === "string"
@@ -352,6 +494,23 @@ export async function POST(request: Request) {
       });
 
     createdGiftCardId = giftCard.id;
+    if (
+      giftType === "service" &&
+      services.length > 0
+    ) {
+
+      await prisma.giftCardService.createMany({
+        data: services.map(
+          (service) => ({
+            giftCardId:
+              giftCard.id,
+            serviceId:
+              service.id,
+          })
+        ),
+        skipDuplicates: true,
+      });
+    }
 
     const customerEmail =
       recipientEmail ||

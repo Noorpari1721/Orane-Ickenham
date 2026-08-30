@@ -10,6 +10,70 @@ import type { ReactNode } from "react";
 import { useBooking } from "@/context/BookingContext";
 import { serviceCategories } from "@/data/services";
 
+function getDurationMinutes(
+  duration: unknown
+) {
+  if (
+    typeof duration === "number" &&
+    Number.isFinite(duration)
+  ) {
+    return Math.max(
+      0,
+      Math.round(duration)
+    );
+  }
+
+  const raw =
+    String(duration ?? "")
+      .toLowerCase()
+      .trim();
+
+  if (!raw) {
+    return 0;
+  }
+
+  const hoursMatch =
+    raw.match(
+      /(\d+(?:\.\d+)?)\s*(?:h|hr|hrs|hour|hours)\b/
+    );
+
+  const minutesMatch =
+    raw.match(
+      /(\d+(?:\.\d+)?)\s*(?:m|min|mins|minute|minutes)\b/
+    );
+
+  let totalMinutes = 0;
+
+  if (hoursMatch) {
+    totalMinutes +=
+      Number(hoursMatch[1]) * 60;
+  }
+
+  if (minutesMatch) {
+    totalMinutes +=
+      Number(minutesMatch[1]);
+  }
+
+  if (
+    !hoursMatch &&
+    !minutesMatch
+  ) {
+    const numeric =
+      Number.parseFloat(raw);
+
+    if (
+      Number.isFinite(numeric)
+    ) {
+      totalMinutes = numeric;
+    }
+  }
+
+  return Math.max(
+    0,
+    Math.round(totalMinutes)
+  );
+}
+
 function formatCategoryName(categoryId: string) {
   const category = serviceCategories.find(
     (item) => item.id === categoryId
@@ -31,6 +95,42 @@ function formatCategoryName(categoryId: string) {
 
 export default function BookingSummary() {
   const { booking } = useBooking();
+
+  const selectedServices =
+    booking.services?.length
+      ? booking.services
+      : booking.service
+        ? [booking.service]
+        : [];
+
+  const totalDuration =
+    selectedServices.reduce(
+      (total, service) =>
+        total +
+        getDurationMinutes(
+          service.duration
+        ),
+      0
+    );
+  const totalPrice =
+    selectedServices.reduce(
+      (total, service) =>
+        total + Number(service.price ?? 0),
+      0
+    );
+
+  const selectedServiceCategory =
+    serviceCategories.find((category) =>
+      category.services.some(
+        (service) =>
+          service.id === booking.service?.id
+      )
+    );
+
+  const categoryId =
+    booking.category ||
+    selectedServiceCategory?.id ||
+    "";
 
   const formattedDate = booking.date
     ? booking.date.toLocaleDateString("en-GB", {
@@ -82,22 +182,16 @@ export default function BookingSummary() {
         </h3>
 
         <div className="mt-6 grid grid-cols-1 gap-5 sm:mt-8 sm:space-y-6">
-          <SummaryItem
-            icon={<Sparkles size={18} />}
-            title="Category"
-            value={
-              booking.category
-                ? formatCategoryName(booking.category)
-                : "Select a category"
-            }
-          />
 
           <SummaryItem
             icon={<Sparkles size={18} />}
-            title="Service"
+            title="Services"
             value={
-              booking.service?.name ||
-              "Select a service"
+              selectedServices.length > 0
+                ? selectedServices
+                    .map((service) => service.name)
+                    .join(", ")
+                : "Select a service"
             }
           />
 
@@ -105,8 +199,8 @@ export default function BookingSummary() {
             icon={<Sparkles size={18} />}
             title="Duration"
             value={
-              booking.service?.duration
-                ? `${booking.service.duration} minutes`
+              totalDuration > 0
+                ? `${totalDuration} minutes`
                 : "--"
             }
           />
@@ -141,7 +235,7 @@ export default function BookingSummary() {
           </div>
 
           <motion.p
-            key={booking.service?.price ?? "empty"}
+            key={totalPrice}
             initial={{
               scale: 0.85,
               opacity: 0,
@@ -153,7 +247,7 @@ export default function BookingSummary() {
             transition={{ duration: 0.35 }}
             className="whitespace-nowrap text-2xl font-light text-[#D4AF37] sm:text-3xl"
           >
-            {"\u00A3"}{booking.service?.price ?? 0}
+            {"\u00A3"}{totalPrice}
           </motion.p>
         </div>
 
@@ -208,7 +302,7 @@ function Feature({
   return (
     <div className="flex items-center gap-3">
       <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-[#D4AF37]/30 text-xs text-[#D4AF37]">
-        ✓
+        {"\u2713"}
       </span>
 
       <span className="text-white/70">
@@ -217,3 +311,13 @@ function Feature({
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+

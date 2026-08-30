@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import {
   createContext,
@@ -28,11 +28,17 @@ const createInitialState = (): BookingState => ({
   step: 1,
   category: "",
   service: null,
+  services: [],
   treatment: null,
   staff: null,
   date: null,
   time: "",
   customer: createEmptyCustomer(),
+
+  consultationStatus: null,
+  consultationCompleted: false,
+  consultationResponses: {},
+
   completed: false,
   editingReview: false,
 });
@@ -79,27 +85,96 @@ export function BookingProvider({
     }));
   };
 
+  const resetConsultationState = () => ({
+    consultationStatus: null,
+    consultationCompleted: false,
+    consultationResponses: {},
+  });
+
   const setService = (service: Service) => {
     setBooking((prev) => ({
       ...prev,
       service,
+      services: [service],
       treatment: null,
       staff: null,
       date: null,
       time: "",
+      ...resetConsultationState(),
     }));
   };
 
-  const setTreatment = (
-    treatment: Treatment
-  ) => {
+  const toggleService = (service: Service) => {
+    setBooking((prev) => {
+      const exists = prev.services.some(
+        (item) => item.id === service.id
+      );
+
+      const services = exists
+        ? prev.services.filter(
+            (item) => item.id !== service.id
+          )
+        : [...prev.services, service];
+
+      return {
+        ...prev,
+        services,
+        service:
+          services.length > 0
+            ? services[0]
+            : null,
+        treatment: null,
+        staff: null,
+        date: null,
+        time: "",
+        ...resetConsultationState(),
+      };
+    });
+  };
+
+  const removeService = (serviceId: number) => {
+    setBooking((prev) => {
+      const services = prev.services.filter(
+        (item) => item.id !== serviceId
+      );
+
+      return {
+        ...prev,
+        services,
+        service:
+          services.length > 0
+            ? services[0]
+            : null,
+        treatment: null,
+        staff: null,
+        date: null,
+        time: "",
+        ...resetConsultationState(),
+      };
+    });
+  };
+
+  const clearServices = () => {
+    setBooking((prev) => ({
+      ...prev,
+      service: null,
+      services: [],
+      treatment: null,
+      staff: null,
+      date: null,
+      time: "",
+      ...resetConsultationState(),
+    }));
+  };
+
+  const setTreatment = (treatment: Treatment) => {
     setBooking((prev) => ({
       ...prev,
       treatment,
     }));
   };
 
-  const setStaff = (staff: Staff) => {
+  const setStaff = (staff: Staff | null) => {
     setBooking((prev) => ({
       ...prev,
       staff,
@@ -107,13 +182,9 @@ export function BookingProvider({
   };
 
   const setDate = (date: Date) => {
-    const safeDate = new Date(date);
-
-    safeDate.setHours(12, 0, 0, 0);
-
     setBooking((prev) => ({
       ...prev,
-      date: safeDate,
+      date,
       time: "",
     }));
   };
@@ -150,6 +221,9 @@ export function BookingProvider({
         goToStep,
         updateBooking,
         setService,
+        toggleService,
+        removeService,
+        clearServices,
         setTreatment,
         setStaff,
         setDate,
