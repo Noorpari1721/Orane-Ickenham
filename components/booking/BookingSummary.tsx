@@ -1,77 +1,62 @@
-"use client";
+﻿"use client";
 
 import { motion } from "framer-motion";
 import {
   Sparkles,
   CalendarDays,
   Clock3,
+  ArrowLeft,
+  ArrowRight,
 } from "lucide-react";
 import type { ReactNode } from "react";
+
 import { useBooking } from "@/context/BookingContext";
 import { serviceCategories } from "@/data/services";
+import { getSelectedCategoryTitle } from "@/components/booking/bookingCategoryUtils";
 
-function getDurationMinutes(
-  duration: unknown
-) {
+function getDurationMinutes(duration: unknown) {
   if (
     typeof duration === "number" &&
     Number.isFinite(duration)
   ) {
-    return Math.max(
-      0,
-      Math.round(duration)
-    );
+    return Math.max(0, Math.round(duration));
   }
 
-  const raw =
-    String(duration ?? "")
-      .toLowerCase()
-      .trim();
+  const raw = String(duration ?? "")
+    .toLowerCase()
+    .trim();
 
   if (!raw) {
     return 0;
   }
 
-  const hoursMatch =
-    raw.match(
-      /(\d+(?:\.\d+)?)\s*(?:h|hr|hrs|hour|hours)\b/
-    );
+  const hoursMatch = raw.match(
+    /(\d+(?:\.\d+)?)\s*(?:h|hr|hrs|hour|hours)\b/
+  );
 
-  const minutesMatch =
-    raw.match(
-      /(\d+(?:\.\d+)?)\s*(?:m|min|mins|minute|minutes)\b/
-    );
+  const minutesMatch = raw.match(
+    /(\d+(?:\.\d+)?)\s*(?:m|min|mins|minute|minutes)\b/
+  );
 
   let totalMinutes = 0;
 
   if (hoursMatch) {
-    totalMinutes +=
-      Number(hoursMatch[1]) * 60;
+    totalMinutes += Number(hoursMatch[1]) * 60;
   }
 
   if (minutesMatch) {
-    totalMinutes +=
-      Number(minutesMatch[1]);
+    totalMinutes += Number(minutesMatch[1]);
   }
 
-  if (
-    !hoursMatch &&
-    !minutesMatch
-  ) {
-    const numeric =
-      Number.parseFloat(raw);
+  if (!hoursMatch && !minutesMatch) {
+    const numeric = Number.parseFloat(raw);
 
-    if (
-      Number.isFinite(numeric)
-    ) {
+    if (Number.isFinite(numeric)) {
       totalMinutes = numeric;
     }
   }
 
-  return Math.max(
-    0,
-    Math.round(totalMinutes)
-  );
+  return Math.max(0, Math.round(totalMinutes));
 }
 
 function formatCategoryName(categoryId: string) {
@@ -94,7 +79,11 @@ function formatCategoryName(categoryId: string) {
 }
 
 export default function BookingSummary() {
-  const { booking } = useBooking();
+  const {
+    booking,
+    previousStep,
+    nextStep,
+  } = useBooking();
 
   const selectedServices =
     booking.services?.length
@@ -107,30 +96,20 @@ export default function BookingSummary() {
     selectedServices.reduce(
       (total, service) =>
         total +
-        getDurationMinutes(
-          service.duration
-        ),
+        getDurationMinutes(service.duration),
       0
     );
+
   const totalPrice =
     selectedServices.reduce(
       (total, service) =>
         total + Number(service.price ?? 0),
       0
     );
-
-  const selectedServiceCategory =
-    serviceCategories.find((category) =>
-      category.services.some(
-        (service) =>
-          service.id === booking.service?.id
-      )
-    );
-
-  const categoryId =
-    booking.category ||
-    selectedServiceCategory?.id ||
-    "";
+  const selectedCategoryTitle = getSelectedCategoryTitle(
+    selectedServices,
+    booking.category
+  );
 
   const formattedDate = booking.date
     ? booking.date.toLocaleDateString("en-GB", {
@@ -140,6 +119,51 @@ export default function BookingSummary() {
         year: "numeric",
       })
     : "Choose a date";
+
+  const isFirstStep = booking.step === 1;
+  const isLastStep = booking.step >= 7;
+
+  const hasCustomerDetails = Boolean(
+    booking.customer.firstName.trim() &&
+    booking.customer.lastName.trim() &&
+    booking.customer.email.trim() &&
+    booking.customer.phone.trim()
+  );
+
+  const consultationComplete = Boolean(
+    booking.consultationCompleted ||
+    booking.consultationStatus === "salon" ||
+    booking.consultationStatus === "existing-unchanged"
+  );
+
+  const canContinue =
+    booking.step === 1
+      ? selectedServices.length > 0
+      : booking.step === 2
+        ? Boolean(booking.date)
+        : booking.step === 3
+          ? Boolean(booking.time)
+          : booking.step === 4
+            ? Boolean(
+                hasCustomerDetails &&
+                booking.consultationStatus
+              )
+            : booking.step === 5
+              ? consultationComplete
+              : booking.step === 6
+                ? true
+                : false;
+
+  const handleContinue = () => {
+    if (!canContinue) {
+      window.dispatchEvent(
+        new CustomEvent("booking-continue")
+      );
+      return;
+    }
+
+    nextStep();
+  };
 
   return (
     <motion.aside
@@ -166,6 +190,8 @@ export default function BookingSummary() {
       "
     >
       <div className="relative z-10">
+
+        {/* HEADER */}
         <div className="flex items-center gap-3">
           <Sparkles
             size={17}
@@ -181,7 +207,8 @@ export default function BookingSummary() {
           Booking Summary
         </h3>
 
-        <div className="mt-6 grid grid-cols-1 gap-5 sm:mt-8 sm:space-y-6">
+        {/* SUMMARY DETAILS */}
+        <div className="mt-7 space-y-6">
 
           <SummaryItem
             icon={<Sparkles size={18} />}
@@ -219,17 +246,20 @@ export default function BookingSummary() {
               "Choose a time"
             }
           />
+
         </div>
 
-        <div className="my-6 h-px bg-white/10 sm:my-7" />
+        {/* TOTAL */}
+        <div className="my-7 h-px bg-white/10" />
 
-        <div className="flex items-end justify-between gap-4">
-          <div>
-            <p className="text-[10px] uppercase tracking-[0.22em] text-white/50 sm:text-xs sm:tracking-[0.25em]">
+        <div className="flex items-center justify-between gap-4">
+
+          <div className="min-w-0">
+            <p className="text-[10px] uppercase tracking-[0.22em] text-white/70 sm:text-xs sm:tracking-[0.25em]">
               Total
             </p>
 
-            <p className="mt-1 text-xs text-white/40">
+            <p className="mt-1 text-xs text-white/75">
               Treatment price
             </p>
           </div>
@@ -245,19 +275,124 @@ export default function BookingSummary() {
               opacity: 1,
             }}
             transition={{ duration: 0.35 }}
-            className="whitespace-nowrap text-2xl font-light text-[#D4AF37] sm:text-3xl"
+            className="shrink-0 whitespace-nowrap text-2xl font-light text-[#D4AF37] sm:text-3xl"
           >
             {"\u00A3"}{totalPrice}
           </motion.p>
+
         </div>
 
-        <div className="my-6 h-px bg-white/10 sm:my-7" />
+        {/* FEATURES */}
+        <div className="my-7 h-px bg-white/10" />
 
-        <div className="grid grid-cols-1 gap-3 text-sm sm:space-y-4">
+        <div className="space-y-4">
+
           <Feature text="Instant confirmation" />
+
           <Feature text="Secure online booking" />
+
           <Feature text="Free cancellation policy" />
+
         </div>
+
+        {/* NAVIGATION */}
+        {!isLastStep && (
+          <>
+            <div className="my-7 h-px bg-white/10" />
+
+            <div
+              data-summary-navigation="true"
+              className={`grid gap-3 ${
+                isFirstStep
+                  ? "grid-cols-1"
+                  : "grid-cols-2"
+              }`}
+            >
+
+              {!isFirstStep && (
+                <button
+                  type="button"
+                  onClick={previousStep}
+                  className="
+                    inline-flex
+                    min-w-0
+                    items-center
+                    justify-center
+                    gap-2
+                    rounded-full
+                    border
+                    border-white/10
+                    bg-white/[0.025]
+                    px-3
+                    py-3
+                    text-[10px]
+                    font-medium
+                    uppercase
+                    tracking-[0.14em]
+                    text-white/65
+                    transition-all
+                    duration-300
+                    hover:border-[#D4AF37]/50
+                    hover:bg-[#D4AF37]/5
+                    hover:text-[#D4AF37]
+                    sm:px-4
+                    sm:text-xs
+                  "
+                >
+                  <ArrowLeft
+                    size={14}
+                    className="shrink-0"
+                  />
+
+                  <span>Back</span>
+                </button>
+              )}
+
+              <button
+                type="button"
+                onClick={handleContinue}
+                className="
+                  group
+                  inline-flex
+                  min-w-0
+                  items-center
+                  justify-center
+                  gap-2
+                  rounded-full
+                  bg-[#D4AF37]
+                  px-3
+                  py-3
+                  text-[10px]
+                  font-semibold
+                  uppercase
+                  tracking-[0.14em]
+                  text-black
+                  shadow-[0_8px_24px_rgba(212,175,55,.18)]
+                  transition-all
+                  duration-300
+                  hover:bg-[#e2c45a]
+                  hover:shadow-[0_10px_30px_rgba(212,175,55,.28)]
+                  sm:px-4
+                  sm:text-xs
+                "
+              >
+                <span>Continue</span>
+
+                <ArrowRight
+                  size={14}
+                  className="
+                    shrink-0
+                    transition-transform
+                    duration-300
+                    group-hover:translate-x-1
+                  "
+                />
+              </button>
+
+            </div>
+          </>
+        )}
+
       </div>
     </motion.aside>
   );
@@ -281,7 +416,7 @@ function SummaryItem({
         {icon}
       </div>
 
-      <div className="min-w-0">
+      <div className="min-w-0 flex-1">
         <p className="text-[10px] uppercase tracking-[0.2em] text-white/45 sm:text-xs sm:tracking-[0.25em]">
           {title}
         </p>
@@ -305,19 +440,9 @@ function Feature({
         {"\u2713"}
       </span>
 
-      <span className="text-white/70">
+      <span className="text-sm text-white/70">
         {text}
       </span>
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
-

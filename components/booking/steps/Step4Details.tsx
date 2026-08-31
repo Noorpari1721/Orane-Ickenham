@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { motion } from "framer-motion";
 
@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 
 import { useBooking } from "@/context/BookingContext";
+import { getSelectedCategoryTitle } from "@/components/booking/bookingCategoryUtils";
 import { serviceCategories } from "@/data/services";
 
 function durationToMinutes(
@@ -78,22 +79,16 @@ export default function Step6Review() {
     updateBooking,
   } = useBooking();
 
-  const category =
-    serviceCategories.find(
-      (item) =>
-        item.id === booking.category
-    );
-
-  const categoryTitle =
-    category?.title ||
-    "Not selected";
-
   const selectedServices =
     booking.services?.length
       ? booking.services
       : booking.service
         ? [booking.service]
         : [];
+  const categoryTitle = getSelectedCategoryTitle(
+    selectedServices,
+    booking.category
+  );
 
   const totalPrice =
     selectedServices.reduce(
@@ -197,11 +192,11 @@ export default function Step6Review() {
           Step Five
         </p>
 
-        <h2 className="mt-4 text-4xl font-light text-white md:text-5xl">
+        <h2 className="mt-4 text-3xl font-normal leading-tight text-white sm:text-4xl md:text-5xl">
           Review Your Booking
         </h2>
 
-        <p className="mt-4 text-white/60">
+        <p className="mt-3 text-sm leading-6 text-white/80 sm:mt-4">
           Please check everything before
           continuing to secure payment.
         </p>
@@ -219,7 +214,7 @@ export default function Step6Review() {
         transition={{
           duration: 0.45,
         }}
-        className="overflow-hidden rounded-[28px] border border-[#D4AF37]/20 bg-white/5 shadow-[0_0_45px_rgba(212,175,55,.08)]"
+        className="overflow-hidden rounded-[22px] sm:rounded-[28px] border border-[#D4AF37]/20 bg-white/5 shadow-[0_0_45px_rgba(212,175,55,.08)]"
       >
         <div className="border-b border-white/10 p-7">
           <div className="flex items-center justify-between gap-6">
@@ -229,7 +224,7 @@ export default function Step6Review() {
               </div>
 
               <div>
-                <p className="text-xs uppercase tracking-[0.25em] text-white/40">
+                <p className="text-xs uppercase tracking-[0.25em] text-white/75">
                   Category
                 </p>
 
@@ -259,7 +254,7 @@ export default function Step6Review() {
               </div>
 
               <div className="min-w-0">
-                <p className="text-xs uppercase tracking-[0.25em] text-white/40">
+                <p className="text-xs uppercase tracking-[0.25em] text-white/75">
                   Selected Services
                 </p>
 
@@ -322,7 +317,7 @@ export default function Step6Review() {
           duration: 0.45,
           delay: 0.08,
         }}
-        className="rounded-[28px] border border-white/10 bg-white/5 p-7"
+        className="rounded-[22px] sm:rounded-[28px] border border-white/10 bg-white/5 p-7"
       >
         <p className="text-xs uppercase tracking-[0.3em] text-[#D4AF37]">
           Appointment Details
@@ -399,7 +394,7 @@ export default function Step6Review() {
           duration: 0.45,
           delay: 0.12,
         }}
-        className="rounded-[28px] border border-[#D4AF37]/20 bg-[#D4AF37]/[0.04] p-7"
+        className="rounded-[22px] sm:rounded-[28px] border border-[#D4AF37]/20 bg-[#D4AF37]/[0.04] p-7"
       >
         <div className="flex items-center justify-between gap-4">
           <p className="text-xs uppercase tracking-[0.3em] text-[#D4AF37]">
@@ -441,7 +436,7 @@ export default function Step6Review() {
             </div>
           </div>
         ) : (
-          <p className="mt-5 text-sm text-white/50">
+          <p className="mt-5 text-sm text-white/70">
             Consultation preference has not been selected.
           </p>
         )}
@@ -460,7 +455,7 @@ export default function Step6Review() {
           duration: 0.45,
           delay: 0.16,
         }}
-        className="rounded-[28px] border border-white/10 bg-white/5 p-7"
+        className="rounded-[22px] sm:rounded-[28px] border border-white/10 bg-white/5 p-7"
       >
         <div className="flex items-center justify-between gap-4">
           <p className="text-xs uppercase tracking-[0.3em] text-[#D4AF37]">
@@ -537,15 +532,15 @@ export default function Step6Review() {
           duration: 0.45,
           delay: 0.22,
         }}
-        className="rounded-[28px] border border-[#D4AF37]/20 bg-[#D4AF37]/5 p-7"
+        className="rounded-[22px] sm:rounded-[28px] border border-[#D4AF37]/20 bg-[#D4AF37]/5 p-7"
       >
         <div className="flex items-center justify-between gap-6">
           <div>
-            <p className="text-xs uppercase tracking-[0.3em] text-white/40">
+            <p className="text-xs uppercase tracking-[0.3em] text-white/75">
               Appointment Total
             </p>
 
-            <p className="mt-2 text-sm text-white/50">
+            <p className="mt-2 text-sm text-white/70">
               {selectedServices.length} treatment
               {selectedServices.length !== 1
                 ? "s"
@@ -578,7 +573,7 @@ function ReviewItem({
       </div>
 
       <div className="min-w-0">
-        <p className="text-xs uppercase tracking-[0.2em] text-white/40">
+        <p className="text-xs uppercase tracking-[0.2em] text-white/75">
           {label}
         </p>
 
@@ -589,4 +584,5 @@ function ReviewItem({
     </div>
   );
 }
+
 

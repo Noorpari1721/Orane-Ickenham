@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 
 import { useBooking } from "@/context/BookingContext";
+import { getSelectedCategoryTitle } from "@/components/booking/bookingCategoryUtils";
 
 export default function Step7Payment() {
   const { booking } =
@@ -60,6 +61,10 @@ export default function Step7Payment() {
       : booking.service
         ? [booking.service]
         : [];
+  const categoryTitle = getSelectedCategoryTitle(
+    selectedServices,
+    booking.category
+  );
 
   const price =
     selectedServices.reduce(
@@ -209,14 +214,14 @@ export default function Step7Payment() {
     <div className="space-y-7">
       <div className="text-center">
         <p className="text-sm uppercase tracking-[0.5em] text-[#D4AF37]">
-          Step Six
+          Step Seven
         </p>
 
-        <h2 className="mt-4 text-4xl font-light text-white md:text-5xl">
+        <h2 className="mt-4 text-3xl font-normal leading-tight text-white sm:text-4xl md:text-5xl">
           Secure Payment
         </h2>
 
-        <p className="mx-auto mt-5 max-w-xl text-white/60">
+        <p className="mx-auto mt-5 max-w-xl text-white/75">
           Your appointment is ready.
           Complete payment securely through Stripe.
         </p>
@@ -236,7 +241,7 @@ export default function Step7Payment() {
         }}
         className="overflow-hidden rounded-[30px] border border-[#D4AF37]/20 bg-white/5"
       >
-        <div className="border-b border-white/10 p-7">
+        <div className="border-b border-white/10 p-4 sm:p-7">
           <div className="flex items-center gap-3">
             <div className="rounded-full bg-[#D4AF37]/10 p-2.5">
               <Sparkles
@@ -284,7 +289,7 @@ export default function Step7Payment() {
           </div>
         </div>
 
-        <div className="grid gap-6 border-b border-white/10 p-7 sm:grid-cols-2">
+        <div className="grid gap-6 border-b border-white/10 p-4 sm:p-7 sm:grid-cols-2">
           <DetailItem
             icon={
               <CalendarDays
@@ -329,7 +334,7 @@ export default function Step7Payment() {
           />
         </div>
 
-        <div className="border-b border-white/10 p-7">
+        <div className="border-b border-white/10 p-4 sm:p-7">
           <p className="text-xs uppercase tracking-[0.3em] text-[#D4AF37]">
             Customer Details
           </p>
@@ -362,14 +367,14 @@ export default function Step7Payment() {
           </div>
         </div>
 
-        <div className="bg-[#D4AF37]/5 p-7">
+        <div className="bg-[#D4AF37]/5 p-4 sm:p-7">
           <div className="flex items-center justify-between gap-6">
             <div>
-              <p className="text-xs uppercase tracking-[0.3em] text-white/40">
+              <p className="text-xs uppercase tracking-[0.3em] text-white/75">
                 Amount to Pay
               </p>
 
-              <p className="mt-2 text-sm text-white/50">
+              <p className="mt-2 text-sm text-white/70">
                 {selectedServices.length} treatment
                 {selectedServices.length !== 1
                   ? "s"
@@ -397,7 +402,7 @@ export default function Step7Payment() {
           duration: 0.45,
           delay: 0.08,
         }}
-        className="rounded-[30px] border border-white/10 bg-white/5 p-7"
+        className="rounded-[30px] border border-white/10 bg-white/5 p-4 sm:p-7"
       >
         <div className="flex items-start gap-4">
           <div className="rounded-full bg-[#D4AF37]/10 p-3">
@@ -412,7 +417,7 @@ export default function Step7Payment() {
               Secure Stripe Checkout
             </h3>
 
-            <p className="mt-2 text-sm leading-6 text-white/50">
+            <p className="mt-2 text-sm leading-6 text-white/70">
               Your payment is securely processed
               by Stripe. ORANE does not store
               your card details.
@@ -429,7 +434,7 @@ export default function Step7Payment() {
               />
             </div>
 
-            <p className="mt-4 text-sm text-white/60">
+            <p className="mt-4 text-sm text-white/75">
               Secure Stripe Checkout
             </p>
 
@@ -516,7 +521,7 @@ function DetailItem({
       </div>
 
       <div className="min-w-0">
-        <p className="text-xs uppercase tracking-[0.2em] text-white/40">
+        <p className="text-xs uppercase tracking-[0.2em] text-white/75">
           {label}
         </p>
 
@@ -547,6 +552,7 @@ function CustomerItem({
     </div>
   );
 }
+
 
 
 
