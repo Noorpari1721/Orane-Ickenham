@@ -36,14 +36,10 @@ const categoryLabels: Record<string, string> = {
 
 function cleanServiceText(value: string) {
   return String(value || "")
-    .replace(/Â£/g, "£")
-    .replace(/Â/g, "")
-    .replace(/â€™/g, "'")
-    .replace(/â€œ/g, '"')
-    .replace(/â€�/g, '"')
-    .replace(/â€“/g, "–")
-    .replace(/â€”/g, "—")
-    .replace(/â€¦/g, "…")
+    .replace(/\u00C2\u00A3/g, "\u00A3")
+    .replace(/\u00C3\u201A\u00C2\u00A3/g, "\u00A3")
+    .replace(/\u00C3\u201A\u00A3/g, "\u00A3")
+    .replace(/\u00E2\u201A\u00AC/g, "\u00A3")
     .trim();
 }
 
@@ -162,8 +158,8 @@ export default function GiftCardsPage() {
 
             const canonicalName = String(service.name || "")
               .normalize("NFKC")
-              .replace(/â€“|â€”|âˆ’|â€¦|Â/g, " ")
-              .replace(/[—–−]/g, " ")
+              .replace(/Ã¢£â€œ|Ã¢£â€|Ã¢Ë†â€™|Ã¢£Â¦|Ã‚/g, " ")
+              .replace(/[â€”â€“âˆ’]/g, " ")
               .replace(/[^a-zA-Z0-9]+/g, " ")
               .replace(/\s+/g, " ")
               .trim()
@@ -180,8 +176,8 @@ export default function GiftCardsPage() {
 
                 const candidateName = String(candidate.name || "")
                   .normalize("NFKC")
-                  .replace(/â€“|â€”|âˆ’|â€¦|Â/g, " ")
-                  .replace(/[—–−]/g, " ")
+                  .replace(/Ã¢£â€œ|Ã¢£â€|Ã¢Ë†â€™|Ã¢£Â¦|Ã‚/g, " ")
+                  .replace(/[â€”â€“âˆ’]/g, " ")
                   .replace(/[^a-zA-Z0-9]+/g, " ")
                   .replace(/\s+/g, " ")
                   .trim()
@@ -532,7 +528,7 @@ export default function GiftCardsPage() {
     selectedServices.length;
 
   return (
-    <main className="min-h-screen bg-[#050505] text-white">
+    <main className="min-h-screen w-full min-w-0 max-w-none overflow-x-hidden bg-[#050505] text-white">
       <div className="pointer-events-none fixed inset-0 -z-0 overflow-hidden">
         <div className="absolute left-[-15%] top-[5%] h-[520px] w-[520px] rounded-full bg-[#C49A45]/10 blur-[130px]" />
         <div className="absolute bottom-[5%] right-[-15%] h-[500px] w-[500px] rounded-full bg-[#C49A45]/8 blur-[130px]" />
@@ -540,7 +536,7 @@ export default function GiftCardsPage() {
       </div>
 
       <header className="relative z-20 border-b border-white/[0.08] bg-black/20 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-5 sm:px-8">
+        <div className="w-full max-w-7xl mx-auto flex min-w-0 items-center justify-between px-4 py-5 sm:px-8">
           <Link
             href="/"
             className="group inline-flex items-center gap-3 text-[10px] font-semibold uppercase tracking-[0.25em] text-white/50 transition hover:text-[#D4AF37]"
@@ -566,8 +562,8 @@ export default function GiftCardsPage() {
         </div>
       </header>
 
-      <section className="relative z-10 mx-auto max-w-7xl px-5 pb-20 pt-12 sm:px-8 sm:pt-16">
-        <div className="mx-auto max-w-4xl text-center">
+      <section className="relative z-10 w-full max-w-7xl mx-auto min-w-0 overflow-x-hidden px-4 pb-16 pt-10 sm:px-8 sm:pb-20 sm:pt-16">
+        <div className="w-full max-w-4xl mx-auto text-center">
           <div className="mb-6 flex items-center justify-center gap-4">
             <span className="h-px w-8 bg-[#D4AF37]/60 sm:w-14" />
 
@@ -578,7 +574,7 @@ export default function GiftCardsPage() {
             <span className="h-px w-8 bg-[#D4AF37]/60 sm:w-14" />
           </div>
 
-          <h1 className="font-serif text-5xl leading-[0.95] sm:text-7xl">
+          <h1 className="font-serif text-[42px] leading-[0.95] sm:text-7xl">
             Give the gift
             <br />
             <span className="text-[#D4AF37]">
@@ -605,9 +601,9 @@ export default function GiftCardsPage() {
           </div>
         </div>
 
-        <div className="mx-auto mt-14 grid max-w-7xl gap-7 lg:grid-cols-[minmax(0,1fr)_380px] lg:items-start">
-          <div className="overflow-hidden rounded-[30px] border border-white/[0.09] bg-white/[0.025] shadow-2xl shadow-black/30">
-            <div className="border-b border-white/[0.08] p-6 sm:p-8">
+        <div className="w-full max-w-7xl mx-auto mt-10 grid min-w-0 gap-5 lg:mt-14 lg:grid-cols-[minmax(0,1fr)_380px] lg:gap-7 lg:items-start">
+          <div className="w-full min-w-0 max-w-none overflow-hidden rounded-[24px] border border-white/[0.09] bg-white/[0.025] shadow-2xl shadow-black/30 sm:rounded-[30px]">
+            <div className="min-w-0 border-b border-white/[0.08] p-4 sm:p-8">
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <div className="flex items-center gap-3">
@@ -633,7 +629,7 @@ export default function GiftCardsPage() {
                 />
               </div>
 
-              <div className="mt-7 grid gap-3 sm:grid-cols-2">
+              <div className="mt-6 grid w-full min-w-0 grid-cols-1 gap-3 sm:mt-7 sm:grid-cols-2">
                 {[
                   {
                     type: "service" as const,
@@ -660,7 +656,7 @@ export default function GiftCardsPage() {
                         setGiftType(option.type);
                         setError("");
                       }}
-                      className={`group relative overflow-hidden rounded-[22px] border p-5 text-left transition-all duration-300 ${
+                      className={`group relative w-full min-w-0 overflow-hidden rounded-[20px] border p-5 text-left transition-all duration-300 ${
                         active
                           ? "border-[#D4AF37]/70 bg-[#C49A45]/10 shadow-lg shadow-[#C49A45]/5"
                           : "border-white/10 bg-white/[0.02] hover:border-[#D4AF37]/35 hover:bg-white/[0.04]"
@@ -701,7 +697,7 @@ export default function GiftCardsPage() {
               </div>
             </div>
 
-            <div className="border-b border-white/[0.08] p-6 sm:p-8">
+            <div className="min-w-0 border-b border-white/[0.08] p-4 sm:p-8">
               <div className="flex items-end justify-between gap-4">
                 <div>
                   <div className="flex items-center gap-3">
@@ -739,7 +735,7 @@ export default function GiftCardsPage() {
               </div>
 
               {giftType === "service" ? (
-                <div className="mt-7">
+                <div className="mt-6 w-full min-w-0 sm:mt-7">
                   <div className="relative">
                     <Search
                       size={16}
@@ -811,6 +807,7 @@ export default function GiftCardsPage() {
                         ref={categoryScroller}
                         className="
                           flex
+                          w-full
                           min-w-0
                           flex-1
                           items-center
@@ -964,7 +961,7 @@ export default function GiftCardsPage() {
                       </p>
                     </div>
                   ) : (
-                    <div className="mt-4 grid gap-2.5 sm:grid-cols-2">
+                    <div className="mt-4 grid w-full min-w-0 grid-cols-1 gap-2.5 sm:grid-cols-2">
                       {filteredServices.map(
                         (service) => {
                           const active =
@@ -982,7 +979,7 @@ export default function GiftCardsPage() {
                                 );
                                 setError("");
                               }}
-                              className={`group flex min-h-[82px] items-center justify-between gap-4 rounded-[18px] border px-4 py-3.5 text-left transition-all duration-200 ${
+                              className={`group flex w-full min-w-0 min-h-[82px] items-center justify-between gap-4 rounded-[18px] border px-4 py-3.5 text-left transition-all duration-200 ${
                                 active
                                   ? "border-[#D4AF37]/65 bg-[#C49A45]/10 shadow-lg shadow-[#C49A45]/5"
                                   : "border-white/[0.09] bg-white/[0.018] hover:border-[#D4AF37]/30 hover:bg-white/[0.035]"
@@ -1028,8 +1025,8 @@ export default function GiftCardsPage() {
                   )}
                 </div>
               ) : (
-                <div className="mt-7">
-                  <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
+                <div className="mt-6 w-full min-w-0 sm:mt-7">
+                  <div className="grid w-full min-w-0 grid-cols-2 gap-2.5 sm:grid-cols-4">
                     {customAmounts.map(
                       (value) => {
                         const active =
@@ -1086,7 +1083,7 @@ export default function GiftCardsPage() {
               )}
             </div>
 
-            <div className="p-6 sm:p-8">
+            <div className="w-full min-w-0 p-4 sm:p-8">
               <div className="flex items-center gap-3">
                 <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-[10px] font-bold text-[#D4AF37]">
                   03
@@ -1102,7 +1099,7 @@ export default function GiftCardsPage() {
                 </div>
               </div>
 
-              <div className="mt-7 grid gap-3 sm:grid-cols-2">
+              <div className="mt-6 grid w-full min-w-0 grid-cols-1 gap-3 sm:mt-7 sm:grid-cols-2">
                 <button
                   type="button"
                   onClick={() =>
@@ -1188,7 +1185,7 @@ export default function GiftCardsPage() {
                   />
                 </div>
               ) : (
-                <div className="mt-4 grid gap-3.5 sm:grid-cols-2">
+                <div className="mt-4 grid w-full min-w-0 grid-cols-1 gap-3.5 sm:grid-cols-2">
                   <input
                     value={recipientFirstName}
                     onChange={(event) =>
@@ -1239,8 +1236,8 @@ export default function GiftCardsPage() {
             </div>
           </div>
 
-          <aside className="lg:sticky lg:top-6 lg:self-start">
-            <div className="overflow-hidden rounded-[30px] border border-[#D4AF37]/25 bg-[#0b0b0b]/95 shadow-2xl shadow-black/40 backdrop-blur-xl">
+          <aside className="w-full min-w-0 max-w-none lg:sticky lg:top-6 lg:self-start">
+            <div className="w-full min-w-0 overflow-hidden rounded-[24px] border border-[#D4AF37]/25 bg-[#0b0b0b]/95 shadow-2xl shadow-black/40 backdrop-blur-xl">
               <div className="relative overflow-hidden border-b border-white/[0.08] p-7 sm:p-8">
                 <div className="pointer-events-none absolute right-[-40px] top-[-50px] h-40 w-40 rounded-full bg-[#D4AF37]/10 blur-[55px]" />
 
@@ -1390,3 +1387,4 @@ export default function GiftCardsPage() {
     </main>
   );
 }
+
