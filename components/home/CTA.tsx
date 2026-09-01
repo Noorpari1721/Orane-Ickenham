@@ -18,16 +18,16 @@ export default function CTA() {
       id="contact"
       className="relative overflow-hidden bg-[#111111] py-20 md:py-28"
     >
-      <div className="absolute inset-0 bg-gradient-to-r from-[#C49A45]/10 via-transparent to-[#C49A45]/10" />
+      <div className="absolute inset-0 bg-gradient-to-r from-[#D4AF37]/10 via-transparent to-[#D4AF37]/10" />
 
       <div className="relative mx-auto max-w-[1600px] px-8 xl:px-12">
         <div className="grid gap-12 lg:grid-cols-2 lg:gap-12 xl:gap-16">
 
           {/* LEFT SIDE - CONTACT + MAP */}
           <div className="text-center lg:text-left">
-            <div className="mb-5 h-[2px] w-20 bg-[#C49A45] mx-auto lg:mx-0" />
+            <div className="mb-5 h-[2px] w-20 bg-[#D4AF37] mx-auto lg:mx-0" />
 
-            <p className="mb-5 text-sm font-semibold uppercase tracking-[0.45em] text-[#C49A45]">
+            <p className="mb-5 text-sm font-semibold uppercase tracking-[0.45em] text-[#D4AF37]">
               CONTACT US
             </p>
 
@@ -56,7 +56,7 @@ export default function CTA() {
               </div>
 
               <div className="border-t border-white/10 pt-5 md:border-l md:border-t-0 md:pl-8 md:pt-0">
-                <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-[#C49A45]">
+                <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-[#D4AF37]">
                   Getting Here
                 </p>
 
@@ -89,12 +89,12 @@ export default function CTA() {
               href={directionsUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-8 inline-flex rounded-full border border-[#C49A45] px-8 py-4 font-medium text-[#C49A45] transition duration-300 hover:bg-[#C49A45] hover:text-white"
+              className="mt-8 inline-flex rounded-full border border-[#D4AF37] px-8 py-4 font-medium text-[#D4AF37] transition duration-300 hover:bg-[#D4AF37] hover:text-white"
             >
               Get Directions
             </a>
 
-            <div className="mt-10 overflow-hidden rounded-2xl border border-[#C49A45]/40 shadow-2xl">
+            <div className="mt-10 overflow-hidden rounded-2xl border border-[#D4AF37]/40 shadow-2xl">
               <iframe
                 title="Orane Ickenham Location"
                 src={mapUrl}
@@ -111,9 +111,9 @@ export default function CTA() {
 
             {/* CTA */}
             <div className="text-center">
-              <div className="mx-auto mb-5 h-[2px] w-20 bg-[#C49A45]" />
+              <div className="mx-auto mb-5 h-[2px] w-20 bg-[#D4AF37]" />
 
-              <p className="mb-5 text-sm font-semibold uppercase tracking-[0.45em] text-[#C49A45]">
+              <p className="mb-5 text-sm font-semibold uppercase tracking-[0.45em] text-[#D4AF37]">
                 BOOK YOUR VISIT
               </p>
 
@@ -131,14 +131,14 @@ export default function CTA() {
               <div className="mt-12 flex flex-wrap justify-center gap-5">
                 <Link
                   href="/booking"
-                  className="rounded-full bg-[#C49A45] px-10 py-4 font-medium text-white transition duration-300 hover:scale-105 hover:bg-[#A67C2E]"
+                  className="rounded-full bg-[#D4AF37] px-10 py-4 font-medium text-white transition duration-300 hover:scale-105 hover:bg-[#A67C2E]"
                 >
                   Book Appointment
                 </Link>
 
                 <Link
                   href="tel:01895217151"
-                  className="rounded-full border border-white/30 px-10 py-4 text-white transition duration-300 hover:border-[#C49A45] hover:bg-white/10"
+                  className="rounded-full border border-white/30 px-10 py-4 text-white transition duration-300 hover:border-[#D4AF37] hover:bg-white/10"
                 >
                   Call Salon
                 </Link>
@@ -148,7 +148,7 @@ export default function CTA() {
             {/* SOCIAL MEDIA */}
             <div className="mt-14 flex flex-1 items-center justify-center lg:mt-0">
               <div className="w-full max-w-xl border-t border-white/10 pt-8 text-center">
-                <p className="mb-7 text-sm font-semibold uppercase tracking-[0.4em] text-[#C49A45]">
+                <p className="mb-7 text-sm font-semibold uppercase tracking-[0.4em] text-[#D4AF37]">
                   FOLLOW ORANE ICKENHAM
                 </p>
 

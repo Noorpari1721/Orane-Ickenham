@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useMemo, useState } from "react";
 import {
@@ -592,7 +592,7 @@ export default function Step5Consultation() {
                     />
 
                     {!yesDetailsNeeded && (
-                      <p className="mt-2 text-xs text-white/30">
+                      <p className="mt-2 text-xs text-white/65">
                         If applicable, please provide
                         any relevant details.
                       </p>

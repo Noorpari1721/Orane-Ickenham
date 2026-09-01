@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
@@ -80,6 +80,12 @@ export default function GiftCardsPage() {
 
   const [searchQuery, setSearchQuery] =
     useState("");
+
+  const [sortOrder, setSortOrder] =
+    useState<"default" | "low-high" | "high-low">("default");
+
+  const categoryScroller =
+    useRef<HTMLDivElement>(null);
 
   const [activeCategory, setActiveCategory] =
     useState("all");
@@ -268,7 +274,7 @@ export default function GiftCardsPage() {
       .trim()
       .toLowerCase();
 
-    return services.filter((service) => {
+    const filtered = services.filter((service) => {
       const categoryMatch =
         activeCategory === "all" ||
         service.category === activeCategory;
@@ -284,10 +290,27 @@ export default function GiftCardsPage() {
 
       return categoryMatch && queryMatch;
     });
+
+    if (sortOrder === "low-high") {
+      return [...filtered].sort(
+        (a, b) =>
+          Number(a.price) - Number(b.price)
+      );
+    }
+
+    if (sortOrder === "high-low") {
+      return [...filtered].sort(
+        (a, b) =>
+          Number(b.price) - Number(a.price)
+      );
+    }
+
+    return filtered;
   }, [
     services,
     searchQuery,
     activeCategory,
+    sortOrder,
   ]);
 
   const selectedServices = useMemo(
@@ -346,27 +369,7 @@ export default function GiftCardsPage() {
     setSelectedServiceIds([]);
   }
 
-  const categoryScroller =
-    useRef<HTMLDivElement>(null);
 
-  function scrollCategories(
-    direction: "left" | "right"
-  ) {
-    const container =
-      categoryScroller.current;
-
-    if (!container) {
-      return;
-    }
-
-    container.scrollBy({
-      left:
-        direction === "left"
-          ? -260
-          : 260,
-      behavior: "smooth",
-    });
-  }
   async function handleCheckout() {
     if (isLoading) return;
 
@@ -523,7 +526,7 @@ export default function GiftCardsPage() {
   }
 
   const inputClass =
-    "w-full rounded-2xl border border-white/10 bg-white/[0.035] px-5 py-4 text-sm text-white outline-none placeholder:text-white/25 transition focus:border-[#D4AF5A]/60 focus:bg-white/[0.05]";
+    "w-full rounded-2xl border border-white/10 bg-white/[0.035] px-5 py-4 text-sm text-white outline-none placeholder:text-white/60 transition focus:border-[#D4AF37]/60 focus:bg-white/[0.05]";
 
   const selectedCount =
     selectedServices.length;
@@ -540,9 +543,9 @@ export default function GiftCardsPage() {
         <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-5 sm:px-8">
           <Link
             href="/"
-            className="group inline-flex items-center gap-3 text-[10px] font-semibold uppercase tracking-[0.25em] text-white/50 transition hover:text-[#DDB45C]"
+            className="group inline-flex items-center gap-3 text-[10px] font-semibold uppercase tracking-[0.25em] text-white/50 transition hover:text-[#D4AF37]"
           >
-            <span className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 transition group-hover:border-[#D4AF5A]/50">
+            <span className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 transition group-hover:border-[#D4AF37]/50">
               <ArrowLeft size={15} />
             </span>
             <span className="hidden sm:inline">
@@ -551,10 +554,10 @@ export default function GiftCardsPage() {
           </Link>
 
           <div className="text-center">
-            <p className="text-sm font-semibold tracking-[0.42em] text-[#DDB45C]">
+            <p className="text-sm font-semibold tracking-[0.42em] text-[#D4AF37]">
               ORANE
             </p>
-            <p className="mt-1 text-[7px] uppercase tracking-[0.5em] text-white/30">
+            <p className="mt-1 text-[7px] uppercase tracking-[0.5em] text-white/65">
               ICKENHAM
             </p>
           </div>
@@ -566,30 +569,30 @@ export default function GiftCardsPage() {
       <section className="relative z-10 mx-auto max-w-7xl px-5 pb-20 pt-12 sm:px-8 sm:pt-16">
         <div className="mx-auto max-w-4xl text-center">
           <div className="mb-6 flex items-center justify-center gap-4">
-            <span className="h-px w-8 bg-[#D4AF5A]/60 sm:w-14" />
+            <span className="h-px w-8 bg-[#D4AF37]/60 sm:w-14" />
 
-            <span className="text-[9px] font-semibold uppercase tracking-[0.35em] text-[#D4AF5A]">
+            <span className="text-[9px] font-semibold uppercase tracking-[0.35em] text-[#D4AF37]">
               THE ORANE GIFT COLLECTION
             </span>
 
-            <span className="h-px w-8 bg-[#D4AF5A]/60 sm:w-14" />
+            <span className="h-px w-8 bg-[#D4AF37]/60 sm:w-14" />
           </div>
 
           <h1 className="font-serif text-5xl leading-[0.95] sm:text-7xl">
             Give the gift
             <br />
-            <span className="text-[#D4AF5A]">
+            <span className="text-[#D4AF37]">
               of luxury.
             </span>
           </h1>
 
-          <p className="mx-auto mt-6 max-w-2xl text-sm leading-7 text-white/45 sm:text-base">
+          <p className="mx-auto mt-6 max-w-2xl text-sm leading-7 text-white/75 sm:text-base">
             Choose one or more signature ORANE
             experiences, or create a beautiful
             gift card with a value of your choice.
           </p>
 
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3 text-[9px] uppercase tracking-[0.22em] text-white/35">
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3 text-[9px] uppercase tracking-[0.22em] text-white/70">
             <span className="rounded-full border border-white/10 bg-white/[0.025] px-4 py-2">
               Instant digital delivery
             </span>
@@ -608,15 +611,15 @@ export default function GiftCardsPage() {
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <div className="flex items-center gap-3">
-                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#D4AF5A] text-[10px] font-bold text-black">
+                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#D4AF37] text-[10px] font-bold text-black">
                       01
                     </span>
-                    <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-white/45">
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-white/75">
                       Choose your gift
                     </p>
                   </div>
 
-                  <p className="mt-4 max-w-xl text-sm leading-6 text-white/35">
+                  <p className="mt-4 max-w-xl text-sm leading-6 text-white/70">
                     Select a treatment voucher or
                     create your own flexible-value
                     gift card.
@@ -626,7 +629,7 @@ export default function GiftCardsPage() {
                 <Gift
                   size={22}
                   strokeWidth={1.5}
-                  className="hidden text-[#DDB45C] sm:block"
+                  className="hidden text-[#D4AF37] sm:block"
                 />
               </div>
 
@@ -659,27 +662,27 @@ export default function GiftCardsPage() {
                       }}
                       className={`group relative overflow-hidden rounded-[22px] border p-5 text-left transition-all duration-300 ${
                         active
-                          ? "border-[#D4AF5A]/70 bg-[#C49A45]/10 shadow-lg shadow-[#C49A45]/5"
-                          : "border-white/10 bg-white/[0.02] hover:border-[#D4AF5A]/35 hover:bg-white/[0.04]"
+                          ? "border-[#D4AF37]/70 bg-[#C49A45]/10 shadow-lg shadow-[#C49A45]/5"
+                          : "border-white/10 bg-white/[0.02] hover:border-[#D4AF37]/35 hover:bg-white/[0.04]"
                       }`}
                     >
                       <div className="flex items-center justify-between">
                         <span
                           className={`flex h-10 w-10 items-center justify-center rounded-full border ${
                             active
-                              ? "border-[#D4AF5A]/40 bg-[#D4AF5A]/10"
+                              ? "border-[#D4AF37]/40 bg-[#D4AF37]/10"
                               : "border-white/10 bg-white/[0.025]"
                           }`}
                         >
                           <Icon
                             size={18}
                             strokeWidth={1.5}
-                            className="text-[#DDB45C]"
+                            className="text-[#D4AF37]"
                           />
                         </span>
 
                         {active && (
-                          <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#DDB45C] text-black">
+                          <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#D4AF37] text-black">
                             <Check size={14} />
                           </span>
                         )}
@@ -689,7 +692,7 @@ export default function GiftCardsPage() {
                         {option.title}
                       </h2>
 
-                      <p className="mt-2 text-xs leading-5 text-white/35">
+                      <p className="mt-2 text-xs leading-5 text-white/70">
                         {option.text}
                       </p>
                     </button>
@@ -702,11 +705,11 @@ export default function GiftCardsPage() {
               <div className="flex items-end justify-between gap-4">
                 <div>
                   <div className="flex items-center gap-3">
-                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-[10px] font-bold text-[#DDB45C]">
+                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-[10px] font-bold text-[#D4AF37]">
                       02
                     </span>
 
-                    <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-white/45">
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-white/75">
                       {giftType === "service"
                         ? "Select treatments"
                         : "Choose amount"}
@@ -714,7 +717,7 @@ export default function GiftCardsPage() {
                   </div>
 
                   {giftType === "service" && (
-                    <p className="mt-4 text-xs text-white/35">
+                    <p className="mt-4 text-xs text-white/70">
                       {selectedCount === 0
                         ? "Choose one or more experiences"
                         : `${selectedCount} treatment${selectedCount === 1 ? "" : "s"} selected`}
@@ -727,7 +730,7 @@ export default function GiftCardsPage() {
                     <button
                       type="button"
                       onClick={clearSelection}
-                      className="inline-flex items-center gap-2 text-[9px] font-semibold uppercase tracking-[0.18em] text-white/35 transition hover:text-[#DDB45C]"
+                      className="inline-flex items-center gap-2 text-[9px] font-semibold uppercase tracking-[0.18em] text-white/70 transition hover:text-[#D4AF37]"
                     >
                       <X size={13} />
                       Clear
@@ -740,7 +743,7 @@ export default function GiftCardsPage() {
                   <div className="relative">
                     <Search
                       size={16}
-                      className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-white/25"
+                      className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-white/60"
                     />
 
                     <input
@@ -760,148 +763,203 @@ export default function GiftCardsPage() {
                         onClick={() =>
                           setSearchQuery("")
                         }
-                        className="absolute right-4 top-1/2 -translate-y-1/2 text-white/30 transition hover:text-white"
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-white/65 transition hover:text-white"
                       >
                         <X size={15} />
                       </button>
                     )}
                   </div>
 
-                                  <div className="mt-4 flex items-center gap-4">
+                  <div className="mt-4 min-w-0">
+                    <div className="flex min-w-0 items-center gap-3">
 
-                  <button
-                    type="button"
-                    onClick={() =>
-                      scrollCategories("left")
-                    }
-                    className="
-                      flex
-                      h-12
-                      w-12
-                      shrink-0
-                      items-center
-                      justify-center
-                      rounded-full
-                      border
-                      border-white/10
-                      bg-white/[0.025]
-                      text-white/55
-                      transition-all
-                      duration-200
-                      hover:border-[#D4AF5A]/50
-                      hover:bg-[#D4AF5A]/10
-                      hover:text-[#DDB45C]
-                    "
-                    aria-label="Scroll treatment categories left"
-                  >
-                    <ChevronLeft size={19} />
-                  </button>
+                      {/* DESKTOP LEFT ARROW */}
+                      <button
+                        type="button"
+                        onClick={() =>
+                          categoryScroller.current?.scrollBy({
+                            left: -280,
+                            behavior: "smooth",
+                          })
+                        }
+                        className="
+                          hidden
+                          h-11
+                          w-11
+                          shrink-0
+                          items-center
+                          justify-center
+                          rounded-full
+                          border
+                          border-white/10
+                          bg-white/[0.025]
+                          text-white/75
+                          transition-all
+                          duration-200
+                          hover:border-[#D4AF37]/60
+                          hover:bg-[#D4AF37]/10
+                          hover:text-[#D4AF37]
+                          lg:flex
+                        "
+                        aria-label="Scroll treatment categories left"
+                      >
+                        <ChevronLeft size={18} />
+                      </button>
 
-                  <div
-                    ref={categoryScroller}
-                    className="
-                      flex
-                      min-w-0
-                      flex-1
-                      items-center
-                      gap-2
-                      overflow-x-auto
-                      rounded-full
-                      border
-                      border-white/10
-                      bg-white/[0.018]
-                      px-2
-                      py-2
-                      scroll-smooth
-                      [-ms-overflow-style:none]
-                      [scrollbar-width:none]
-                      [&::-webkit-scrollbar]:hidden
-                    "
-                  >
-                    {categories.map(
-                      (category) => {
-                        const active =
-                          activeCategory ===
-                          category;
+                      {/* CATEGORY SCROLLER */}
+                      <div
+                        ref={categoryScroller}
+                        className="
+                          flex
+                          min-w-0
+                          flex-1
+                          items-center
+                          gap-2
+                          overflow-x-auto
+                          rounded-full
+                          border
+                          border-white/10
+                          bg-white/[0.018]
+                          px-2
+                          py-2
+                          scroll-smooth
+                          [-ms-overflow-style:none]
+                          [scrollbar-width:none]
+                          [&::-webkit-scrollbar]:hidden
+                        "
+                      >
+                        {categories.map((category) => {
+                          const active =
+                            activeCategory === category;
 
-                        return (
-                          <button
-                            key={category}
-                            type="button"
-                            onClick={() =>
-                              setActiveCategory(
-                                category
-                              )
-                            }
-                            className={`shrink-0 rounded-full border px-4 py-2 text-[9px] font-semibold uppercase tracking-[0.15em] transition ${
-                              active
-                                ? "border-[#D4AF5A]/60 bg-[#D4AF5A] text-black"
-                                : "border-white/10 bg-white/[0.025] text-white/40 hover:border-[#D4AF5A]/35 hover:text-white"
-                            }`}
-                          >
-                            {category === "all"
-                              ? "All treatments"
-                              : category}
-                          </button>
-                        );
-                      }
-                    )}
+                          return (
+                            <button
+                              key={category}
+                              type="button"
+                              onClick={() =>
+                                setActiveCategory(category)
+                              }
+                              className={`shrink-0 rounded-full border px-4 py-2 text-[9px] font-semibold uppercase tracking-[0.15em] transition ${
+                                active
+                                  ? "border-[#D4AF37] bg-[#D4AF37]/10 text-[#D4AF37]"
+                                  : "border-white/10 bg-white/[0.025] text-white/70 hover:border-[#D4AF37]/50 hover:text-[#D4AF37]"
+                              }`}
+                            >
+                              {category === "all"
+                                ? "All treatments"
+                                : category}
+                            </button>
+                          );
+                        })}
+                      </div>
+
+                      {/* DESKTOP RIGHT ARROW */}
+                      <button
+                        type="button"
+                        onClick={() =>
+                          categoryScroller.current?.scrollBy({
+                            left: 280,
+                            behavior: "smooth",
+                          })
+                        }
+                        className="
+                          hidden
+                          h-11
+                          w-11
+                          shrink-0
+                          items-center
+                          justify-center
+                          rounded-full
+                          border
+                          border-white/10
+                          bg-white/[0.025]
+                          text-white/75
+                          transition-all
+                          duration-200
+                          hover:border-[#D4AF37]/60
+                          hover:bg-[#D4AF37]/10
+                          hover:text-[#D4AF37]
+                          lg:flex
+                        "
+                        aria-label="Scroll treatment categories right"
+                      >
+                        <ChevronRight size={18} />
+                      </button>
+
+                    </div>
                   </div>
-
-                  <button
-                    type="button"
-                    onClick={() =>
-                      scrollCategories("right")
-                    }
-                    className="
-                      flex
-                      h-12
-                      w-12
-                      shrink-0
-                      items-center
-                      justify-center
-                      rounded-full
-                      border
-                      border-white/10
-                      bg-white/[0.025]
-                      text-white/55
-                      transition-all
-                      duration-200
-                      hover:border-[#D4AF5A]/50
-                      hover:bg-[#D4AF5A]/10
-                      hover:text-[#DDB45C]
-                    "
-                    aria-label="Scroll treatment categories right"
-                  >
-                    <ChevronRight size={19} />
-                  </button>
-
-                </div>
-
-                  <div className="mt-6 flex items-center justify-between">
-                    <p className="text-[9px] uppercase tracking-[0.18em] text-white/25">
+                  <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
+                    <p className="text-[9px] uppercase tracking-[0.18em] text-white/60">
                       {filteredServices.length}{" "}
                       available
                     </p>
 
-                    {selectedCount > 0 && (
-                      <p className="text-[9px] uppercase tracking-[0.18em] text-[#DDB45C]">
-                        £{serviceTotal.toFixed(2)}{" "}
-                        selected
-                      </p>
-                    )}
+                    <div className="flex items-center gap-3">
+                      <label
+                        htmlFor="gift-card-sort"
+                        className="text-[8px] font-semibold uppercase tracking-[0.16em] text-white/60"
+                      >
+                        Sort by
+                      </label>
+
+                      <select
+                        id="gift-card-sort"
+                        value={sortOrder}
+                        onChange={(event) =>
+                          setSortOrder(
+                            event.target.value as
+                              | "default"
+                              | "low-high"
+                              | "high-low"
+                          )
+                        }
+                        className="
+                          rounded-full
+                          border
+                          border-white/10
+                          bg-[#0b0b0b]
+                          px-3
+                          py-2
+                          text-[9px]
+                          font-semibold
+                          uppercase
+                          tracking-[0.12em]
+                          text-white/65
+                          outline-none
+                          transition
+                          focus:border-[#D4AF37]/60
+                        "
+                      >
+                        <option value="default">
+                          Recommended
+                        </option>
+                        <option value="low-high">
+                          Price: Low to High
+                        </option>
+                        <option value="high-low">
+                          Price: High to Low
+                        </option>
+                      </select>
+
+                      {selectedCount > 0 && (
+                        <p className="text-[9px] uppercase tracking-[0.18em] text-[#D4AF37]">
+                          £{serviceTotal.toFixed(2)}{" "}
+                          selected
+                        </p>
+                      )}
+                    </div>
                   </div>
 
                   {filteredServices.length === 0 ? (
                     <div className="mt-4 rounded-[22px] border border-dashed border-white/10 bg-white/[0.015] px-6 py-12 text-center">
                       <Search
                         size={22}
-                        className="mx-auto text-white/20"
+                        className="mx-auto text-white/55"
                       />
                       <p className="mt-4 font-serif text-xl">
                         No treatments found
                       </p>
-                      <p className="mt-2 text-xs text-white/30">
+                      <p className="mt-2 text-xs text-white/65">
                         Try another search or category.
                       </p>
                     </div>
@@ -926,16 +984,16 @@ export default function GiftCardsPage() {
                               }}
                               className={`group flex min-h-[82px] items-center justify-between gap-4 rounded-[18px] border px-4 py-3.5 text-left transition-all duration-200 ${
                                 active
-                                  ? "border-[#D4AF5A]/65 bg-[#C49A45]/10 shadow-lg shadow-[#C49A45]/5"
-                                  : "border-white/[0.09] bg-white/[0.018] hover:border-[#D4AF5A]/30 hover:bg-white/[0.035]"
+                                  ? "border-[#D4AF37]/65 bg-[#C49A45]/10 shadow-lg shadow-[#C49A45]/5"
+                                  : "border-white/[0.09] bg-white/[0.018] hover:border-[#D4AF37]/30 hover:bg-white/[0.035]"
                               }`}
                             >
                               <div className="flex min-w-0 items-center gap-3">
                                 <span
                                   className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border transition ${
                                     active
-                                      ? "border-[#DDB45C] bg-[#DDB45C] text-black"
-                                      : "border-white/20 text-transparent group-hover:border-[#D4AF5A]/50"
+                                      ? "border-[#D4AF37] bg-[#D4AF37] text-black"
+                                      : "border-white/20 text-transparent group-hover:border-[#D4AF37]/50"
                                   }`}
                                 >
                                   <Check size={13} />
@@ -948,7 +1006,7 @@ export default function GiftCardsPage() {
                                     )}
                                   </span>
 
-                                  <span className="mt-1 block truncate text-[8px] font-semibold uppercase tracking-[0.16em] text-white/25">
+                                  <span className="mt-1 block truncate text-[8px] font-semibold uppercase tracking-[0.16em] text-white/60">
                                     {cleanServiceText(
                                       service.category
                                     )}
@@ -956,7 +1014,7 @@ export default function GiftCardsPage() {
                                 </div>
                               </div>
 
-                              <span className="shrink-0 font-serif text-base text-[#DDB45C]">
+                              <span className="shrink-0 font-serif text-base text-[#D4AF37]">
                                 £
                                 {Number(
                                   service.price
@@ -989,8 +1047,8 @@ export default function GiftCardsPage() {
                             }
                             className={`rounded-[18px] border px-4 py-5 font-serif text-lg transition ${
                               active
-                                ? "border-[#D4AF5A]/65 bg-[#C49A45]/10 text-[#DDB45C]"
-                                : "border-white/10 bg-white/[0.02] text-white/70 hover:border-[#D4AF5A]/35"
+                                ? "border-[#D4AF37]/65 bg-[#C49A45]/10 text-[#D4AF37]"
+                                : "border-white/10 bg-white/[0.02] text-white/70 hover:border-[#D4AF37]/35"
                             }`}
                           >
                             £{value}
@@ -1001,7 +1059,7 @@ export default function GiftCardsPage() {
                   </div>
 
                   <div className="relative mt-4">
-                    <span className="pointer-events-none absolute left-5 top-1/2 -translate-y-1/2 font-serif text-xl text-[#DDB45C]">
+                    <span className="pointer-events-none absolute left-5 top-1/2 -translate-y-1/2 font-serif text-xl text-[#D4AF37]">
                       £
                     </span>
 
@@ -1020,7 +1078,7 @@ export default function GiftCardsPage() {
                     />
                   </div>
 
-                  <p className="mt-3 text-[10px] text-white/25">
+                  <p className="mt-3 text-[10px] text-white/60">
                     Gift cards can be created from £25
                     up to £500.
                   </p>
@@ -1030,15 +1088,15 @@ export default function GiftCardsPage() {
 
             <div className="p-6 sm:p-8">
               <div className="flex items-center gap-3">
-                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-[10px] font-bold text-[#DDB45C]">
+                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-[10px] font-bold text-[#D4AF37]">
                   03
                 </span>
 
                 <div>
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-white/45">
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-white/75">
                     Who is it for?
                   </p>
-                  <p className="mt-1 text-xs text-white/25">
+                  <p className="mt-1 text-xs text-white/60">
                     Tell us where to send your gift.
                   </p>
                 </div>
@@ -1052,20 +1110,20 @@ export default function GiftCardsPage() {
                   }
                   className={`rounded-[20px] border p-5 text-left transition ${
                     recipientType === "self"
-                      ? "border-[#D4AF5A]/65 bg-[#C49A45]/10"
-                      : "border-white/10 bg-white/[0.02] hover:border-[#D4AF5A]/30"
+                      ? "border-[#D4AF37]/65 bg-[#C49A45]/10"
+                      : "border-white/10 bg-white/[0.02] hover:border-[#D4AF37]/30"
                   }`}
                 >
                   <div className="flex items-center justify-between">
                     <User
                       size={19}
-                      className="text-[#DDB45C]"
+                      className="text-[#D4AF37]"
                     />
 
                     {recipientType === "self" && (
                       <Check
                         size={16}
-                        className="text-[#DDB45C]"
+                        className="text-[#D4AF37]"
                       />
                     )}
                   </div>
@@ -1074,7 +1132,7 @@ export default function GiftCardsPage() {
                     For myself
                   </p>
 
-                  <p className="mt-1 text-[10px] text-white/30">
+                  <p className="mt-1 text-[10px] text-white/65">
                     Send the gift directly to me.
                   </p>
                 </button>
@@ -1086,21 +1144,21 @@ export default function GiftCardsPage() {
                   }
                   className={`rounded-[20px] border p-5 text-left transition ${
                     recipientType === "someone"
-                      ? "border-[#D4AF5A]/65 bg-[#C49A45]/10"
-                      : "border-white/10 bg-white/[0.02] hover:border-[#D4AF5A]/30"
+                      ? "border-[#D4AF37]/65 bg-[#C49A45]/10"
+                      : "border-white/10 bg-white/[0.02] hover:border-[#D4AF37]/30"
                   }`}
                 >
                   <div className="flex items-center justify-between">
                     <Heart
                       size={19}
-                      className="text-[#DDB45C]"
+                      className="text-[#D4AF37]"
                     />
 
                     {recipientType ===
                       "someone" && (
                       <Check
                         size={16}
-                        className="text-[#DDB45C]"
+                        className="text-[#D4AF37]"
                       />
                     )}
                   </div>
@@ -1109,7 +1167,7 @@ export default function GiftCardsPage() {
                     Gift it to someone
                   </p>
 
-                  <p className="mt-1 text-[10px] text-white/30">
+                  <p className="mt-1 text-[10px] text-white/65">
                     Add their details and a message.
                   </p>
                 </button>
@@ -1182,13 +1240,13 @@ export default function GiftCardsPage() {
           </div>
 
           <aside className="lg:sticky lg:top-6 lg:self-start">
-            <div className="overflow-hidden rounded-[30px] border border-[#D4AF5A]/25 bg-[#0b0b0b]/95 shadow-2xl shadow-black/40 backdrop-blur-xl">
+            <div className="overflow-hidden rounded-[30px] border border-[#D4AF37]/25 bg-[#0b0b0b]/95 shadow-2xl shadow-black/40 backdrop-blur-xl">
               <div className="relative overflow-hidden border-b border-white/[0.08] p-7 sm:p-8">
-                <div className="pointer-events-none absolute right-[-40px] top-[-50px] h-40 w-40 rounded-full bg-[#D4AF5A]/10 blur-[55px]" />
+                <div className="pointer-events-none absolute right-[-40px] top-[-50px] h-40 w-40 rounded-full bg-[#D4AF37]/10 blur-[55px]" />
 
                 <div className="relative flex items-start justify-between">
                   <div>
-                    <p className="text-[9px] font-semibold uppercase tracking-[0.35em] text-[#DDB45C]">
+                    <p className="text-[9px] font-semibold uppercase tracking-[0.35em] text-[#D4AF37]">
                       ORANE ICKENHAM
                     </p>
 
@@ -1196,17 +1254,17 @@ export default function GiftCardsPage() {
                       Gift Card
                     </p>
 
-                    <p className="mt-2 text-[10px] leading-5 text-white/30">
+                    <p className="mt-2 text-[10px] leading-5 text-white/65">
                       A little luxury, beautifully
                       gifted.
                     </p>
                   </div>
 
-                  <span className="flex h-11 w-11 items-center justify-center rounded-full border border-[#D4AF5A]/25 bg-[#D4AF5A]/5">
+                  <span className="flex h-11 w-11 items-center justify-center rounded-full border border-[#D4AF37]/25 bg-[#D4AF37]/5">
                     <Gift
                       size={19}
                       strokeWidth={1.4}
-                      className="text-[#DDB45C]"
+                      className="text-[#D4AF37]"
                     />
                   </span>
                 </div>
@@ -1215,7 +1273,7 @@ export default function GiftCardsPage() {
               <div className="p-7 sm:p-8">
                 <div className="space-y-5">
                   <div className="flex justify-between gap-5">
-                    <span className="text-[10px] uppercase tracking-[0.16em] text-white/30">
+                    <span className="text-[10px] uppercase tracking-[0.16em] text-white/65">
                       Gift type
                     </span>
 
@@ -1227,7 +1285,7 @@ export default function GiftCardsPage() {
                   </div>
 
                   <div className="flex items-start justify-between gap-5">
-                    <span className="text-[10px] uppercase tracking-[0.16em] text-white/30">
+                    <span className="text-[10px] uppercase tracking-[0.16em] text-white/65">
                       Experience
                     </span>
 
@@ -1250,11 +1308,11 @@ export default function GiftCardsPage() {
                   {giftType === "service" &&
                     selectedCount > 0 && (
                       <div className="flex justify-between gap-5">
-                        <span className="text-[10px] uppercase tracking-[0.16em] text-white/30">
+                        <span className="text-[10px] uppercase tracking-[0.16em] text-white/65">
                           Treatments
                         </span>
 
-                        <span className="text-xs text-[#DDB45C]">
+                        <span className="text-xs text-[#D4AF37]">
                           {selectedCount}
                         </span>
                       </div>
@@ -1263,13 +1321,13 @@ export default function GiftCardsPage() {
 
                 <div className="my-7 h-px bg-white/[0.08]" />
 
-                <div className="rounded-[20px] border border-[#D4AF5A]/15 bg-[#D4AF5A]/[0.035] p-5">
+                <div className="rounded-[20px] border border-[#D4AF37]/15 bg-[#D4AF37]/[0.035] p-5">
                   <div className="flex items-end justify-between gap-4">
-                    <span className="text-[9px] font-semibold uppercase tracking-[0.22em] text-white/35">
+                    <span className="text-[9px] font-semibold uppercase tracking-[0.22em] text-white/70">
                       Gift value
                     </span>
 
-                    <span className="font-serif text-4xl text-[#DDB45C]">
+                    <span className="font-serif text-4xl text-[#D4AF37]">
                       £{amount.toFixed(2)}
                     </span>
                   </div>
@@ -1290,7 +1348,7 @@ export default function GiftCardsPage() {
                     (giftType === "service" &&
                       selectedCount === 0)
                   }
-                  className="group mt-5 flex w-full items-center justify-center gap-3 rounded-full bg-[#DDB45C] px-6 py-4 text-[10px] font-bold uppercase tracking-[0.17em] text-black shadow-lg shadow-[#DDB45C]/10 transition-all hover:bg-[#e5c36e] hover:shadow-xl hover:shadow-[#DDB45C]/15 disabled:cursor-not-allowed disabled:opacity-40"
+                  className="group mt-5 flex w-full items-center justify-center gap-3 rounded-full bg-[#D4AF37] px-6 py-4 text-[10px] font-bold uppercase tracking-[0.17em] text-black shadow-lg shadow-[#D4AF37]/10 transition-all hover:bg-[#e5c36e] hover:shadow-xl hover:shadow-[#D4AF37]/15 disabled:cursor-not-allowed disabled:opacity-40"
                 >
                   <span>
                     {isLoading
@@ -1307,18 +1365,18 @@ export default function GiftCardsPage() {
                 </button>
 
                 <div className="mt-5 grid gap-3">
-                  <div className="flex items-center gap-3 text-[10px] text-white/30">
+                  <div className="flex items-center gap-3 text-[10px] text-white/65">
                     <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white/[0.04]">
                       <Mail size={13} />
                     </span>
                     Secure digital delivery
                   </div>
 
-                  <div className="flex items-center gap-3 text-[10px] text-white/30">
+                  <div className="flex items-center gap-3 text-[10px] text-white/65">
                     <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white/[0.04]">
                       <Check
                         size={13}
-                        className="text-[#DDB45C]"
+                        className="text-[#D4AF37]"
                       />
                     </span>
                     Valid for 2 years from issue date

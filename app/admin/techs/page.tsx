@@ -528,7 +528,7 @@ export default function AdminTechsPage() {
               <div className="relative min-w-0 flex-1">
                 <Search
                   size={17}
-                  className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-white/25"
+                  className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-white/60"
                 />
 
                 <input
@@ -540,7 +540,7 @@ export default function AdminTechsPage() {
                     )
                   }
                   placeholder="Search technicians, roles or specialties..."
-                  className="w-full rounded-xl border border-white/10 bg-black/20 py-3 pl-11 pr-4 text-sm text-white outline-none placeholder:text-white/25 transition focus:border-[#D4AF37]/30"
+                  className="w-full rounded-xl border border-white/10 bg-black/20 py-3 pl-11 pr-4 text-sm text-white outline-none placeholder:text-white/60 transition focus:border-[#D4AF37]/30"
                 />
               </div>
 
@@ -559,7 +559,7 @@ export default function AdminTechsPage() {
                     className={`rounded-xl border px-4 py-2.5 text-xs transition ${
                       status === item
                         ? "border-[#D4AF37]/30 bg-[#D4AF37]/10 text-[#D4AF37]"
-                        : "border-white/10 bg-white/[0.03] text-white/40 hover:bg-white/[0.06] hover:text-white"
+                        : "border-white/10 bg-white/[0.03] text-white/70 hover:bg-white/[0.06] hover:text-white"
                     }`}
                   >
                     {item === "All"
@@ -583,7 +583,7 @@ export default function AdminTechsPage() {
                   All Technicians
                 </h2>
 
-                <p className="text-xs text-white/30">
+                <p className="text-xs text-white/65">
                   {filteredTechs.length}{" "}
                   {filteredTechs.length === 1
                     ? "technician"
@@ -594,7 +594,7 @@ export default function AdminTechsPage() {
 
             {loading ? (
               <div className="flex min-h-[300px] items-center justify-center">
-                <p className="text-sm text-white/40">
+                <p className="text-sm text-white/70">
                   Loading technicians...
                 </p>
               </div>
@@ -602,10 +602,10 @@ export default function AdminTechsPage() {
               <div className="p-12 text-center">
                 <UserRound
                   size={38}
-                  className="mx-auto text-white/15"
+                  className="mx-auto text-white/50"
                 />
 
-                <p className="mt-4 text-sm text-white/45">
+                <p className="mt-4 text-sm text-white/75">
                   {techs.length === 0
                     ? "No technicians found."
                     : "No technicians match your filters."}
@@ -630,31 +630,31 @@ export default function AdminTechsPage() {
                   <table className="w-full min-w-[1050px]">
                     <thead>
                       <tr className="border-b border-white/10 text-left">
-                        <th className="px-6 py-4 text-[10px] uppercase tracking-[0.18em] text-white/25">
+                        <th className="px-6 py-4 text-[10px] uppercase tracking-[0.18em] text-white/60">
                           Technician
                         </th>
 
-                        <th className="px-6 py-4 text-[10px] uppercase tracking-[0.18em] text-white/25">
+                        <th className="px-6 py-4 text-[10px] uppercase tracking-[0.18em] text-white/60">
                           Contact
                         </th>
 
-                        <th className="px-6 py-4 text-[10px] uppercase tracking-[0.18em] text-white/25">
+                        <th className="px-6 py-4 text-[10px] uppercase tracking-[0.18em] text-white/60">
                           Role
                         </th>
 
-                        <th className="px-6 py-4 text-[10px] uppercase tracking-[0.18em] text-white/25">
+                        <th className="px-6 py-4 text-[10px] uppercase tracking-[0.18em] text-white/60">
                           Experience
                         </th>
 
-                        <th className="px-6 py-4 text-[10px] uppercase tracking-[0.18em] text-white/25">
+                        <th className="px-6 py-4 text-[10px] uppercase tracking-[0.18em] text-white/60">
                           Specialties
                         </th>
 
-                        <th className="px-6 py-4 text-[10px] uppercase tracking-[0.18em] text-white/25">
+                        <th className="px-6 py-4 text-[10px] uppercase tracking-[0.18em] text-white/60">
                           Status
                         </th>
 
-                        <th className="px-6 py-4 text-right text-[10px] uppercase tracking-[0.18em] text-white/25">
+                        <th className="px-6 py-4 text-right text-[10px] uppercase tracking-[0.18em] text-white/60">
                           Actions
                         </th>
                       </tr>
@@ -682,7 +682,7 @@ export default function AdminTechsPage() {
                                     )}
                                   </p>
 
-                                  <p className="mt-1 text-[11px] text-white/25">
+                                  <p className="mt-1 text-[11px] text-white/60">
                                     {tech.techNo}
                                   </p>
                                 </div>
@@ -695,7 +695,7 @@ export default function AdminTechsPage() {
                                   "No email"}
                               </p>
 
-                              <p className="mt-1 text-xs text-white/30">
+                              <p className="mt-1 text-xs text-white/65">
                                 {tech.phone ||
                                   "No phone"}
                               </p>
@@ -730,7 +730,7 @@ export default function AdminTechsPage() {
                                         key={
                                           specialty
                                         }
-                                        className="rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-1 text-[10px] text-white/45"
+                                        className="rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-1 text-[10px] text-white/75"
                                       >
                                         {
                                           specialty
@@ -743,7 +743,7 @@ export default function AdminTechsPage() {
                                   .specialties
                                   .length >
                                   3 && (
-                                  <span className="rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-1 text-[10px] text-white/30">
+                                  <span className="rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-1 text-[10px] text-white/65">
                                     +
                                     {tech
                                       .specialties
@@ -756,7 +756,7 @@ export default function AdminTechsPage() {
                                   .specialties
                                   .length ===
                                   0 && (
-                                  <span className="text-xs text-white/25">
+                                  <span className="text-xs text-white/60">
                                     None
                                   </span>
                                 )}
@@ -769,7 +769,7 @@ export default function AdminTechsPage() {
                                   tech.status ===
                                   "AVAILABLE"
                                     ? "border-emerald-400/20 bg-emerald-400/10 text-emerald-300"
-                                    : "border-white/10 bg-white/5 text-white/40"
+                                    : "border-white/10 bg-white/5 text-white/70"
                                 }`}
                               >
                                 {tech.status ===
@@ -799,7 +799,7 @@ export default function AdminTechsPage() {
                                     )
                                   }
                                   title="Edit technician"
-                                  className="rounded-lg border border-white/10 p-2 text-white/40 transition hover:border-[#D4AF37]/20 hover:text-[#D4AF37]"
+                                  className="rounded-lg border border-white/10 p-2 text-white/70 transition hover:border-[#D4AF37]/20 hover:text-[#D4AF37]"
                                 >
                                   <Edit3
                                     size={15}
@@ -819,7 +819,7 @@ export default function AdminTechsPage() {
                                       ? "Set unavailable"
                                       : "Set available"
                                   }
-                                  className="rounded-lg border border-white/10 p-2 text-white/40 transition hover:border-white/20 hover:text-white"
+                                  className="rounded-lg border border-white/10 p-2 text-white/70 transition hover:border-white/20 hover:text-white"
                                 >
                                   <Power
                                     size={15}
@@ -834,7 +834,7 @@ export default function AdminTechsPage() {
                                     )
                                   }
                                   title="Delete technician"
-                                  className="rounded-lg border border-white/10 p-2 text-white/40 transition hover:border-red-400/20 hover:text-red-300"
+                                  className="rounded-lg border border-white/10 p-2 text-white/70 transition hover:border-red-400/20 hover:text-red-300"
                                 >
                                   <Trash2
                                     size={15}
@@ -871,7 +871,7 @@ export default function AdminTechsPage() {
                                 )}
                               </p>
 
-                              <p className="mt-1 text-xs text-white/30">
+                              <p className="mt-1 text-xs text-white/65">
                                 {tech.techNo}
                               </p>
                             </div>
@@ -882,7 +882,7 @@ export default function AdminTechsPage() {
                               tech.status ===
                               "AVAILABLE"
                                 ? "border-emerald-400/20 bg-emerald-400/10 text-emerald-300"
-                                : "border-white/10 bg-white/5 text-white/40"
+                                : "border-white/10 bg-white/5 text-white/70"
                             }`}
                           >
                             {tech.status}
@@ -921,7 +921,7 @@ export default function AdminTechsPage() {
                         </div>
 
                         <div className="mt-4">
-                          <p className="text-[10px] uppercase tracking-[0.15em] text-white/25">
+                          <p className="text-[10px] uppercase tracking-[0.15em] text-white/60">
                             Specialties
                           </p>
 
@@ -936,7 +936,7 @@ export default function AdminTechsPage() {
                                     key={
                                       specialty
                                     }
-                                    className="rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-1 text-[10px] text-white/45"
+                                    className="rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-1 text-[10px] text-white/75"
                                   >
                                     {
                                       specialty
@@ -945,7 +945,7 @@ export default function AdminTechsPage() {
                                 )
                               )
                             ) : (
-                              <span className="text-xs text-white/25">
+                              <span className="text-xs text-white/60">
                                 None
                               </span>
                             )}
@@ -1004,7 +1004,7 @@ export default function AdminTechsPage() {
 
           <div className="mt-6 grid gap-4 sm:grid-cols-2">
             <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-5">
-              <p className="text-xs uppercase tracking-[0.2em] text-white/25">
+              <p className="text-xs uppercase tracking-[0.2em] text-white/60">
                 Team Availability
               </p>
 
@@ -1014,13 +1014,13 @@ export default function AdminTechsPage() {
                   : `${availableCount}/${techs.length}`}
               </p>
 
-              <p className="mt-1 text-xs text-white/30">
+              <p className="mt-1 text-xs text-white/65">
                 Technicians currently available
               </p>
             </div>
 
             <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-5">
-              <p className="text-xs uppercase tracking-[0.2em] text-white/25">
+              <p className="text-xs uppercase tracking-[0.2em] text-white/60">
                 Team Roles
               </p>
 
@@ -1030,7 +1030,7 @@ export default function AdminTechsPage() {
                   : rolesCount}
               </p>
 
-              <p className="mt-1 text-xs text-white/30">
+              <p className="mt-1 text-xs text-white/65">
                 Different roles across the team
               </p>
             </div>
@@ -1071,7 +1071,7 @@ export default function AdminTechsPage() {
                 type="button"
                 onClick={closeModal}
                 disabled={saving}
-                className="rounded-lg p-2 text-white/30 transition hover:bg-white/5 hover:text-white disabled:opacity-30"
+                className="rounded-lg p-2 text-white/65 transition hover:bg-white/5 hover:text-white disabled:opacity-30"
               >
                 <X size={18} />
               </button>
@@ -1183,7 +1183,7 @@ export default function AdminTechsPage() {
               </div>
 
               <div className="mt-5">
-                <label className="text-xs text-white/40">
+                <label className="text-xs text-white/70">
                   Specialties
                 </label>
 
@@ -1202,10 +1202,10 @@ export default function AdminTechsPage() {
                     )
                   }
                   placeholder="e.g. Nails, Lashes, Facial"
-                  className="mt-2 w-full rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-sm text-white outline-none placeholder:text-white/20 focus:border-[#D4AF37]/30"
+                  className="mt-2 w-full rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-sm text-white outline-none placeholder:text-white/55 focus:border-[#D4AF37]/30"
                 />
 
-                <p className="mt-2 text-[11px] text-white/25">
+                <p className="mt-2 text-[11px] text-white/60">
                   Separate multiple specialties with commas.
                 </p>
               </div>
@@ -1274,7 +1274,7 @@ function StatCard({
         {value}
       </p>
 
-      <p className="mt-2 text-xs text-white/30">
+      <p className="mt-2 text-xs text-white/65">
         {description}
       </p>
     </div>
@@ -1290,7 +1290,7 @@ function InfoItem({
 }) {
   return (
     <div className="min-w-0">
-      <p className="text-[10px] uppercase tracking-[0.15em] text-white/25">
+      <p className="text-[10px] uppercase tracking-[0.15em] text-white/60">
         {label}
       </p>
 
@@ -1316,7 +1316,7 @@ function Field({
 }) {
   return (
     <div>
-      <label className="text-xs text-white/40">
+      <label className="text-xs text-white/70">
         {label}
 
         {required && (
@@ -1340,7 +1340,7 @@ function Field({
             ? "0"
             : undefined
         }
-        className="mt-2 w-full rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-sm text-white outline-none placeholder:text-white/20 focus:border-[#D4AF37]/30"
+        className="mt-2 w-full rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-sm text-white outline-none placeholder:text-white/55 focus:border-[#D4AF37]/30"
       />
     </div>
   );

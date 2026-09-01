@@ -23,7 +23,7 @@ export default function LuxuryInput({
 }: LuxuryInputProps) {
   return (
     <div>
-      <label className="mb-3 block text-xs uppercase tracking-[0.25em] text-white/40">
+      <label className="mb-3 block text-xs uppercase tracking-[0.25em] text-white/70">
         {label}
       </label>
 
@@ -50,7 +50,7 @@ export default function LuxuryInput({
           text-white
           outline-none
           transition-all
-          placeholder:text-white/30
+          placeholder:text-white/65
           focus:border-[#D4AF37]/60
           "
           style={{

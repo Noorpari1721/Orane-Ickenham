@@ -22,15 +22,15 @@ export default function WhyChooseUs() {
   return (
     <section
       id="about"
-      className="relative overflow-hidden border-b border-[#C49A45] bg-[#1C1B19] py-28"
+      className="relative overflow-hidden border-b border-[#D4AF37] bg-[#1C1B19] py-28"
     >
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_15%_35%,rgba(196,154,69,0.09),transparent_35%),radial-gradient(circle_at_85%_75%,rgba(196,154,69,0.06),transparent_35%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_15%_35%,rgba(212,175,55,0.09),transparent_35%),radial-gradient(circle_at_85%_75%,rgba(212,175,55,0.06),transparent_35%)]" />
 
       <div className="relative mx-auto max-w-7xl px-6">
 
-        <div className="mb-5 h-[2px] w-20 bg-[#C49A45]" />
+        <div className="mb-5 h-[2px] w-20 bg-[#D4AF37]" />
 
-        <p className="mb-5 text-sm font-semibold uppercase tracking-[0.45em] text-[#C49A45]">
+        <p className="mb-5 text-sm font-semibold uppercase tracking-[0.45em] text-[#D4AF37]">
           WHY CHOOSE US
         </p>
 
@@ -64,7 +64,7 @@ export default function WhyChooseUs() {
               {reasons.map((reason) => (
                 <div key={reason.title}>
 
-                  <div className="mb-3 h-[2px] w-10 bg-[#C49A45]" />
+                  <div className="mb-3 h-[2px] w-10 bg-[#D4AF37]" />
 
                   <h3 className="text-2xl font-medium text-white">
                     {reason.title}

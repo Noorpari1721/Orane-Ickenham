@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { motion } from "framer-motion";
 
@@ -270,7 +270,7 @@ export default function Step6Review() {
                             {service.name}
                           </p>
 
-                          <p className="mt-1 text-sm text-white/45">
+                          <p className="mt-1 text-sm text-white/75">
                             {
                               durationToMinutes(
                                 service.duration

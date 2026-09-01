@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { motion } from "framer-motion";
 import {
@@ -417,7 +417,7 @@ function SummaryItem({
       </div>
 
       <div className="min-w-0 flex-1">
-        <p className="text-[10px] uppercase tracking-[0.2em] text-white/45 sm:text-xs sm:tracking-[0.25em]">
+        <p className="text-[10px] uppercase tracking-[0.2em] text-white/75 sm:text-xs sm:tracking-[0.25em]">
           {title}
         </p>
 

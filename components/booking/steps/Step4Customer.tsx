@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import {
   useEffect,
@@ -322,7 +322,7 @@ export default function Step4Customer() {
   };
 
   const inputClass =
-    "w-full rounded-2xl border border-white/10 bg-white/[0.04] px-5 py-4 pl-12 text-white placeholder:text-white/30 outline-none transition-all duration-300 focus:border-[#D4AF37]/70 focus:bg-white/[0.07] focus:shadow-[0_0_25px_rgba(212,175,55,.08)]";
+    "w-full rounded-2xl border border-white/10 bg-white/[0.04] px-5 py-4 pl-12 text-white placeholder:text-white/65 outline-none transition-all duration-300 focus:border-[#D4AF37]/70 focus:bg-white/[0.07] focus:shadow-[0_0_25px_rgba(212,175,55,.08)]";
 
   return (
     <div className="mx-auto max-w-3xl">
@@ -479,7 +479,7 @@ export default function Step4Customer() {
             />
           </div>
 
-          <p className="mt-2 text-xs text-white/30">
+          <p className="mt-2 text-xs text-white/65">
             UK number accepted,
             e.g. 07123 456789
           </p>
@@ -602,7 +602,7 @@ export default function Step4Customer() {
                   Yes, it has changed
                 </span>
 
-                <span className="mt-1 block text-xs leading-5 text-white/45">
+                <span className="mt-1 block text-xs leading-5 text-white/75">
                   I need to review or update my consultation information.
                 </span>
               </button>
@@ -625,7 +625,7 @@ export default function Step4Customer() {
                   No, it is unchanged
                 </span>
 
-                <span className="mt-1 block text-xs leading-5 text-white/45">
+                <span className="mt-1 block text-xs leading-5 text-white/75">
                   I confirm my relevant consultation information remains unchanged.
                 </span>
               </button>
@@ -663,7 +663,7 @@ export default function Step4Customer() {
                     Complete Online
                   </span>
 
-                  <span className="mt-1 block text-xs leading-5 text-white/45">
+                  <span className="mt-1 block text-xs leading-5 text-white/75">
                     Complete your consultation before your appointment.
                   </span>
                 </button>
@@ -685,7 +685,7 @@ export default function Step4Customer() {
                     Skip & Complete at Salon
                   </span>
 
-                  <span className="mt-1 block text-xs leading-5 text-white/45">
+                  <span className="mt-1 block text-xs leading-5 text-white/75">
                     You will be asked to complete your consultation before treatment.
                   </span>
                 </button>
@@ -704,7 +704,7 @@ export default function Step4Customer() {
         <div>
           <label className="mb-2 block text-xs uppercase tracking-[0.2em] text-white/75">
             Special Requests
-            <span className="ml-2 normal-case tracking-normal text-white/25">
+            <span className="ml-2 normal-case tracking-normal text-white/60">
               Optional
             </span>
           </label>

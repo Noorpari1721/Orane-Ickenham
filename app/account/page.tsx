@@ -373,7 +373,7 @@ const [authMode, setAuthMode] =
                     setAuthMessage("");
                   }}
                   placeholder="Full Name"
-                  className="w-full rounded-xl border border-white/10 bg-[#252525] px-4 py-3.5 text-white outline-none placeholder:text-white/30 focus:border-[#D4AF37]/60"
+                  className="w-full rounded-xl border border-white/10 bg-[#252525] px-4 py-3.5 text-white outline-none placeholder:text-white/65 focus:border-[#D4AF37]/60"
                 />
               )}
 
@@ -385,7 +385,7 @@ const [authMode, setAuthMode] =
                   setAuthMessage("");
                 }}
                 placeholder="Email Address"
-                className="w-full rounded-xl border border-white/10 bg-[#252525] px-4 py-3.5 text-white outline-none placeholder:text-white/30 focus:border-[#D4AF37]/60"
+                className="w-full rounded-xl border border-white/10 bg-[#252525] px-4 py-3.5 text-white outline-none placeholder:text-white/65 focus:border-[#D4AF37]/60"
               />
 
               <input
@@ -396,7 +396,7 @@ const [authMode, setAuthMode] =
                   setAuthMessage("");
                 }}
                 placeholder="Password"
-                className="w-full rounded-xl border border-white/10 bg-[#252525] px-4 py-3.5 text-white outline-none placeholder:text-white/30 focus:border-[#D4AF37]/60"
+                className="w-full rounded-xl border border-white/10 bg-[#252525] px-4 py-3.5 text-white outline-none placeholder:text-white/65 focus:border-[#D4AF37]/60"
               />
 
                   <div className="flex justify-end">
@@ -676,7 +676,7 @@ const [authMode, setAuthMode] =
                     ${
                       active
                         ? "bg-[#D4AF37]/12 text-[#D4AF37] shadow-[0_0_24px_rgba(212,175,55,.08)]"
-                        : "text-white/45 hover:bg-white/[0.04] hover:text-white/80"
+                        : "text-white/75 hover:bg-white/[0.04] hover:text-white/80"
                     }
                   `}
                 >
@@ -1059,7 +1059,7 @@ function ActivityPanel({
               ${
                 filter === item.id
                   ? "bg-[#D4AF37]/12 text-[#D4AF37]"
-                  : "text-white/40 hover:text-white/70"
+                  : "text-white/70 hover:text-white/70"
               }
             `}
           >
@@ -1160,7 +1160,7 @@ function ActivityPanel({
                     ${
                       activity.active
                         ? "border-[#D4AF37]/15 bg-[#D4AF37]/[0.04] text-[#D4AF37]/65"
-                        : "border-white/10 bg-white/[0.02] text-white/25"
+                        : "border-white/10 bg-white/[0.02] text-white/60"
                     }
                   `}
                 >
@@ -1190,7 +1190,7 @@ function ActivityPanel({
                   mt-2
                   text-sm
                   leading-7
-                  text-white/35
+                  text-white/70
                 "
               >
                 {activity.description}
@@ -1202,7 +1202,7 @@ function ActivityPanel({
                   inline-flex
                   items-center
                   text-xs
-                  text-white/45
+                  text-white/75
                   transition-all
                   duration-300
                   group-hover:translate-x-1
@@ -1233,7 +1233,7 @@ function ActivityPanel({
           py-4
         "
       >
-        <p className="text-xs leading-6 text-white/25">
+        <p className="text-xs leading-6 text-white/60">
           Activity currently reflects information saved on this
           device. When the secure backend is connected, this area
           can become your full cross-device account history.
@@ -1292,7 +1292,7 @@ function DashboardStat({
           {icon}
         </span>
 
-        <span className="text-xs uppercase tracking-[0.2em] text-white/25">
+        <span className="text-xs uppercase tracking-[0.2em] text-white/60">
           {label}
         </span>
 
@@ -1304,7 +1304,7 @@ function DashboardStat({
           {value}
         </span>
 
-        <span className="text-sm text-white/35">
+        <span className="text-sm text-white/70">
           {detail}
         </span>
 
@@ -1377,7 +1377,7 @@ function DashboardCard({
           text-xs
           uppercase
           tracking-[0.25em]
-          text-white/30
+          text-white/65
         "
       >
         {eyebrow}
@@ -1387,7 +1387,7 @@ function DashboardCard({
         {title}
       </h3>
 
-      <p className="mt-3 text-sm leading-7 text-white/45">
+      <p className="mt-3 text-sm leading-7 text-white/75">
         {description}
       </p>
 
@@ -1504,7 +1504,7 @@ function AppointmentsPanel() {
               Your appointments
             </h2>
 
-            <p className="mt-3 max-w-2xl text-sm leading-7 text-white/45">
+            <p className="mt-3 max-w-2xl text-sm leading-7 text-white/75">
               Keep track of your upcoming treatments and your ORANE visit
               history in one place.
             </p>
@@ -1580,7 +1580,7 @@ function AppointmentsPanel() {
             ${
               appointmentView === "upcoming"
                 ? "bg-[#D4AF37]/12 text-[#D4AF37] shadow-[0_0_22px_rgba(212,175,55,.07)]"
-                : "text-white/40 hover:text-white/70"
+                : "text-white/70 hover:text-white/70"
             }
           `}
         >
@@ -1601,7 +1601,7 @@ function AppointmentsPanel() {
             ${
               appointmentView === "history"
                 ? "bg-[#D4AF37]/12 text-[#D4AF37] shadow-[0_0_22px_rgba(212,175,55,.07)]"
-                : "text-white/40 hover:text-white/70"
+                : "text-white/70 hover:text-white/70"
             }
           `}
         >
@@ -1751,7 +1751,7 @@ function AppointmentEmptyState({
             max-w-xl
             text-sm
             leading-7
-            text-white/40
+            text-white/70
           "
         >
           {description}
@@ -1913,7 +1913,7 @@ function SecurityPanel() {
                   Account protection
                 </h3>
 
-                <p className="mt-1 text-sm text-white/35">
+                <p className="mt-1 text-sm text-white/70">
                   Your account security centre is ready.
                 </p>
 
@@ -1979,7 +1979,7 @@ function SecurityPanel() {
 
               <div className="min-w-0">
 
-                <p className="text-xs uppercase tracking-[0.25em] text-white/30">
+                <p className="text-xs uppercase tracking-[0.25em] text-white/65">
                   PASSWORD
                 </p>
 
@@ -1987,7 +1987,7 @@ function SecurityPanel() {
                   Password & sign-in
                 </h3>
 
-                <p className="mt-2 max-w-xl text-sm leading-7 text-white/35">
+                <p className="mt-2 max-w-xl text-sm leading-7 text-white/70">
                   Password management will become available when
                   the secure ORANE authentication system is connected.
                 </p>
@@ -2007,7 +2007,7 @@ function SecurityPanel() {
                 py-4
               "
             >
-              <p className="text-xs leading-6 text-white/30">
+              <p className="text-xs leading-6 text-white/65">
                 Authentication is intentionally not simulated here.
                 Your real password and session security will be
                 handled by the production backend.
@@ -2041,7 +2041,7 @@ function SecurityPanel() {
 
               <div>
 
-                <p className="text-xs uppercase tracking-[0.25em] text-white/25">
+                <p className="text-xs uppercase tracking-[0.25em] text-white/60">
                   SESSION
                 </p>
 
@@ -2049,7 +2049,7 @@ function SecurityPanel() {
                   Sign out
                 </h3>
 
-                <p className="mt-2 max-w-xl text-sm leading-7 text-white/35">
+                <p className="mt-2 max-w-xl text-sm leading-7 text-white/70">
                   Sign out of this account on the current device.
                 </p>
 
@@ -2149,7 +2149,7 @@ function SecurityPanel() {
               Sign out of your account?
             </h3>
 
-            <p className="mt-3 text-sm leading-7 text-white/40">
+            <p className="mt-3 text-sm leading-7 text-white/70">
               Your locally saved profile and preferences will be
               removed from this device. You can always return later.
             </p>
@@ -2279,7 +2279,7 @@ function DashboardPanel({
             {title}
           </h2>
 
-          <p className="mt-3 max-w-2xl text-sm leading-7 text-white/45">
+          <p className="mt-3 max-w-2xl text-sm leading-7 text-white/75">
             {description}
           </p>
 
@@ -2341,7 +2341,7 @@ function EmptyState({
         {title}
       </h3>
 
-      <p className="mx-auto mt-3 max-w-md text-sm leading-7 text-white/40">
+      <p className="mx-auto mt-3 max-w-md text-sm leading-7 text-white/70">
         {description}
       </p>
 
@@ -2448,7 +2448,7 @@ function ProfileEditor({
 
           <div>
 
-            <p className="text-xs uppercase tracking-[0.25em] text-white/25">
+            <p className="text-xs uppercase tracking-[0.25em] text-white/60">
               ORANE PROFILE
             </p>
 
@@ -2456,7 +2456,7 @@ function ProfileEditor({
               {profile.name || "Your profile"}
             </h3>
 
-            <p className="mt-1 text-sm text-white/35">
+            <p className="mt-1 text-sm text-white/70">
               {profile.email || "Add your details below"}
             </p>
 
@@ -2542,7 +2542,7 @@ function ProfileEditor({
             py-4
           "
         >
-          <p className="text-xs leading-6 text-white/35">
+          <p className="text-xs leading-6 text-white/70">
             Your details are currently saved securely on this
             device. Account authentication and cloud profile
             storage will be connected in the next backend stage.
@@ -2592,7 +2592,7 @@ function ProfileInput({
           text-xs
           uppercase
           tracking-[0.2em]
-          text-white/30
+          text-white/65
         "
       >
         {label}
@@ -2613,9 +2613,9 @@ function ProfileInput({
           text-sm
           text-white
           outline-none
-          placeholder:text-white/20
+          placeholder:text-white/55
           disabled:cursor-default
-          disabled:text-white/45
+          disabled:text-white/75
         "
       />
 
@@ -2724,7 +2724,7 @@ function PreferencesPanel({
 
             <div>
 
-              <p className="text-xs uppercase tracking-[0.25em] text-white/30">
+              <p className="text-xs uppercase tracking-[0.25em] text-white/65">
                 TREATMENT NOTES
               </p>
 
@@ -2766,7 +2766,7 @@ function PreferencesPanel({
               leading-7
               text-white
               outline-none
-              placeholder:text-white/20
+              placeholder:text-white/55
               transition-all
               duration-300
               focus:border-[#D4AF37]/25
@@ -2774,7 +2774,7 @@ function PreferencesPanel({
             "
           />
 
-          <p className="mt-3 text-xs text-white/25">
+          <p className="mt-3 text-xs text-white/60">
             These notes are saved on this device for now.
           </p>
 
@@ -2826,7 +2826,7 @@ function PreferencesPanel({
                 ${
                   preferences.appointmentReminders
                     ? "bg-[#D4AF37]/10 text-[#D4AF37] shadow-[0_0_22px_rgba(212,175,55,.08)]"
-                    : "bg-white/[0.04] text-white/30"
+                    : "bg-white/[0.04] text-white/65"
                 }
               `}
             >
@@ -2835,7 +2835,7 @@ function PreferencesPanel({
 
             <div>
 
-              <p className="text-xs uppercase tracking-[0.25em] text-white/30">
+              <p className="text-xs uppercase tracking-[0.25em] text-white/65">
                 APPOINTMENT REMINDERS
               </p>
 
@@ -2843,7 +2843,7 @@ function PreferencesPanel({
                 Keep me updated
               </h3>
 
-              <p className="mt-1 text-sm leading-6 text-white/35">
+              <p className="mt-1 text-sm leading-6 text-white/70">
                 {preferences.appointmentReminders
                   ? "Reminders are enabled."
                   : "Reminders are currently disabled."}
@@ -2911,7 +2911,7 @@ function PreferencesPanel({
             className="mt-0.5 shrink-0 text-[#D4AF37]/60"
           />
 
-          <p className="text-xs leading-6 text-white/30">
+          <p className="text-xs leading-6 text-white/65">
             Your preferences are currently stored on this device.
             During the backend stage, they will move into your
             secure ORANE customer profile and become available
@@ -2962,7 +2962,7 @@ function PreferenceSelect({
 
       <label className="block">
 
-        <span className="text-xs uppercase tracking-[0.25em] text-white/30">
+        <span className="text-xs uppercase tracking-[0.25em] text-white/65">
           {label}
         </span>
 
@@ -3010,7 +3010,7 @@ function PreferenceSelect({
       </label>
 
       {helper && (
-        <p className="mt-3 text-xs leading-6 text-white/25">
+        <p className="mt-3 text-xs leading-6 text-white/60">
           {helper}
         </p>
       )}

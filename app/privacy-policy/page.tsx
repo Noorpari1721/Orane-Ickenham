@@ -39,7 +39,7 @@ export default function PrivacyPolicyPage() {
             Privacy Policy
           </h1>
 
-          <p className="mt-5 text-sm text-white/45">
+          <p className="mt-5 text-sm text-white/75">
             Last updated: 26 August 2026
           </p>
         </div>

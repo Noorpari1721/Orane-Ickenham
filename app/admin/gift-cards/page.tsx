@@ -361,7 +361,7 @@ export default function AdminGiftCardsPage() {
 
         <div className="mb-6 grid gap-4 md:grid-cols-3">
           <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
-            <p className="text-xs uppercase tracking-wider text-white/40">
+            <p className="text-xs uppercase tracking-wider text-white/70">
               Results
             </p>
             <p className="mt-2 text-2xl font-semibold">
@@ -370,7 +370,7 @@ export default function AdminGiftCardsPage() {
           </div>
 
           <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
-            <p className="text-xs uppercase tracking-wider text-white/40">
+            <p className="text-xs uppercase tracking-wider text-white/70">
               Active Cards
             </p>
             <p className="mt-2 text-2xl font-semibold text-emerald-300">
@@ -379,7 +379,7 @@ export default function AdminGiftCardsPage() {
           </div>
 
           <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
-            <p className="text-xs uppercase tracking-wider text-white/40">
+            <p className="text-xs uppercase tracking-wider text-white/70">
               Visible Balance
             </p>
             <p className="mt-2 text-2xl font-semibold text-[#D4AF37]">
@@ -391,7 +391,7 @@ export default function AdminGiftCardsPage() {
         <div className="mb-6 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
           <div className="flex flex-col gap-3 lg:flex-row">
             <div className="relative flex-1">
-              <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-white/30" />
+              <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-white/65" />
 
               <input
                 value={search}
@@ -399,7 +399,7 @@ export default function AdminGiftCardsPage() {
                   setSearch(event.target.value)
                 }
                 placeholder="Search card number, code or customer..."
-                className="w-full rounded-xl border border-white/10 bg-black/30 py-3 pl-11 pr-4 text-sm text-white outline-none transition placeholder:text-white/30 focus:border-[#D4AF37]/50"
+                className="w-full rounded-xl border border-white/10 bg-black/30 py-3 pl-11 pr-4 text-sm text-white outline-none transition placeholder:text-white/65 focus:border-[#D4AF37]/50"
               />
             </div>
 
@@ -441,11 +441,11 @@ export default function AdminGiftCardsPage() {
             </div>
           ) : cards.length === 0 ? (
             <div className="flex min-h-[300px] flex-col items-center justify-center px-6 text-center">
-              <Gift className="mb-4 h-10 w-10 text-white/20" />
+              <Gift className="mb-4 h-10 w-10 text-white/55" />
               <p className="font-medium">
                 No Gift Cards found
               </p>
-              <p className="mt-1 text-sm text-white/40">
+              <p className="mt-1 text-sm text-white/70">
                 Try changing your search or status
                 filter.
               </p>
@@ -454,7 +454,7 @@ export default function AdminGiftCardsPage() {
             <div className="overflow-x-auto">
               <table className="w-full min-w-[900px]">
                 <thead className="border-b border-white/10 bg-white/[0.02]">
-                  <tr className="text-left text-xs uppercase tracking-wider text-white/40">
+                  <tr className="text-left text-xs uppercase tracking-wider text-white/70">
                     <th className="px-5 py-4">
                       Gift Card
                     </th>
@@ -491,7 +491,7 @@ export default function AdminGiftCardsPage() {
                           {card.code}
                         </div>
 
-                        <div className="mt-1 text-xs text-white/40">
+                        <div className="mt-1 text-xs text-white/70">
                           {money(card.amount)}
                         </div>
                       </td>
@@ -504,7 +504,7 @@ export default function AdminGiftCardsPage() {
                           )}
                         </div>
 
-                        <div className="mt-1 text-xs text-white/40">
+                        <div className="mt-1 text-xs text-white/70">
                           {card.recipient.email ||
                             "No email"}
                         </div>
@@ -517,7 +517,7 @@ export default function AdminGiftCardsPage() {
                           )}
                         </div>
 
-                        <div className="mt-1 text-xs text-white/40">
+                        <div className="mt-1 text-xs text-white/70">
                           {card.redemptions.length}{" "}
                           redemption
                           {card.redemptions.length ===
@@ -589,7 +589,7 @@ export default function AdminGiftCardsPage() {
             <div className="space-y-6 p-6">
               <div className="grid gap-4 sm:grid-cols-3">
                 <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-                  <p className="text-xs text-white/40">
+                  <p className="text-xs text-white/70">
                     Original
                   </p>
                   <p className="mt-2 text-lg font-semibold">
@@ -598,7 +598,7 @@ export default function AdminGiftCardsPage() {
                 </div>
 
                 <div className="rounded-2xl border border-[#D4AF37]/20 bg-[#D4AF37]/5 p-4">
-                  <p className="text-xs text-white/40">
+                  <p className="text-xs text-white/70">
                     Remaining
                   </p>
                   <p className="mt-2 text-lg font-semibold text-[#D4AF37]">
@@ -609,7 +609,7 @@ export default function AdminGiftCardsPage() {
                 </div>
 
                 <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-                  <p className="text-xs text-white/40">
+                  <p className="text-xs text-white/70">
                     Status
                   </p>
                   <span
@@ -627,7 +627,7 @@ export default function AdminGiftCardsPage() {
 
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-4">
-                  <p className="text-xs uppercase tracking-wider text-white/30">
+                  <p className="text-xs uppercase tracking-wider text-white/65">
                     Recipient
                   </p>
                   <p className="mt-2 text-sm">
@@ -638,14 +638,14 @@ export default function AdminGiftCardsPage() {
                         .lastName
                     )}
                   </p>
-                  <p className="mt-1 text-xs text-white/40">
+                  <p className="mt-1 text-xs text-white/70">
                     {selected.recipient.email ||
                       "No email"}
                   </p>
                 </div>
 
                 <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-4">
-                  <p className="text-xs uppercase tracking-wider text-white/30">
+                  <p className="text-xs uppercase tracking-wider text-white/65">
                     Purchaser
                   </p>
                   <p className="mt-2 text-sm">
@@ -656,7 +656,7 @@ export default function AdminGiftCardsPage() {
                         .lastName
                     )}
                   </p>
-                  <p className="mt-1 text-xs text-white/40">
+                  <p className="mt-1 text-xs text-white/70">
                     {selected.purchaser.email ||
                       "No email"}
                   </p>
@@ -665,7 +665,7 @@ export default function AdminGiftCardsPage() {
 
               <div className="grid gap-4 sm:grid-cols-3">
                 <div>
-                  <p className="text-xs text-white/30">
+                  <p className="text-xs text-white/65">
                     Code
                   </p>
                   <p className="mt-1 font-mono text-sm text-[#D4AF37]">
@@ -674,7 +674,7 @@ export default function AdminGiftCardsPage() {
                 </div>
 
                 <div>
-                  <p className="text-xs text-white/30">
+                  <p className="text-xs text-white/65">
                     Issued
                   </p>
                   <p className="mt-1 text-sm text-white/70">
@@ -683,7 +683,7 @@ export default function AdminGiftCardsPage() {
                 </div>
 
                 <div>
-                  <p className="text-xs text-white/30">
+                  <p className="text-xs text-white/65">
                     Expires
                   </p>
                   <p className="mt-1 text-sm text-white/70">
@@ -694,7 +694,7 @@ export default function AdminGiftCardsPage() {
 
               {selected.personalMessage && (
                 <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-4">
-                  <p className="text-xs uppercase tracking-wider text-white/30">
+                  <p className="text-xs uppercase tracking-wider text-white/65">
                     Personal Message
                   </p>
                   <p className="mt-2 whitespace-pre-wrap text-sm text-white/70">
@@ -758,7 +758,7 @@ export default function AdminGiftCardsPage() {
                       placeholder={`Max ${money(
                         selected.remainingAmount
                       )}`}
-                      className="w-full rounded-xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-white outline-none placeholder:text-white/25 focus:border-[#D4AF37]/50 disabled:cursor-not-allowed disabled:opacity-40"
+                      className="w-full rounded-xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-white outline-none placeholder:text-white/60 focus:border-[#D4AF37]/50 disabled:cursor-not-allowed disabled:opacity-40"
                     />
                   </div>
 
@@ -777,7 +777,7 @@ export default function AdminGiftCardsPage() {
                       }
                       disabled={redeeming}
                       placeholder="Optional"
-                      className="w-full rounded-xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-white outline-none placeholder:text-white/25 focus:border-[#D4AF37]/50"
+                      className="w-full rounded-xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-white outline-none placeholder:text-white/60 focus:border-[#D4AF37]/50"
                     />
                   </div>
                 </div>
@@ -821,7 +821,7 @@ export default function AdminGiftCardsPage() {
 
                 {selected.redemptions.length ===
                 0 ? (
-                  <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-5 text-center text-sm text-white/40">
+                  <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-5 text-center text-sm text-white/70">
                     No redemptions yet.
                   </div>
                 ) : (
@@ -839,7 +839,7 @@ export default function AdminGiftCardsPage() {
                               }
                             </p>
 
-                            <p className="mt-1 text-xs text-white/40">
+                            <p className="mt-1 text-xs text-white/70">
                               {date(
                                 redemption.redeemedAt
                               )}

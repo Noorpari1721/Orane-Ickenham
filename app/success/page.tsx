@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -104,7 +104,7 @@ function SuccessContent() {
               "
             >
               <svg
-                className="h-9 w-9 text-[#DDB45C]"
+                className="h-9 w-9 text-[#D4AF37]"
                 fill="none"
                 stroke="currentColor"
                 strokeWidth={2.2}
@@ -126,7 +126,7 @@ function SuccessContent() {
                   mt-8 text-[10px]
                   font-semibold uppercase
                   tracking-[0.4em]
-                  text-[#DDB45C]
+                  text-[#D4AF37]
                 "
               >
                 ORANE ICKENHAM
@@ -169,7 +169,7 @@ function SuccessContent() {
                 className="
                   mx-auto mt-4 max-w-lg
                   text-sm leading-6
-                  text-white/40
+                  text-white/70
                 "
               >
                 Your Gift Card will be activated after
@@ -192,7 +192,7 @@ function SuccessContent() {
                     text-[10px]
                     uppercase
                     tracking-[0.3em]
-                    text-[#DDB45C]
+                    text-[#D4AF37]
                   "
                 >
                   Thank you
@@ -235,7 +235,7 @@ function SuccessContent() {
                   mt-8 text-[10px]
                   font-semibold uppercase
                   tracking-[0.4em]
-                  text-[#DDB45C]
+                  text-[#D4AF37]
                 "
               >
                 ORANE ICKENHAM
@@ -288,7 +288,7 @@ function SuccessContent() {
                     text-[10px]
                     uppercase
                     tracking-[0.3em]
-                    text-[#DDB45C]
+                    text-[#D4AF37]
                   "
                 >
                   Appointment Confirmed

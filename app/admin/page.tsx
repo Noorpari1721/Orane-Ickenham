@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
 import {
@@ -641,7 +641,7 @@ export default function AdminPage() {
 
                 <Link
                   href="/admin/calendar"
-                  className="flex items-center gap-1 text-xs text-white/40 transition hover:text-[#D4AF37]"
+                  className="flex items-center gap-1 text-xs text-white/70 transition hover:text-[#D4AF37]"
                 >
                   Calendar
                   <ArrowUpRight size={14} />
@@ -649,14 +649,14 @@ export default function AdminPage() {
               </div>
 
               {loading ? (
-                <div className="p-10 text-center text-sm text-white/40">
+                <div className="p-10 text-center text-sm text-white/70">
                   Loading today&apos;s schedule...
                 </div>
               ) : todaysBookings.length === 0 ? (
                 <div className="p-10 text-center">
                   <CalendarCheck
                     size={30}
-                    className="mx-auto text-white/20"
+                    className="mx-auto text-white/55"
                   />
 
                   <p className="mt-4 text-sm text-white/50">
@@ -692,7 +692,7 @@ export default function AdminPage() {
                               {booking.startTime}
                             </p>
 
-                            <p className="mt-1 text-xs text-white/30">
+                            <p className="mt-1 text-xs text-white/65">
                               {booking.endTime
                                 ? `until ${booking.endTime}`
                                 : `${getDashboardBookingDuration(booking)} min`}
@@ -704,7 +704,7 @@ export default function AdminPage() {
                               {booking.customer.name}
                             </p>
 
-                            <p className="mt-1 text-xs text-white/35">
+                            <p className="mt-1 text-xs text-white/70">
                               {booking.bookingNo}
                             </p>
                           </div>
@@ -714,7 +714,7 @@ export default function AdminPage() {
                               {getDashboardBookingServiceNames(booking)}
                             </p>
 
-                            <p className="mt-1 text-xs text-white/35">
+                            <p className="mt-1 text-xs text-white/70">
                               {booking.tech
                                 ? booking.tech.name
                                 : "Unassigned"}
@@ -749,7 +749,7 @@ export default function AdminPage() {
                 <div className="border-t border-white/10 p-4 text-center">
                   <Link
                     href="/admin/bookings"
-                    className="text-xs text-white/40 transition hover:text-[#D4AF37]"
+                    className="text-xs text-white/70 transition hover:text-[#D4AF37]"
                   >
                     View all {todaysBookings.length}{" "}
                     appointments
@@ -795,7 +795,7 @@ export default function AdminPage() {
               </div>
 
               <div className="mt-7 border-t border-white/10 pt-5">
-                <p className="text-xs text-white/30">
+                <p className="text-xs text-white/65">
                   Total bookings
                 </p>
 
@@ -821,7 +821,7 @@ export default function AdminPage() {
 
               <Link
                 href="/admin/bookings"
-                className="flex items-center gap-1 text-xs text-white/40 transition hover:text-[#D4AF37]"
+                className="flex items-center gap-1 text-xs text-white/70 transition hover:text-[#D4AF37]"
               >
                 View all
                 <ArrowUpRight size={14} />
@@ -829,11 +829,11 @@ export default function AdminPage() {
             </div>
 
             {loading ? (
-              <div className="p-10 text-center text-sm text-white/40">
+              <div className="p-10 text-center text-sm text-white/70">
                 Loading bookings...
               </div>
             ) : recentBookings.length === 0 ? (
-              <div className="p-10 text-center text-sm text-white/40">
+              <div className="p-10 text-center text-sm text-white/70">
                 No bookings found.
               </div>
             ) : (
@@ -849,7 +849,7 @@ export default function AdminPage() {
                         {booking.startTime}
                       </p>
 
-                      <p className="mt-1 text-xs text-white/30">
+                      <p className="mt-1 text-xs text-white/65">
                         {formatDate(
                           booking.date
                         )}
@@ -861,7 +861,7 @@ export default function AdminPage() {
                         {booking.customer.name}
                       </p>
 
-                      <p className="mt-1 text-xs text-white/30">
+                      <p className="mt-1 text-xs text-white/65">
                         {booking.bookingNo}
                       </p>
                     </div>
@@ -871,7 +871,7 @@ export default function AdminPage() {
                         {getDashboardBookingServiceNames(booking)}
                       </p>
 
-                      <p className="mt-1 text-xs text-white/30">
+                      <p className="mt-1 text-xs text-white/65">
                         {booking.tech
                           ? booking.tech.name
                           : "Unassigned"}
@@ -932,7 +932,7 @@ function StatCard({
         {value}
       </p>
 
-      <p className="mt-2 text-xs text-white/30">
+      <p className="mt-2 text-xs text-white/65">
         {description}
       </p>
     </div>
@@ -965,7 +965,7 @@ function QuickAction({
 
         <ArrowUpRight
           size={16}
-          className="text-white/20 transition group-hover:text-[#D4AF37]"
+          className="text-white/55 transition group-hover:text-[#D4AF37]"
         />
       </div>
 
@@ -973,7 +973,7 @@ function QuickAction({
         {title}
       </p>
 
-      <p className="mt-1 text-xs leading-5 text-white/35">
+      <p className="mt-1 text-xs leading-5 text-white/70">
         {description}
       </p>
     </Link>

@@ -224,7 +224,7 @@ function AdminLoginContent() {
             {title}
           </h1>
 
-          <p className="mt-2 text-sm text-white/40">
+          <p className="mt-2 text-sm text-white/70">
             {subtitle}
           </p>
         </div>
@@ -260,7 +260,7 @@ function AdminLoginContent() {
               <div className="relative">
                 <Mail
                   size={17}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30"
+                  className="absolute left-4 top-1/2 -translate-y-1/2 text-white/65"
                 />
 
                 <input
@@ -288,7 +288,7 @@ function AdminLoginContent() {
                 <div className="relative">
                   <LockKeyhole
                     size={17}
-                    className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30"
+                    className="absolute left-4 top-1/2 -translate-y-1/2 text-white/65"
                   />
 
                   <input
@@ -306,7 +306,7 @@ function AdminLoginContent() {
                         ? "At least 8 characters"
                         : "Enter admin password"
                     }
-                    className="w-full rounded-xl border border-white/10 bg-black/30 py-3 pl-11 pr-4 text-sm text-white outline-none placeholder:text-white/25 focus:border-[#D4AF37]/50"
+                    className="w-full rounded-xl border border-white/10 bg-black/30 py-3 pl-11 pr-4 text-sm text-white outline-none placeholder:text-white/60 focus:border-[#D4AF37]/50"
                   />
                 </div>
               </div>
@@ -320,7 +320,7 @@ function AdminLoginContent() {
                   <div className="relative">
                     <LockKeyhole
                       size={17}
-                      className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30"
+                      className="absolute left-4 top-1/2 -translate-y-1/2 text-white/65"
                     />
 
                     <input
@@ -334,7 +334,7 @@ function AdminLoginContent() {
                         )
                       }
                       placeholder="Confirm new password"
-                      className="w-full rounded-xl border border-white/10 bg-black/30 py-3 pl-11 pr-4 text-sm text-white outline-none placeholder:text-white/25 focus:border-[#D4AF37]/50"
+                      className="w-full rounded-xl border border-white/10 bg-black/30 py-3 pl-11 pr-4 text-sm text-white outline-none placeholder:text-white/60 focus:border-[#D4AF37]/50"
                     />
                   </div>
                 </div>

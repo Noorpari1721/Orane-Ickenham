@@ -471,7 +471,7 @@ export default function AdminCalendarPage() {
             {WEEKDAYS.map((day) => (
               <div
                 key={day}
-                className="border-r border-white/10 p-3 text-center text-[10px] uppercase tracking-[0.15em] text-white/30 last:border-r-0 sm:p-4 sm:text-xs"
+                className="border-r border-white/10 p-3 text-center text-[10px] uppercase tracking-[0.15em] text-white/65 last:border-r-0 sm:p-4 sm:text-xs"
               >
                 <span className="hidden sm:inline">
                   {day}
@@ -487,7 +487,7 @@ export default function AdminCalendarPage() {
           {/* CALENDAR GRID */}
           {loading ? (
             <div className="flex min-h-[500px] items-center justify-center">
-              <div className="flex items-center gap-3 text-sm text-white/40">
+              <div className="flex items-center gap-3 text-sm text-white/70">
                 <RefreshCw
                   size={17}
                   className="animate-spin"
@@ -543,7 +543,7 @@ export default function AdminCalendarPage() {
 
                         {dayBookings.length >
                           0 && (
-                          <span className="text-[10px] text-white/25">
+                          <span className="text-[10px] text-white/60">
                             {dayBookings.length}
                           </span>
                         )}
@@ -580,7 +580,7 @@ export default function AdminCalendarPage() {
 
                         {dayBookings.length >
                           3 && (
-                          <p className="px-1 text-[9px] text-white/30">
+                          <p className="px-1 text-[9px] text-white/65">
                             +
                             {dayBookings.length -
                               3}{" "}
@@ -620,7 +620,7 @@ export default function AdminCalendarPage() {
               </div>
             </div>
 
-            <p className="text-xs text-white/35">
+            <p className="text-xs text-white/70">
               {selectedBookings.length}{" "}
               {selectedBookings.length === 1
                 ? "appointment"
@@ -634,10 +634,10 @@ export default function AdminCalendarPage() {
             <div className="p-10 text-center">
               <CalendarDays
                 size={32}
-                className="mx-auto text-white/15"
+                className="mx-auto text-white/50"
               />
 
-              <p className="mt-4 text-sm text-white/45">
+              <p className="mt-4 text-sm text-white/75">
                 No appointments scheduled
                 for this day.
               </p>
@@ -680,7 +680,7 @@ export default function AdminCalendarPage() {
                               }
                             </p>
 
-                            <p className="mt-1 text-[11px] text-white/30">
+                            <p className="mt-1 text-[11px] text-white/65">
                               {booking.endTime
                                 ? `until ${booking.endTime}`
                                 : `${booking.service.duration} min`}
@@ -693,7 +693,7 @@ export default function AdminCalendarPage() {
                           <div className="flex items-center gap-2">
                             <UserRound
                               size={15}
-                              className="text-white/30"
+                              className="text-white/65"
                             />
 
                             <p className="text-sm text-white">
@@ -705,7 +705,7 @@ export default function AdminCalendarPage() {
                             </p>
                           </div>
 
-                          <p className="mt-1 text-xs text-white/30">
+                          <p className="mt-1 text-xs text-white/65">
                             {
                               booking
                                 .customer
@@ -719,7 +719,7 @@ export default function AdminCalendarPage() {
                           <div className="flex items-center gap-2">
                             <Sparkles
                               size={15}
-                              className="text-white/30"
+                              className="text-white/65"
                             />
 
                             <p className="truncate text-sm text-white/80">
@@ -731,7 +731,7 @@ export default function AdminCalendarPage() {
                             </p>
                           </div>
 
-                          <p className="mt-1 text-xs text-white/30">
+                          <p className="mt-1 text-xs text-white/65">
                             {
                               booking
                                 .service
@@ -743,7 +743,7 @@ export default function AdminCalendarPage() {
 
                         {/* TECH */}
                         <div className="lg:w-40">
-                          <p className="text-[10px] uppercase tracking-[0.15em] text-white/25">
+                          <p className="text-[10px] uppercase tracking-[0.15em] text-white/60">
                             Technician
                           </p>
 
@@ -760,7 +760,7 @@ export default function AdminCalendarPage() {
                           <div className="flex items-center gap-1.5">
                             <PoundSterling
                               size={14}
-                              className="text-white/30"
+                              className="text-white/65"
                             />
 
                             <p className="text-sm">

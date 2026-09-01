@@ -19,18 +19,18 @@ export default function Testimonials() {
 
   return (
     <section
-      className="relative overflow-hidden border-b border-[#C49A45] bg-[#1C1B19] py-28"
+      className="relative overflow-hidden border-b border-[#D4AF37] bg-[#1C1B19] py-28"
     >
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,rgba(196,154,69,0.09),transparent_35%),radial-gradient(circle_at_85%_80%,rgba(196,154,69,0.06),transparent_35%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,rgba(212,175,55,0.09),transparent_35%),radial-gradient(circle_at_85%_80%,rgba(212,175,55,0.06),transparent_35%)]" />
       <div className="relative mx-auto max-w-5xl px-6">
 
         {/* Heading */}
 
         <div className="mb-16 text-center">
 
-          <div className="mx-auto mb-5 h-[2px] w-20 bg-[#C49A45]"></div>
+          <div className="mx-auto mb-5 h-[2px] w-20 bg-[#D4AF37]"></div>
 
-          <p className="mb-4 text-sm font-semibold uppercase tracking-[0.45em] text-[#C49A45]">
+          <p className="mb-4 text-sm font-semibold uppercase tracking-[0.45em] text-[#D4AF37]">
             CLIENT LOVE
           </p>
 
@@ -49,8 +49,8 @@ export default function Testimonials() {
               <Star
                 key={index}
                 size={24}
-                fill="#C49A45"
-                color="#C49A45"
+                fill="#D4AF37"
+                color="#D4AF37"
               />
             ))}
           </div>
@@ -64,7 +64,7 @@ export default function Testimonials() {
               {testimonial.name}
             </h3>
 
-            <p className="mt-2 text-[#C49A45]">
+            <p className="mt-2 text-[#D4AF37]">
               {testimonial.service}
             </p>
           </div>
@@ -77,9 +77,9 @@ export default function Testimonials() {
 
           <button
             onClick={previous}
-            className="rounded-full border border-[#C49A45] bg-[#24221F] p-3 text-[#C49A45] shadow-sm transition duration-300 hover:bg-[#C49A45] hover:text-white"
+            className="rounded-full border border-[#D4AF37] bg-[#24221F] p-3 text-[#D4AF37] shadow-sm transition duration-300 hover:bg-[#D4AF37] hover:text-white"
           >
-            <ChevronLeft size={22} className="text-[#C49A45]" />
+            <ChevronLeft size={22} className="text-[#D4AF37]" />
           </button>
 
           <div className="flex gap-3">
@@ -89,7 +89,7 @@ export default function Testimonials() {
                 onClick={() => setCurrent(index)}
                 className={`h-3 w-3 rounded-full transition ${
                   current === index
-                    ? "bg-[#C49A45]"
+                    ? "bg-[#D4AF37]"
                     : "bg-gray-300"
                 }`}
               />
@@ -98,9 +98,9 @@ export default function Testimonials() {
 
           <button
             onClick={next}
-            className="rounded-full border border-[#C49A45] bg-[#24221F] p-3 text-[#C49A45] shadow-sm transition duration-300 hover:bg-[#C49A45] hover:text-white"
+            className="rounded-full border border-[#D4AF37] bg-[#24221F] p-3 text-[#D4AF37] shadow-sm transition duration-300 hover:bg-[#D4AF37] hover:text-white"
           >
-            <ChevronRight size={22} className="text-[#C49A45]" />
+            <ChevronRight size={22} className="text-[#D4AF37]" />
           </button>
 
         </div>

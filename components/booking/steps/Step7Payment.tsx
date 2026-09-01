@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { getDurationMinutes } from "@/lib/duration";
 
@@ -272,7 +272,7 @@ export default function Step7Payment() {
                         {service.name}
                       </p>
 
-                      <p className="mt-1 text-sm text-white/45">
+                      <p className="mt-1 text-sm text-white/75">
                         {service.duration} minutes
                       </p>
                     </div>
@@ -438,7 +438,7 @@ export default function Step7Payment() {
               Secure Stripe Checkout
             </p>
 
-            <p className="mt-1 text-xs text-white/30">
+            <p className="mt-1 text-xs text-white/65">
               You will be redirected to Stripe's
               secure payment page.
             </p>

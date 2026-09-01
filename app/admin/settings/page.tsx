@@ -322,7 +322,7 @@ export default function SettingsPage() {
                     Admin Settings
                   </p>
 
-                  <p className="text-[10px] text-white/30">
+                  <p className="text-[10px] text-white/65">
                     ORANE ICKENHAM
                   </p>
                 </div>
@@ -344,7 +344,7 @@ export default function SettingsPage() {
                       className={`flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-sm transition ${
                         active
                           ? "bg-[#D4AF37]/10 text-[#D4AF37]"
-                          : "text-white/45 hover:bg-white/[0.04] hover:text-white"
+                          : "text-white/75 hover:bg-white/[0.04] hover:text-white"
                       }`}
                     >
                       <Icon size={17} />
@@ -562,7 +562,7 @@ function HoursSection({
 
       {loading ? (
         <div className="flex min-h-[300px] items-center justify-center rounded-2xl border border-white/10 bg-black/10">
-          <p className="text-sm text-white/40">
+          <p className="text-sm text-white/70">
             Loading opening hours...
           </p>
         </div>
@@ -612,7 +612,7 @@ function HoursSection({
                       {item.day}
                     </p>
 
-                    <p className="mt-0.5 text-[10px] uppercase tracking-wider text-white/25">
+                    <p className="mt-0.5 text-[10px] uppercase tracking-wider text-white/60">
                       {item.isOpen
                         ? "Open"
                         : "Closed"}
@@ -653,7 +653,7 @@ function HoursSection({
                     />
                   </div>
                 ) : (
-                  <div className="flex-1 rounded-xl border border-white/5 bg-white/[0.02] px-4 py-3 text-sm text-white/25">
+                  <div className="flex-1 rounded-xl border border-white/5 bg-white/[0.02] px-4 py-3 text-sm text-white/60">
                     Closed all day
                   </div>
                 )}
@@ -962,7 +962,7 @@ function SectionIntro({
         {title}
       </h3>
 
-      <p className="mt-1 max-w-2xl text-sm text-white/40">
+      <p className="mt-1 max-w-2xl text-sm text-white/70">
         {description}
       </p>
     </div>
@@ -975,7 +975,7 @@ function InfoBox({
   children: React.ReactNode;
 }) {
   return (
-    <div className="rounded-xl border border-white/10 bg-white/[0.02] p-4 text-xs leading-5 text-white/35">
+    <div className="rounded-xl border border-white/10 bg-white/[0.02] p-4 text-xs leading-5 text-white/70">
       {children}
     </div>
   );
@@ -994,7 +994,7 @@ function Field({
 }) {
   return (
     <div>
-      <label className="text-xs text-white/40">
+      <label className="text-xs text-white/70">
         {label}
       </label>
 
@@ -1011,7 +1011,7 @@ function Field({
             ? "0"
             : undefined
         }
-        className="mt-2 w-full rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-sm text-white outline-none transition placeholder:text-white/20 focus:border-[#D4AF37]/30"
+        className="mt-2 w-full rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-sm text-white outline-none transition placeholder:text-white/55 focus:border-[#D4AF37]/30"
       />
     </div>
   );
@@ -1030,7 +1030,7 @@ function SelectField({
 }) {
   return (
     <div>
-      <label className="text-xs text-white/40">
+      <label className="text-xs text-white/70">
         {label}
       </label>
 
@@ -1070,7 +1070,7 @@ function TimeField({
 }) {
   return (
     <div>
-      <label className="text-[10px] uppercase tracking-wider text-white/25">
+      <label className="text-[10px] uppercase tracking-wider text-white/60">
         {label}
       </label>
 
@@ -1106,7 +1106,7 @@ function ToggleRow({
           {title}
         </p>
 
-        <p className="mt-1 text-xs leading-5 text-white/35">
+        <p className="mt-1 text-xs leading-5 text-white/70">
           {description}
         </p>
       </div>

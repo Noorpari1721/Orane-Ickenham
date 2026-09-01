@@ -54,19 +54,19 @@ export default function ContactPage() {
             <input
               type="text"
               placeholder="Your Name"
-              className="rounded-lg border border-[#C49A45]/30 bg-[#292929] px-4 py-3 text-white placeholder:text-gray-500 transition focus:border-[#C8A46A] focus:outline-none focus:ring-2 focus:ring-[#C8A46A]/20"
+              className="rounded-lg border border-[#C49A45]/30 bg-[#292929] px-4 py-3 text-white placeholder:text-gray-300 transition focus:border-[#C8A46A] focus:outline-none focus:ring-2 focus:ring-[#C8A46A]/20"
             />
 
             <input
               type="email"
               placeholder="Your Email"
-              className="rounded-lg border border-[#C49A45]/30 bg-[#292929] px-4 py-3 text-white placeholder:text-gray-500 transition focus:border-[#C8A46A] focus:outline-none focus:ring-2 focus:ring-[#C8A46A]/20"
+              className="rounded-lg border border-[#C49A45]/30 bg-[#292929] px-4 py-3 text-white placeholder:text-gray-300 transition focus:border-[#C8A46A] focus:outline-none focus:ring-2 focus:ring-[#C8A46A]/20"
             />
 
             <textarea
               placeholder="Your Message"
               rows={5}
-              className="rounded-lg border border-[#C49A45]/30 bg-[#292929] px-4 py-3 text-white placeholder:text-gray-500 transition focus:border-[#C8A46A] focus:outline-none focus:ring-2 focus:ring-[#C8A46A]/20"
+              className="rounded-lg border border-[#C49A45]/30 bg-[#292929] px-4 py-3 text-white placeholder:text-gray-300 transition focus:border-[#C8A46A] focus:outline-none focus:ring-2 focus:ring-[#C8A46A]/20"
             />
 
             <button

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -156,7 +156,7 @@ export default function AdminPaymentsPage() {
 
         <div className="mb-8 grid gap-5 md:grid-cols-3">
           <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
-            <p className="text-xs uppercase tracking-[0.2em] text-white/40">
+            <p className="text-xs uppercase tracking-[0.2em] text-white/70">
               Transactions
             </p>
             <p className="mt-3 text-3xl font-light">
@@ -165,7 +165,7 @@ export default function AdminPaymentsPage() {
           </div>
 
           <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
-            <p className="text-xs uppercase tracking-[0.2em] text-white/40">
+            <p className="text-xs uppercase tracking-[0.2em] text-white/70">
               Recorded Value
             </p>
             <p className="mt-3 text-3xl font-light text-[#D4AF37]">
@@ -174,7 +174,7 @@ export default function AdminPaymentsPage() {
           </div>
 
           <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
-            <p className="text-xs uppercase tracking-[0.2em] text-white/40">
+            <p className="text-xs uppercase tracking-[0.2em] text-white/70">
               Status
             </p>
             <p className="mt-3 text-sm text-white/70">
@@ -195,7 +195,7 @@ export default function AdminPaymentsPage() {
           </div>
 
           {loading ? (
-            <div className="px-6 py-16 text-center text-sm text-white/40">
+            <div className="px-6 py-16 text-center text-sm text-white/70">
               Loading payments...
             </div>
           ) : error ? (
@@ -204,7 +204,7 @@ export default function AdminPaymentsPage() {
             </div>
           ) : payments.length === 0 ? (
             <div className="px-6 py-16 text-center">
-              <p className="text-sm text-white/40">
+              <p className="text-sm text-white/70">
                 No payment records available yet.
               </p>
             </div>
@@ -212,7 +212,7 @@ export default function AdminPaymentsPage() {
             <div className="overflow-x-auto">
               <table className="w-full min-w-[760px] text-left">
                 <thead>
-                  <tr className="border-b border-white/10 text-[11px] uppercase tracking-[0.16em] text-white/35">
+                  <tr className="border-b border-white/10 text-[11px] uppercase tracking-[0.16em] text-white/70">
                     <th className="px-6 py-4 font-medium">Customer</th>
                     <th className="px-6 py-4 font-medium">Amount</th>
                     <th className="px-6 py-4 font-medium">Status</th>
@@ -232,7 +232,7 @@ export default function AdminPaymentsPage() {
                           {payment.customerName}
                         </div>
                         {payment.customerEmail && (
-                          <div className="mt-1 text-xs text-white/35">
+                          <div className="mt-1 text-xs text-white/70">
                             {payment.customerEmail}
                           </div>
                         )}
@@ -255,7 +255,7 @@ export default function AdminPaymentsPage() {
                         {formatDate(payment.createdAt)}
                       </td>
 
-                      <td className="px-6 py-5 text-xs text-white/30">
+                      <td className="px-6 py-5 text-xs text-white/65">
                         {payment.id ?? "—"}
                       </td>
                     </tr>

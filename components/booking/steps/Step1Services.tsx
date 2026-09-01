@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useMemo, useRef, useState } from "react";
 import {
@@ -294,12 +294,12 @@ export default function Step1Services() {
                 </h3>
               </div>
 
-              <p className="mt-2 max-w-2xl text-sm leading-6 text-white/45">
+              <p className="mt-2 max-w-2xl text-sm leading-6 text-white/75">
                 {activeCategory.description}
               </p>
             </div>
 
-            <p className="shrink-0 text-xs uppercase tracking-[0.18em] text-white/35">
+            <p className="shrink-0 text-xs uppercase tracking-[0.18em] text-white/70">
               {activeCategory.services.length} treatments
             </p>
           </div>
@@ -349,7 +349,7 @@ export default function Step1Services() {
                         </h4>
 
                                                 <p
-                          className={`mt-1 text-xs leading-5 text-white/45 sm:text-sm ${
+                          className={`mt-1 text-xs leading-5 text-white/75 sm:text-sm ${
                             expandedServiceId === service.id
                               ? ""
                               : "line-clamp-2"
@@ -447,7 +447,7 @@ export default function Step1Services() {
             </div>
 
             <div className="text-right">
-              <p className="text-xs text-white/35">{totalDuration}</p>
+              <p className="text-xs text-white/70">{totalDuration}</p>
               <p className="text-lg font-medium text-[#E7C95D]">
                 {"\u00A3"}
                 {totalPrice.toFixed(2)}

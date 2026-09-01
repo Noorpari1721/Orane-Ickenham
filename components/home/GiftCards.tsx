@@ -1,4 +1,4 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 import {
   ArrowRight,
   CreditCard,
@@ -32,7 +32,7 @@ export default function GiftCards() {
           pointer-events-none
           absolute
           inset-0
-          bg-[radial-gradient(circle_at_18%_48%,rgba(196,154,69,0.18),transparent_32%),radial-gradient(circle_at_78%_42%,rgba(196,154,69,0.06),transparent_28%),linear-gradient(115deg,#080706_0%,#050505_48%,#020202_100%)]
+          bg-[radial-gradient(circle_at_18%_48%,rgba(212,175,55,0.18),transparent_32%),radial-gradient(circle_at_78%_42%,rgba(212,175,55,0.06),transparent_28%),linear-gradient(115deg,#080706_0%,#050505_48%,#020202_100%)]
         "
       />
 
@@ -47,7 +47,7 @@ export default function GiftCards() {
           h-[360px]
           w-[360px]
           rounded-full
-          bg-[#C49A45]/10
+          bg-[#D4AF37]/10
           blur-[130px]
           sm:h-[500px]
           sm:w-[500px]
@@ -68,8 +68,8 @@ export default function GiftCards() {
           h-1
           w-1
           rounded-full
-          bg-[#E2B85C]
-          shadow-[40px_70px_0_1px_rgba(226,184,92,.65),90px_25px_0_0_rgba(226,184,92,.35),135px_115px_0_1px_rgba(226,184,92,.7),180px_55px_0_0_rgba(226,184,92,.4),230px_145px_0_1px_rgba(226,184,92,.55),275px_70px_0_0_rgba(226,184,92,.35),320px_165px_0_1px_rgba(226,184,92,.65),365px_45px_0_0_rgba(226,184,92,.45)]
+          bg-[#D4AF37]
+          shadow-[40px_70px_0_1px_rgba(212,175,55,.65),90px_25px_0_0_rgba(212,175,55,.35),135px_115px_0_1px_rgba(212,175,55,.7),180px_55px_0_0_rgba(212,175,55,.4),230px_145px_0_1px_rgba(212,175,55,.55),275px_70px_0_0_rgba(212,175,55,.35),320px_165px_0_1px_rgba(212,175,55,.65),365px_45px_0_0_rgba(212,175,55,.45)]
           opacity-80
         "
       />
@@ -84,9 +84,9 @@ export default function GiftCards() {
           h-2
           w-2
           rounded-full
-          bg-[#C49A45]/60
+          bg-[#D4AF37]/60
           blur-[1px]
-          shadow-[55px_100px_0_1px_rgba(196,154,69,.35),120px_35px_0_0_rgba(196,154,69,.6),180px_125px_0_1px_rgba(196,154,69,.4),250px_55px_0_0_rgba(196,154,69,.5)]
+          shadow-[55px_100px_0_1px_rgba(212,175,55,.35),120px_35px_0_0_rgba(212,175,55,.6),180px_125px_0_1px_rgba(212,175,55,.4),250px_55px_0_0_rgba(212,175,55,.5)]
         "
       />
 
@@ -123,7 +123,7 @@ export default function GiftCards() {
                 h-[230px]
                 w-[230px]
                 rounded-full
-                bg-[#C49A45]/20
+                bg-[#D4AF37]/20
                 blur-[100px]
                 sm:h-[340px]
                 sm:w-[340px]
@@ -176,7 +176,7 @@ export default function GiftCards() {
                   h-[35px]
                   w-[70%]
                   rounded-[50%]
-                  bg-[#C49A45]/45
+                  bg-[#D4AF37]/45
                   blur-[28px]
                 "
               />
@@ -194,9 +194,9 @@ export default function GiftCards() {
                   overflow-hidden
                   rounded-[24px]
                   border
-                  border-[#D4AF5A]/70
+                  border-[#D4AF37]/70
                   bg-[linear-gradient(135deg,#34322E_0%,#181816_34%,#080808_68%,#11100E_100%)]
-                  shadow-[0_30px_70px_rgba(0,0,0,.75),0_0_45px_rgba(196,154,69,.16),inset_0_1px_1px_rgba(255,255,255,.18),inset_0_-20px_40px_rgba(0,0,0,.7)]
+                  shadow-[0_30px_70px_rgba(0,0,0,.75),0_0_45px_rgba(212,175,55,.16),inset_0_1px_1px_rgba(255,255,255,.18),inset_0_-20px_40px_rgba(0,0,0,.7)]
                   sm:rounded-[30px]
                 "
               >
@@ -204,7 +204,7 @@ export default function GiftCards() {
                  <Link
                    href="/gift-cards"
                    aria-label="Open Gift Cards"
-                   className="absolute inset-0 z-[50] cursor-pointer rounded-[24px] sm:rounded-[30px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF5A]"
+                   className="absolute inset-0 z-[50] cursor-pointer rounded-[24px] sm:rounded-[30px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]"
                  />
 
                 {/* Card top highlight */}
@@ -232,7 +232,7 @@ export default function GiftCards() {
                     absolute
                     inset-0
                     rounded-[24px]
-                    shadow-[inset_0_0_35px_rgba(196,154,69,.13)]
+                    shadow-[inset_0_0_35px_rgba(212,175,55,.13)]
                     sm:rounded-[30px]
                   "
                 />
@@ -276,7 +276,7 @@ export default function GiftCards() {
                     rotate-[35deg]
                     bg-gradient-to-r
                     from-transparent
-                    via-[#D4AF5A]/10
+                    via-[#D4AF37]/10
                     to-transparent
                     blur-xl
                   "
@@ -315,8 +315,8 @@ export default function GiftCards() {
                     w-32
                     rounded-full
                     border
-                    border-[#C49A45]/30
-                    bg-[#C49A45]/[0.03]
+                    border-[#D4AF37]/30
+                    bg-[#D4AF37]/[0.03]
                     sm:h-40
                     sm:w-40
                   "
@@ -338,7 +338,7 @@ export default function GiftCards() {
                           font-semibold
                           uppercase
                           tracking-[0.45em]
-                          text-[#DDB45C]
+                          text-[#D4AF37]
                           sm:text-xs
                         "
                       >
@@ -351,7 +351,7 @@ export default function GiftCards() {
                           text-[7px]
                           uppercase
                           tracking-[0.35em]
-                          text-white/45
+                          text-white/75
                           sm:text-[9px]
                         "
                       >
@@ -369,9 +369,9 @@ export default function GiftCards() {
                         justify-center
                         rounded-full
                         border
-                        border-[#D4AF5A]/40
+                        border-[#D4AF37]/40
                         bg-black/20
-                        shadow-[inset_0_1px_5px_rgba(255,255,255,.08),0_0_20px_rgba(196,154,69,.10)]
+                        shadow-[inset_0_1px_5px_rgba(255,255,255,.08),0_0_20px_rgba(212,175,55,.10)]
                         sm:h-12
                         sm:w-12
                       "
@@ -379,7 +379,7 @@ export default function GiftCards() {
                       <Gift
                         size={20}
                         strokeWidth={1.25}
-                        className="text-[#DDB45C] sm:h-[22px] sm:w-[22px]"
+                        className="text-[#D4AF37] sm:h-[22px] sm:w-[22px]"
                       />
                     </div>
                   </div>
@@ -392,8 +392,8 @@ export default function GiftCards() {
                       strokeWidth={1.2}
                       className="
                         mb-3
-                        text-[#DDB45C]
-                        drop-shadow-[0_0_8px_rgba(221,180,92,.6)]
+                        text-[#D4AF37]
+                        drop-shadow-[0_0_8px_rgba(212,175,55,.6)]
                       "
                     />
 
@@ -437,7 +437,7 @@ export default function GiftCards() {
                         text-[6px]
                         uppercase
                         tracking-[0.24em]
-                        text-white/40
+                        text-white/70
                         sm:text-[8px]
                       "
                     >
@@ -448,8 +448,8 @@ export default function GiftCards() {
                       className="
                         font-serif
                         text-lg
-                        text-[#DDB45C]
-                        drop-shadow-[0_0_8px_rgba(196,154,69,.35)]
+                        text-[#D4AF37]
+                        drop-shadow-[0_0_8px_rgba(212,175,55,.35)]
                         sm:text-xl
                       "
                     >
@@ -471,7 +471,7 @@ export default function GiftCards() {
             {/* Eyebrow */}
             <div className="mb-6 flex items-center justify-center gap-4 lg:justify-start">
 
-              <span className="h-px w-10 bg-[#D4AF5A]" />
+              <span className="h-px w-10 bg-[#D4AF37]" />
 
               <span
                 className="
@@ -479,7 +479,7 @@ export default function GiftCards() {
                   font-semibold
                   uppercase
                   tracking-[0.35em]
-                  text-[#D4AF5A]
+                  text-[#D4AF37]
                   sm:text-xs
                 "
               >
@@ -502,21 +502,21 @@ export default function GiftCards() {
             >
               Give the gift
               <br />
-              <span className="text-[#D4AF5A]">
+              <span className="text-[#D4AF37]">
                 of luxury.
               </span>
             </h2>
 
             {/* Gold divider */}
             <div className="mx-auto mt-7 flex items-center justify-center gap-3 lg:mx-0 lg:justify-start">
-              <span className="h-px w-20 bg-gradient-to-r from-[#D4AF5A] to-transparent" />
+              <span className="h-px w-20 bg-gradient-to-r from-[#D4AF37] to-transparent" />
 
               <Sparkles
                 size={16}
                 strokeWidth={1}
                 className="
-                  text-[#D4AF5A]
-                  drop-shadow-[0_0_8px_rgba(212,175,90,.7)]
+                  text-[#D4AF37]
+                  drop-shadow-[0_0_8px_rgba(212,175,55,.7)]
                 "
               />
             </div>
@@ -567,10 +567,10 @@ export default function GiftCards() {
                   gap-3
                   rounded-full
                   border
-                  border-[#E0B85F]/70
+                  border-[#D4AF37]/70
                   bg-gradient-to-b
-                  from-[#E0B85F]
-                  to-[#A87825]
+                  from-[#D4AF37]
+                  to-[#D4AF37]
                   px-7
                   py-3.5
                   text-xs
@@ -578,11 +578,11 @@ export default function GiftCards() {
                   uppercase
                   tracking-[0.18em]
                   text-[#090909]
-                  shadow-[0_12px_35px_rgba(196,154,69,.28),inset_0_1px_1px_rgba(255,255,255,.55)]
+                  shadow-[0_12px_35px_rgba(212,175,55,.28),inset_0_1px_1px_rgba(255,255,255,.55)]
                   transition-all
                   duration-300
                   hover:-translate-y-1
-                  hover:shadow-[0_18px_45px_rgba(196,154,69,.4),0_0_25px_rgba(196,154,69,.2)]
+                  hover:shadow-[0_18px_45px_rgba(212,175,55,.4),0_0_25px_rgba(212,175,55,.2)]
                   sm:w-auto
                 "
               >
@@ -606,7 +606,7 @@ export default function GiftCards() {
                   justify-center
                   rounded-full
                   border
-                  border-[#D4AF5A]/70
+                  border-[#D4AF37]/70
                   bg-transparent
                   px-7
                   py-3.5
@@ -618,8 +618,8 @@ export default function GiftCards() {
                   transition-all
                   duration-300
                   hover:-translate-y-1
-                  hover:bg-[#D4AF5A]/10
-                  hover:text-[#E5C575]
+                  hover:bg-[#D4AF37]/10
+                  hover:text-[#D4AF37]
                   sm:w-auto
                 "
               >
@@ -669,7 +669,7 @@ export default function GiftCards() {
               <Gift
                 size={28}
                 strokeWidth={1}
-                className="shrink-0 text-[#D4AF5A]"
+                className="shrink-0 text-[#D4AF37]"
               />
 
               <div>
@@ -677,7 +677,7 @@ export default function GiftCards() {
                   Beautiful Gift
                 </p>
 
-                <p className="mt-1 text-[9px] text-white/40 sm:text-[11px]">
+                <p className="mt-1 text-[9px] text-white/70 sm:text-[11px]">
                   Perfect for any occasion
                 </p>
               </div>
@@ -698,7 +698,7 @@ export default function GiftCards() {
               <Sparkles
                 size={28}
                 strokeWidth={1}
-                className="shrink-0 text-[#D4AF5A]"
+                className="shrink-0 text-[#D4AF37]"
               />
 
               <div>
@@ -706,7 +706,7 @@ export default function GiftCards() {
                   Premium Experience
                 </p>
 
-                <p className="mt-1 text-[9px] text-white/40 sm:text-[11px]">
+                <p className="mt-1 text-[9px] text-white/70 sm:text-[11px]">
                   Luxury treatments & care
                 </p>
               </div>
@@ -727,7 +727,7 @@ export default function GiftCards() {
               <Heart
                 size={28}
                 strokeWidth={1}
-                className="shrink-0 text-[#D4AF5A]"
+                className="shrink-0 text-[#D4AF37]"
               />
 
               <div>
@@ -735,7 +735,7 @@ export default function GiftCards() {
                   Thoughtful Gesture
                 </p>
 
-                <p className="mt-1 text-[9px] text-white/40 sm:text-[11px]">
+                <p className="mt-1 text-[9px] text-white/70 sm:text-[11px]">
                   Show you care
                 </p>
               </div>
@@ -746,7 +746,7 @@ export default function GiftCards() {
               <CreditCard
                 size={28}
                 strokeWidth={1}
-                className="shrink-0 text-[#D4AF5A]"
+                className="shrink-0 text-[#D4AF37]"
               />
 
               <div>
@@ -754,7 +754,7 @@ export default function GiftCards() {
                   Instant Delivery
                 </p>
 
-                <p className="mt-1 text-[9px] text-white/40 sm:text-[11px]">
+                <p className="mt-1 text-[9px] text-white/70 sm:text-[11px]">
                   Digital gift cards available
                 </p>
               </div>

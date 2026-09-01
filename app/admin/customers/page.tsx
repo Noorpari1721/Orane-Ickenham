@@ -469,7 +469,7 @@ export default function CustomersPage() {
               <div className="relative min-w-0 flex-1">
                 <Search
                   size={17}
-                  className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-white/25"
+                  className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-white/60"
                 />
 
                 <input
@@ -479,11 +479,11 @@ export default function CustomersPage() {
                     setSearch(event.target.value)
                   }
                   placeholder="Search customers, email, phone or customer number..."
-                  className="w-full rounded-xl border border-white/10 bg-black/20 py-3 pl-11 pr-4 text-sm text-white outline-none placeholder:text-white/25 transition focus:border-[#D4AF37]/30"
+                  className="w-full rounded-xl border border-white/10 bg-black/20 py-3 pl-11 pr-4 text-sm text-white outline-none placeholder:text-white/60 transition focus:border-[#D4AF37]/30"
                 />
               </div>
 
-              <div className="text-xs text-white/30">
+              <div className="text-xs text-white/65">
                 {filteredCustomers.length}{" "}
                 {filteredCustomers.length === 1
                   ? "customer"
@@ -506,7 +506,7 @@ export default function CustomersPage() {
 
             {loading ? (
               <div className="flex min-h-[300px] items-center justify-center">
-                <div className="text-sm text-white/40">
+                <div className="text-sm text-white/70">
                   Loading customers...
                 </div>
               </div>
@@ -514,10 +514,10 @@ export default function CustomersPage() {
               <div className="p-12 text-center">
                 <Users
                   size={36}
-                  className="mx-auto text-white/15"
+                  className="mx-auto text-white/50"
                 />
 
-                <p className="mt-4 text-sm text-white/45">
+                <p className="mt-4 text-sm text-white/75">
                   {customers.length === 0
                     ? "No customers found."
                     : "No customers match your search."}
@@ -540,31 +540,31 @@ export default function CustomersPage() {
                   <table className="w-full min-w-[1000px]">
                     <thead>
                       <tr className="border-b border-white/10 text-left">
-                        <th className="px-6 py-4 text-[10px] uppercase tracking-[0.18em] text-white/25">
+                        <th className="px-6 py-4 text-[10px] uppercase tracking-[0.18em] text-white/60">
                           Customer
                         </th>
 
-                        <th className="px-6 py-4 text-[10px] uppercase tracking-[0.18em] text-white/25">
+                        <th className="px-6 py-4 text-[10px] uppercase tracking-[0.18em] text-white/60">
                           Contact
                         </th>
 
-                        <th className="px-6 py-4 text-[10px] uppercase tracking-[0.18em] text-white/25">
+                        <th className="px-6 py-4 text-[10px] uppercase tracking-[0.18em] text-white/60">
                           Visits
                         </th>
 
-                        <th className="px-6 py-4 text-[10px] uppercase tracking-[0.18em] text-white/25">
+                        <th className="px-6 py-4 text-[10px] uppercase tracking-[0.18em] text-white/60">
                           Spent
                         </th>
 
-                        <th className="px-6 py-4 text-[10px] uppercase tracking-[0.18em] text-white/25">
+                        <th className="px-6 py-4 text-[10px] uppercase tracking-[0.18em] text-white/60">
                           Last Visit
                         </th>
 
-                        <th className="px-6 py-4 text-[10px] uppercase tracking-[0.18em] text-white/25">
+                        <th className="px-6 py-4 text-[10px] uppercase tracking-[0.18em] text-white/60">
                           Status
                         </th>
 
-                        <th className="px-6 py-4 text-right text-[10px] uppercase tracking-[0.18em] text-white/25">
+                        <th className="px-6 py-4 text-right text-[10px] uppercase tracking-[0.18em] text-white/60">
                           Actions
                         </th>
                       </tr>
@@ -594,7 +594,7 @@ export default function CustomersPage() {
                                     {customer.name}
                                   </p>
 
-                                  <p className="mt-1 text-[11px] text-white/25">
+                                  <p className="mt-1 text-[11px] text-white/60">
                                     {customer.customerNo}
                                   </p>
                                 </div>
@@ -606,7 +606,7 @@ export default function CustomersPage() {
                                 {customer.email}
                               </p>
 
-                              <p className="mt-1 text-xs text-white/30">
+                              <p className="mt-1 text-xs text-white/65">
                                 {customer.phone ||
                                   "No phone"}
                               </p>
@@ -642,7 +642,7 @@ export default function CustomersPage() {
                                   customer.status ===
                                   "ACTIVE"
                                     ? "border-emerald-400/20 bg-emerald-400/10 text-emerald-300"
-                                    : "border-white/10 bg-white/5 text-white/40"
+                                    : "border-white/10 bg-white/5 text-white/70"
                                 }`}
                               >
                                 {customer.status ===
@@ -668,7 +668,7 @@ export default function CustomersPage() {
                                     )
                                   }
                                   title="Edit customer"
-                                  className="rounded-lg border border-white/10 p-2 text-white/40 transition hover:border-[#D4AF37]/20 hover:text-[#D4AF37]"
+                                  className="rounded-lg border border-white/10 p-2 text-white/70 transition hover:border-[#D4AF37]/20 hover:text-[#D4AF37]"
                                 >
                                   <Edit3 size={15} />
                                 </button>
@@ -686,7 +686,7 @@ export default function CustomersPage() {
                                       ? "Deactivate customer"
                                       : "Activate customer"
                                   }
-                                  className="rounded-lg border border-white/10 p-2 text-white/40 transition hover:border-white/20 hover:text-white"
+                                  className="rounded-lg border border-white/10 p-2 text-white/70 transition hover:border-white/20 hover:text-white"
                                 >
                                   <Power size={15} />
                                 </button>
@@ -699,7 +699,7 @@ export default function CustomersPage() {
                                     )
                                   }
                                   title="Delete customer"
-                                  className="rounded-lg border border-white/10 p-2 text-white/40 transition hover:border-red-400/20 hover:text-red-300"
+                                  className="rounded-lg border border-white/10 p-2 text-white/70 transition hover:border-red-400/20 hover:text-red-300"
                                 >
                                   <Trash2 size={15} />
                                 </button>
@@ -736,7 +736,7 @@ export default function CustomersPage() {
                                 {customer.name}
                               </p>
 
-                              <p className="mt-1 text-xs text-white/30">
+                              <p className="mt-1 text-xs text-white/65">
                                 {customer.customerNo}
                               </p>
                             </div>
@@ -747,7 +747,7 @@ export default function CustomersPage() {
                               customer.status ===
                               "ACTIVE"
                                 ? "border-emerald-400/20 bg-emerald-400/10 text-emerald-300"
-                                : "border-white/10 bg-white/5 text-white/40"
+                                : "border-white/10 bg-white/5 text-white/70"
                             }`}
                           >
                             {customer.status}
@@ -872,7 +872,7 @@ export default function CustomersPage() {
                     {selected.name}
                   </p>
 
-                  <p className="mt-1 text-xs text-white/30">
+                  <p className="mt-1 text-xs text-white/65">
                     {selected.customerNo}
                   </p>
                 </div>
@@ -881,7 +881,7 @@ export default function CustomersPage() {
               <button
                 type="button"
                 onClick={() => setSelected(null)}
-                className="rounded-lg p-2 text-white/30 transition hover:bg-white/5 hover:text-white"
+                className="rounded-lg p-2 text-white/65 transition hover:bg-white/5 hover:text-white"
               >
                 <X size={18} />
               </button>
@@ -921,7 +921,7 @@ export default function CustomersPage() {
             </div>
 
             <div className="mt-6 rounded-xl border border-white/10 bg-black/20 p-4">
-              <p className="text-[10px] uppercase tracking-[0.18em] text-white/25">
+              <p className="text-[10px] uppercase tracking-[0.18em] text-white/60">
                 Favourite Service
               </p>
 
@@ -933,7 +933,7 @@ export default function CustomersPage() {
 
             {selected.notes && (
               <div className="mt-4 rounded-xl border border-white/10 bg-black/20 p-4">
-                <p className="text-[10px] uppercase tracking-[0.18em] text-white/25">
+                <p className="text-[10px] uppercase tracking-[0.18em] text-white/60">
                   Notes
                 </p>
 
@@ -997,7 +997,7 @@ export default function CustomersPage() {
                 type="button"
                 onClick={closeModal}
                 disabled={saving}
-                className="rounded-lg p-2 text-white/30 transition hover:bg-white/5 hover:text-white disabled:opacity-30"
+                className="rounded-lg p-2 text-white/65 transition hover:bg-white/5 hover:text-white disabled:opacity-30"
               >
                 <X size={18} />
               </button>
@@ -1058,7 +1058,7 @@ export default function CustomersPage() {
               </div>
 
               <div className="mt-5">
-                <label className="text-xs text-white/40">
+                <label className="text-xs text-white/70">
                   Notes
                 </label>
 
@@ -1072,7 +1072,7 @@ export default function CustomersPage() {
                   }
                   rows={4}
                   placeholder="Customer notes..."
-                  className="mt-2 w-full resize-none rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-sm text-white outline-none placeholder:text-white/20 focus:border-[#D4AF37]/30"
+                  className="mt-2 w-full resize-none rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-sm text-white outline-none placeholder:text-white/55 focus:border-[#D4AF37]/30"
                 />
               </div>
 
@@ -1140,7 +1140,7 @@ function StatCard({
         {value}
       </p>
 
-      <p className="mt-2 text-xs text-white/30">
+      <p className="mt-2 text-xs text-white/65">
         {description}
       </p>
     </div>
@@ -1156,7 +1156,7 @@ function InfoItem({
 }) {
   return (
     <div className="min-w-0">
-      <p className="text-[10px] uppercase tracking-[0.15em] text-white/25">
+      <p className="text-[10px] uppercase tracking-[0.15em] text-white/60">
         {label}
       </p>
 
@@ -1178,7 +1178,7 @@ function DetailItem({
 }) {
   return (
     <div className="rounded-xl border border-white/10 bg-black/20 p-4">
-      <div className="flex items-center gap-2 text-white/25">
+      <div className="flex items-center gap-2 text-white/60">
         <Icon size={14} />
         <p className="text-[10px] uppercase tracking-[0.15em]">
           {label}
@@ -1207,7 +1207,7 @@ function Field({
 }) {
   return (
     <div>
-      <label className="text-xs text-white/40">
+      <label className="text-xs text-white/70">
         {label}
 
         {required && (
@@ -1224,7 +1224,7 @@ function Field({
           onChange(event.target.value)
         }
         required={required}
-        className="mt-2 w-full rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-sm text-white outline-none placeholder:text-white/20 focus:border-[#D4AF37]/30"
+        className="mt-2 w-full rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-sm text-white outline-none placeholder:text-white/55 focus:border-[#D4AF37]/30"
       />
     </div>
   );

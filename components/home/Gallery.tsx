@@ -81,16 +81,16 @@ export default function Gallery() {
   return (
     <section
       id="gallery"
-      className="relative overflow-hidden border-b border-[#C49A45] bg-[#1C1B19] py-28"
+      className="relative overflow-hidden border-b border-[#D4AF37] bg-[#1C1B19] py-28"
     >
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_15%,rgba(196,154,69,0.09),transparent_35%),radial-gradient(circle_at_20%_85%,rgba(196,154,69,0.06),transparent_35%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_15%,rgba(212,175,55,0.09),transparent_35%),radial-gradient(circle_at_20%_85%,rgba(212,175,55,0.06),transparent_35%)]" />
 
       <div className="relative mx-auto max-w-7xl px-6">
 
         <div className="mx-auto mb-16 max-w-3xl text-center">
-          <div className="mx-auto mb-5 h-[2px] w-20 bg-[#C49A45]" />
+          <div className="mx-auto mb-5 h-[2px] w-20 bg-[#D4AF37]" />
 
-          <p className="mb-4 text-sm font-semibold uppercase tracking-[0.45em] text-[#C49A45]">
+          <p className="mb-4 text-sm font-semibold uppercase tracking-[0.45em] text-[#D4AF37]">
             OUR WORK
           </p>
 
@@ -147,7 +147,7 @@ export default function Gallery() {
 
                   <div className="absolute inset-0 bg-black/0" />
 
-                  <div className="absolute bottom-0 left-0 h-1 w-full bg-[#C49A45]" />
+                  <div className="absolute bottom-0 left-0 h-1 w-full bg-[#D4AF37]" />
                 </div>
               );
             })}
@@ -163,7 +163,7 @@ export default function Gallery() {
                 onClick={() => goToSlide(index)}
                 className={`h-2.5 rounded-full transition-all duration-500 ${
                   activeDot === index
-                    ? "w-8 bg-[#C49A45]"
+                    ? "w-8 bg-[#D4AF37]"
                     : "w-2.5 bg-white/20"
                 }`}
               />

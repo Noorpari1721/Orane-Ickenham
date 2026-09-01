@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useMemo, useState } from "react";
 
@@ -230,7 +230,7 @@ export default function Step2Date() {
                   "booking-card min-h-[120px] rounded-2xl border p-5 max-sm:min-h-[76px] max-sm:rounded-xl max-sm:p-2",
                   "transition-all duration-300",
                   closed
-                    ? "cursor-not-allowed border-white/5 bg-white/[0.02] text-white/20"
+                    ? "cursor-not-allowed border-white/5 bg-white/[0.02] text-white/55"
                     : selected
                       ? "booking-card-active border-[#D4AF37] bg-[#D4AF37]/15 text-[#D4AF37] shadow-[0_0_30px_rgba(212,175,55,.25)]"
                       : "border-white/10 bg-white/5 text-white hover:border-[#D4AF37] hover:bg-[#D4AF37]/10",

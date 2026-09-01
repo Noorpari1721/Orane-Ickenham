@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 
 import BackToDashboard from "@/components/admin/BackToDashboard";
@@ -916,7 +916,7 @@ try {
           <div className="relative flex-1">
             <Search
               size={18}
-              className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30"
+              className="absolute left-4 top-1/2 -translate-y-1/2 text-white/65"
             />
 
             <input
@@ -928,14 +928,14 @@ try {
                 )
               }
               placeholder="Search customer, booking or service..."
-              className="w-full rounded-xl border border-white/10 bg-white/[0.04] py-3 pl-11 pr-4 text-sm text-white outline-none placeholder:text-white/30 focus:border-[#D4AF37]/50"
+              className="w-full rounded-xl border border-white/10 bg-white/[0.04] py-3 pl-11 pr-4 text-sm text-white outline-none placeholder:text-white/65 focus:border-[#D4AF37]/50"
             />
           </div>
 
           <div className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-4">
             <Filter
               size={17}
-              className="text-white/40"
+              className="text-white/70"
             />
 
             <select
@@ -1023,7 +1023,7 @@ try {
                   Booking Directory
                 </h2>
 
-                <p className="mt-1 text-xs text-white/40">
+                <p className="mt-1 text-xs text-white/70">
                   {loading
                     ? "Loading bookings..."
                     : `${filteredBookings.length} bookings shown`}
@@ -1033,7 +1033,7 @@ try {
           </div>
 
           {!loading && (
-            <div className="hidden border-b border-white/10 px-6 py-4 text-xs uppercase tracking-wider text-white/30 lg:grid lg:grid-cols-[100px_1.2fr_1.4fr_1fr_100px_1.4fr_120px_150px]">
+            <div className="hidden border-b border-white/10 px-6 py-4 text-xs uppercase tracking-wider text-white/65 lg:grid lg:grid-cols-[100px_1.2fr_1.4fr_1fr_100px_1.4fr_120px_150px]">
               <span>Time</span>
               <span>Customer</span>
               <span>Service</span>
@@ -1046,7 +1046,7 @@ try {
           )}
 
           {loading ? (
-            <div className="p-10 text-center text-sm text-white/40">
+            <div className="p-10 text-center text-sm text-white/70">
               Loading bookings from PostgreSQL...
             </div>
           ) : (
@@ -1063,7 +1063,7 @@ try {
                         {booking.startTime}
                       </p>
 
-                      <p className="mt-1 text-xs text-white/30">
+                      <p className="mt-1 text-xs text-white/65">
                         {formatShortDate(
                           booking.date
                         )}
@@ -1085,7 +1085,7 @@ try {
                         )}
                       </p>
 
-                      <p className="mt-1 text-xs text-white/30">
+                      <p className="mt-1 text-xs text-white/65">
                         {booking.bookingNo}
                       </p>
                     </button>
@@ -1107,7 +1107,7 @@ try {
                           : "Unassigned"}
                       </p>
 
-                      <p className="mt-1 text-xs text-white/30">
+                      <p className="mt-1 text-xs text-white/65">
                         {booking.tech
                           ? "Tech"
                           : "No assignment"}
@@ -1125,19 +1125,19 @@ try {
                     <div className="min-w-0">
                       {booking.notes ? (
                         <p
-                          className="max-w-[220px] truncate text-xs text-white/40"
+                          className="max-w-[220px] truncate text-xs text-white/70"
                           title={booking.notes}
                         >
                           {booking.notes}
                         </p>
                       ) : (
-                        <span className="text-xs text-white/20">
+                        <span className="text-xs text-white/55">
                           -
                         </span>
                       )}
                     </div>
                     <div className="min-w-[180px]">
-                      <p className="text-xs uppercase tracking-[0.12em] text-white/30">
+                      <p className="text-xs uppercase tracking-[0.12em] text-white/65">
                         Consultation
                       </p>
 
@@ -1174,7 +1174,7 @@ try {
                             booking
                           )
                         }
-                        className="flex h-9 w-9 items-center justify-center rounded-lg text-white/40 transition hover:bg-white/10 hover:text-white"
+                        className="flex h-9 w-9 items-center justify-center rounded-lg text-white/70 transition hover:bg-white/10 hover:text-white"
                       >
                         <MoreHorizontal
                           size={18}
@@ -1206,7 +1206,7 @@ try {
                 <div className="p-12 text-center">
                   <CalendarCheck
                     size={32}
-                    className="mx-auto text-white/20"
+                    className="mx-auto text-white/55"
                   />
 
                   <p className="mt-4 text-sm text-white/50">
@@ -1242,7 +1242,7 @@ try {
               <button
                 type="button"
                 onClick={closeModal}
-                className="rounded-lg p-2 text-white/40 hover:bg-white/5 hover:text-white"
+                className="rounded-lg p-2 text-white/70 hover:bg-white/5 hover:text-white"
               >
                 <X size={20} />
               </button>
@@ -1350,7 +1350,7 @@ try {
                 {service.name}
               </p>
 
-              <p className="text-xs text-white/40">
+              <p className="text-xs text-white/70">
                 {service.duration} min {" · "}
                 {formatMoney(Number(service.price))}
               </p>
@@ -1512,7 +1512,7 @@ try {
                     className="w-full cursor-not-allowed rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white/70 outline-none"
                   />
 
-                  <p className="mt-1 text-[11px] text-white/30">
+                  <p className="mt-1 text-[11px] text-white/65">
                     Automatically calculated from service duration
                   </p>
                 </div>
@@ -1562,7 +1562,7 @@ try {
                             {service.name}
                           </p>
 
-                          <p className="mt-1 text-xs text-white/40">
+                          <p className="mt-1 text-xs text-white/70">
                             {
                               service.duration
                             }{" "}
@@ -1644,7 +1644,7 @@ try {
                     null
                   )
                 }
-                className="rounded-lg p-2 text-white/40 hover:bg-white/5 hover:text-white"
+                className="rounded-lg p-2 text-white/70 hover:bg-white/5 hover:text-white"
               >
                 <X size={20} />
               </button>
@@ -1658,7 +1658,7 @@ try {
                   className="text-[#D4AF37]"
                 />
 
-                <p className="mt-2 text-xs text-white/40">
+                <p className="mt-2 text-xs text-white/70">
                   Customer
                 </p>
 
@@ -1675,7 +1675,7 @@ try {
                   className="text-[#D4AF37]"
                 />
 
-                <p className="mt-2 text-xs text-white/40">
+                <p className="mt-2 text-xs text-white/70">
                   Service
                 </p>
 
@@ -1693,7 +1693,7 @@ try {
                   className="text-[#D4AF37]"
                 />
 
-                <p className="mt-2 text-xs text-white/40">
+                <p className="mt-2 text-xs text-white/70">
                   Appointment
                 </p>
 
@@ -1720,7 +1720,7 @@ try {
                   className="text-[#D4AF37]"
                 />
 
-                <p className="mt-2 text-xs text-white/40">
+                <p className="mt-2 text-xs text-white/70">
                   Price
                 </p>
 
@@ -1766,7 +1766,7 @@ try {
             </div>
 
             <div className="mt-5">
-              <p className="mb-3 text-xs uppercase tracking-wider text-white/30">
+              <p className="mb-3 text-xs uppercase tracking-wider text-white/65">
                 Change Status
               </p>
 

@@ -13,7 +13,7 @@ export default function Hero() {
   return (
     <section
       id="home"
-      className="relative h-screen w-full overflow-hidden border-b border-[#C49A45]"
+      className="relative h-screen w-full overflow-hidden border-b border-[#D4AF37]"
     >
       {/* Background Video */}
 
@@ -37,7 +37,7 @@ export default function Hero() {
       <div className="relative z-10 flex h-full items-center justify-center px-6">
         <div className="max-w-4xl text-center text-white">
 
-          <p className="mb-6 text-sm font-medium uppercase tracking-[0.45em] text-[#C49A45]">
+          <p className="mb-6 text-sm font-medium uppercase tracking-[0.45em] text-[#D4AF37]">
             ORANE ICKENHAM • LUXURY BEAUTY SALON
           </p>
 
@@ -45,7 +45,7 @@ export default function Hero() {
             Beauty That
             <br />
             Inspires
-            <span className="text-[#C49A45]"> Confidence</span>
+            <span className="text-[#D4AF37]"> Confidence</span>
           </h1>
 
           <p className="mx-auto mt-8 max-w-2xl text-base leading-7 text-gray-200 md:text-lg">

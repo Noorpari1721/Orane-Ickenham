@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useBooking } from "@/context/BookingContext";
 
@@ -39,7 +39,7 @@ export default function ProgressStepper() {
                       ? "text-[#D4AF37]"
                       : completed
                         ? "text-white/65"
-                        : "text-white/30"
+                        : "text-white/65"
                   }`}
                 >
                   <span>
@@ -87,7 +87,7 @@ export default function ProgressStepper() {
                       ? "border-[#D4AF37] bg-[#D4AF37] text-black"
                       : active
                         ? "border-[#D4AF37] bg-[#D4AF37]/10 text-[#D4AF37]"
-                        : "border-white/15 text-white/35"
+                        : "border-white/15 text-white/70"
                   }`}
                 >
                   <span className="text-sm font-semibold leading-none sm:text-[20px]">
@@ -101,7 +101,7 @@ export default function ProgressStepper() {
                       ? "text-[#D4AF37]"
                       : completed
                         ? "text-white/65"
-                        : "text-white/30"
+                        : "text-white/65"
                   }`}
                 >
                   {label}

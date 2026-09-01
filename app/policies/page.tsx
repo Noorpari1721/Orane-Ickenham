@@ -349,7 +349,7 @@ export default function PoliciesPage() {
           )}
         </div>
 
-        <div className="mt-12 flex items-center justify-center gap-2 text-center text-xs uppercase tracking-[0.2em] text-white/35 sm:mt-16">
+        <div className="mt-12 flex items-center justify-center gap-2 text-center text-xs uppercase tracking-[0.2em] text-white/70 sm:mt-16">
           <Sparkles
             size={14}
             className="text-[#D4AF37]"

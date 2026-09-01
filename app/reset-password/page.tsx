@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import {
   FormEvent,
@@ -123,7 +123,7 @@ function ResetPasswordForm() {
           Reset Password
         </h1>
 
-        <p className="mt-2 text-sm text-white/40">
+        <p className="mt-2 text-sm text-white/70">
           Create your new admin password
         </p>
       </div>
@@ -142,7 +142,7 @@ function ResetPasswordForm() {
         <div className="relative">
           <LockKeyhole
             size={17}
-            className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30"
+            className="absolute left-4 top-1/2 -translate-y-1/2 text-white/65"
           />
 
           <input
@@ -155,7 +155,7 @@ function ResetPasswordForm() {
               )
             }
             placeholder="Minimum 8 characters"
-            className="w-full rounded-xl border border-white/10 bg-black/30 py-3 pl-11 pr-4 text-sm text-white outline-none placeholder:text-white/25 focus:border-[#D4AF37]/50"
+            className="w-full rounded-xl border border-white/10 bg-black/30 py-3 pl-11 pr-4 text-sm text-white outline-none placeholder:text-white/60 focus:border-[#D4AF37]/50"
           />
         </div>
       </div>
@@ -168,7 +168,7 @@ function ResetPasswordForm() {
         <div className="relative">
           <LockKeyhole
             size={17}
-            className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30"
+            className="absolute left-4 top-1/2 -translate-y-1/2 text-white/65"
           />
 
           <input
@@ -181,7 +181,7 @@ function ResetPasswordForm() {
               )
             }
             placeholder="Repeat new password"
-            className="w-full rounded-xl border border-white/10 bg-black/30 py-3 pl-11 pr-4 text-sm text-white outline-none placeholder:text-white/25 focus:border-[#D4AF37]/50"
+            className="w-full rounded-xl border border-white/10 bg-black/30 py-3 pl-11 pr-4 text-sm text-white outline-none placeholder:text-white/60 focus:border-[#D4AF37]/50"
           />
         </div>
       </div>
