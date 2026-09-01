@@ -148,19 +148,26 @@ export default function Step1Services() {
   const selectCategory = (categoryId: string) => {
     setExpandedServiceId(null);
 
-    // Preserve the page's vertical scroll position when switching
-    // categories. Category content can change height, which otherwise
-    // causes the browser to visibly jump the page.
+    // Lock the current document position while React swaps
+    // the category content. This prevents the browser from
+    // applying its own scroll anchoring during the layout change.
     const scrollY = window.scrollY;
+
+    document.documentElement.style.scrollBehavior = "auto";
+    document.documentElement.style.overflowAnchor = "none";
 
     updateBooking({
       category: categoryId,
     });
 
+    window.scrollTo(0, scrollY);
+
     requestAnimationFrame(() => {
-      window.scrollTo({
-        top: scrollY,
-        behavior: "auto",
+      window.scrollTo(0, scrollY);
+
+      requestAnimationFrame(() => {
+        window.scrollTo(0, scrollY);
+        document.documentElement.style.overflowAnchor = "";
       });
     });
   };
@@ -453,4 +460,5 @@ export default function Step1Services() {
     </div>
   );
 }
+
 
