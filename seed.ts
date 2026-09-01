@@ -1,6 +1,7 @@
 import "dotenv/config";
 import { PrismaClient } from "./app/generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
+import { serviceCategories } from "./data/services";
 
 const connectionString = process.env.DATABASE_URL;
 
@@ -46,75 +47,29 @@ const techs = [
   },
 ];
 
-const services = [
-  ["SRV-001", "Hydra Cleanse", "Japanese Head Spa", 30, 50],
-  ["SRV-002", "Sakura Head Spa", "Japanese Head Spa", 60, 80],
-  ["SRV-003", "Ultimate Indulgence", "Japanese Head Spa", 90, 120],
+function durationToMinutes(value: string): number {
+  const normalized = value.trim().toLowerCase();
 
-  ["SRV-004", "Deep Cleansing Facial", "Facials", 30, 45],
-  ["SRV-005", "ELEMIS Expert Facial", "Facials", 60, 70],
-  ["SRV-006", "Express Facial", "Facials", 30, 30],
-  ["SRV-007", "Herbal Facial", "Facials", 60, 60],
+  const hours = Number(
+    normalized.match(/(\d+(?:\.\d+)?)\s*hr/)?.[1] ?? 0
+  );
 
-  ["SRV-008", "Acrylic Extensions Full Set With Gel/Shellac", "Nails", 60, 45],
-  ["SRV-009", "Acrylic Extensions Full Set Coloured Without Gel/Shellac", "Nails", 60, 40],
-  ["SRV-010", "Acrylic Infill With Gel/Shellac", "Nails", 60, 40],
-  ["SRV-011", "Acrylic Infill Without Polish", "Nails", 60, 35],
-  ["SRV-012", "BIAB Infill With Gel/Shellac", "Nails", 60, 39],
-  ["SRV-013", "BIAB Infill Without Polish", "Nails", 60, 34],
-  ["SRV-014", "Builder Gel Full Set Extensions", "Nails", 60, 45],
-  ["SRV-015", "Builder Gel Full Set Extensions Extra", "Nails", 60, 50],
-  ["SRV-016", "Builder Gel Infill Without Polish", "Nails", 60, 34],
-  ["SRV-017", "Builder Gel Infill With Gel/Shellac", "Nails", 60, 39],
+  const minutes = Number(
+    normalized.match(/(\d+)\s*min/)?.[1] ?? 0
+  );
 
-  ["SRV-018", "Apply Normal Polish", "Nails", 30, 10],
-  ["SRV-019", "Chrome / Glitter / Cat Eye", "Nails", 30, 8],
-  ["SRV-020", "Extension Removal", "Nails", 30, 15],
-  ["SRV-021", "French Tips", "Nails", 30, 8],
-  ["SRV-022", "Nail Art", "Nails", 30, 2],
-  ["SRV-023", "Nail Repair", "Nails", 30, 3],
-  ["SRV-024", "Remove Gel/Shellac Polish", "Nails", 30, 10],
+  return Math.round(hours * 60 + minutes);
+}
 
-  ["SRV-025", "Brow Lamination", "Tint", 60, 55],
-  ["SRV-026", "Brow Tint", "Tint", 30, 15],
-  ["SRV-027", "Lash Tint", "Tint", 30, 20],
-
-  ["SRV-028", "Classic Lash Extensions", "Lashes", 90, 50],
-
-  ["SRV-029", 'Express "Dry" Manicure', "Manicure", 30, 15],
-  ["SRV-030", 'Express "Dry" Manicure + Gel', "Manicure", 30, 25],
-  ["SRV-031", 'Express "Dry" Manicure + Normal Polish', "Manicure", 30, 25],
-  ["SRV-032", "Classic Manicure", "Manicure", 30, 25],
-  ["SRV-033", "Classic Manicure + Gel", "Manicure", 30, 33],
-  ["SRV-034", "Classic French Manicure", "Manicure", 60, 32],
-  ["SRV-035", "Classic French Manicure + Gel", "Manicure", 60, 38],
-  ["SRV-036", "Luxury Manicure", "Manicure", 60, 45],
-  ["SRV-037", "Luxury Manicure + Gel", "Manicure", 90, 55],
-  ["SRV-038", "Paraffin Wax Manicure", "Manicure", 60, 34],
-  ["SRV-039", "Paraffin Wax Manicure + Gel", "Manicure", 60, 40],
-
-  ["SRV-040", "Classic Pedicure", "Pedicure", 30, 45],
-  ["SRV-041", "Classic Pedicure + Gel", "Pedicure", 60, 43],
-  ["SRV-042", "Express Pedicure", "Pedicure", 30, 20],
-  ["SRV-043", "Express Pedicure + Gel", "Pedicure", 30, 30],
-  ["SRV-044", "Luxury Pedicure", "Pedicure", 60, 65],
-  ["SRV-045", "Luxury Pedicure + Gel", "Pedicure", 60, 70],
-  ["SRV-046", "Paraffin Wax Pedicure", "Pedicure", 60, 48],
-  ["SRV-047", "Paraffin Wax Pedicure + Gel", "Pedicure", 60, 53],
-
-  ["SRV-048", "Swedish Full Body Massage — 45 Minutes", "Massage", 45, 45],
-  ["SRV-049", "Swedish Full Body Massage — 60 Minutes", "Massage", 60, 55],
-  ["SRV-050", "Deep Tissue Massage — 45 Minutes", "Massage", 45, 50],
-  ["SRV-051", "Deep Tissue Massage — 60 Minutes", "Massage", 60, 60],
-  ["SRV-052", "Indian Head Massage — 30 Minutes", "Massage", 30, 30],
-  ["SRV-053", "Indian Head Massage — 45 Minutes", "Massage", 45, 40],
-  ["SRV-054", "Back, Neck & Shoulder Massage", "Massage", 30, 30],
-  ["SRV-055", "Hand & Foot Relaxation Massage", "Massage", 30, 30],
-  ["SRV-056", "Hybrid", "Lashes", 90, 60],
-  ["SRV-057", "Russian", "Lashes", 90, 70],
-  ["SRV-058", "Volume", "Lashes", 90, 65],
-  ["SRV-059", "Korean Lash Lift", "Lashes", 90, 65],
-] as const;
+const services = serviceCategories.flatMap((category) =>
+  category.services.map((service) => [
+    `SRV-${String(service.id).padStart(3, "0")}`,
+    service.name,
+    category.title,
+    durationToMinutes(service.duration),
+    service.price,
+  ] as const)
+);
 
 async function main() {
   console.log("🌱 Seeding ORANE ICKENHAM...");
@@ -136,6 +91,22 @@ async function main() {
       },
     });
   }
+
+  const currentServiceNos = services.map(
+    ([serviceNo]) => serviceNo
+  );
+
+  await prisma.service.updateMany({
+    where: {
+      active: true,
+      serviceNo: {
+        notIn: currentServiceNos,
+      },
+    },
+    data: {
+      active: false,
+    },
+  });
 
   for (const [serviceNo, name, category, duration, price] of services) {
     await prisma.service.upsert({

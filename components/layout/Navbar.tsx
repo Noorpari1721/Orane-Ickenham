@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useRef, useState } from "react";
 import { Menu, X } from "lucide-react";
@@ -255,13 +255,13 @@ export default function Navbar() {
           className={`
             lg:hidden
             overflow-hidden
-            transition-all
+            transition-[max-height,margin]
             duration-500
             ease-[cubic-bezier(.22,1,.36,1)]
             ${
               mobileOpen
-                ? "mt-2 max-h-[400px] translate-y-0 opacity-100"
-                : "pointer-events-none max-h-0 -translate-y-2 opacity-0"
+                ? "mt-2 max-h-[400px]"
+                : "pointer-events-none mt-0 max-h-0"
             }
           `}
         >

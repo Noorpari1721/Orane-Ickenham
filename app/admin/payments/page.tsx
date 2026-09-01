@@ -1,6 +1,7 @@
 ﻿"use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 type Payment = {
   id?: string | number;
@@ -127,7 +128,18 @@ export default function AdminPaymentsPage() {
 
   return (
     <main className="min-h-screen bg-[#080808] px-6 py-10 text-white md:px-10">
+      
       <div className="mx-auto max-w-7xl">
+        <div className="mb-8">
+  <Link
+    href="/admin"
+    data-testid="payments-back-dashboard-button"
+    className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/[0.03] px-4 py-2.5 text-sm font-medium text-white/80 transition hover:border-[#D4AF37]/40 hover:bg-white/[0.06] hover:text-[#D4AF37]"
+  >
+    <span aria-hidden="true">←</span>
+    Back to Dashboard
+  </Link>
+</div>
         <div className="mb-10">
           <p className="mb-2 text-xs uppercase tracking-[0.3em] text-[#D4AF37]">
             Administration

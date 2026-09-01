@@ -1,0 +1,168 @@
+﻿"use client";
+
+import { ArrowRight } from "lucide-react";
+import { useBooking } from "@/context/BookingContext";
+
+function parseDuration(value: unknown) {
+  if (typeof value === "number") {
+    return Number.isFinite(value) ? value : 0;
+  }
+
+  const match = String(value ?? "").match(/\d+/);
+
+  return match ? Number(match[0]) : 0;
+}
+
+function formatDuration(minutes: number) {
+  if (minutes <= 0) return "Not selected";
+
+  const hours = Math.floor(minutes / 60);
+  const remainingMinutes = minutes % 60;
+
+  if (hours > 0 && remainingMinutes > 0) {
+    return `${hours}h ${remainingMinutes}min`;
+  }
+
+  if (hours > 0) {
+    return `${hours}h`;
+  }
+
+  return `${remainingMinutes} min`;
+}
+
+export default function BookingSummary() {
+  const {
+    booking,
+    nextStep,
+  } = useBooking();
+
+  const selectedServices =
+    booking.services?.length
+      ? booking.services
+      : booking.service
+        ? [booking.service]
+        : [];
+
+  const total =
+    selectedServices.reduce(
+      (sum, service) =>
+        sum + Number(service.price ?? 0),
+      0
+    );
+
+  const totalDuration =
+    selectedServices.reduce(
+      (sum, service) =>
+        sum + parseDuration(service.duration),
+      0
+    );
+
+  const formattedDate =
+    booking.date
+      ? booking.date.toLocaleDateString(
+          "en-GB",
+          {
+            weekday: "short",
+            day: "numeric",
+            month: "short",
+          }
+        )
+      : "";
+
+  const canContinue =
+    booking.step < 6;
+
+  return (
+    <aside className="rounded-[28px] border border-[#D4AF37]/20 bg-white/[0.04] p-6 shadow-[0_0_45px_rgba(212,175,55,.06)]">
+      <p className="text-xs uppercase tracking-[0.3em] text-[#D4AF37]">
+        Booking Summary
+      </p>
+
+      <div className="mt-6 space-y-4">
+        {selectedServices.length > 0 && (
+          <div>
+            <p className="text-xs uppercase tracking-[0.2em] text-white/40">
+              Service
+            </p>
+
+            <div className="mt-2 space-y-1">
+              {selectedServices.map((service) => (
+                <p
+                  key={service.id}
+                  className="text-sm text-white"
+                >
+                  {service.name}
+                </p>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {totalDuration > 0 && (
+          <div>
+            <p className="text-xs uppercase tracking-[0.2em] text-white/40">
+              Duration
+            </p>
+
+            <p className="mt-1 text-sm text-white">
+              {formatDuration(totalDuration)}
+            </p>
+          </div>
+        )}
+
+        {booking.time && (
+          <div>
+            <p className="text-xs uppercase tracking-[0.2em] text-white/40">
+              Time
+            </p>
+
+            <p className="mt-1 text-sm text-white">
+              {booking.time}
+            </p>
+          </div>
+        )}
+
+        {formattedDate && (
+          <div>
+            <p className="text-xs uppercase tracking-[0.2em] text-white/40">
+              Date
+            </p>
+
+            <p className="mt-1 text-sm text-white">
+              {formattedDate}
+            </p>
+          </div>
+        )}
+      </div>
+
+      <div className="mt-6 border-t border-white/10 pt-5">
+        <div className="flex items-end justify-between gap-4">
+          <div>
+            <p className="text-xs uppercase tracking-[0.2em] text-white/40">
+              Total
+            </p>
+
+            <p className="mt-1 text-2xl font-light text-[#D4AF37]">
+              £{total.toFixed(2)}
+            </p>
+          </div>
+        </div>
+
+        {canContinue && (
+          <button
+            type="button"
+            onClick={nextStep}
+            className="group mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-[#D4AF37] px-5 py-3 text-xs font-semibold uppercase tracking-[0.16em] text-black transition-all hover:bg-[#e2c45a]"
+          >
+            Continue
+
+            <ArrowRight
+              size={16}
+              className="transition-transform group-hover:translate-x-1"
+            />
+          </button>
+        )}
+      </div>
+    </aside>
+  );
+}

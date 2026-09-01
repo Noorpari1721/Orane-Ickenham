@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import {
   useEffect,
@@ -247,17 +247,17 @@ export default function Step3Time() {
           Step Three
         </p>
 
-        <h2 className="mt-4 text-4xl font-light text-white md:text-5xl">
+        <h2 className="mt-4 text-3xl font-normal leading-tight text-white sm:text-4xl md:text-5xl">
           Choose Your Time
         </h2>
 
-        <p className="mt-5 text-white/60">
+        <p className="mt-5 text-white/75">
           Select an available appointment slot,
           then continue from the top.
         </p>
 
         {loading && (
-          <div className="mt-5 flex items-center justify-center gap-2 text-sm text-white/40">
+          <div className="mt-5 flex items-center justify-center gap-2 text-sm text-white/75">
             <Loader2
               size={15}
               className="animate-spin text-[#D4AF37]"
@@ -280,7 +280,7 @@ export default function Step3Time() {
                 No appointments available.
               </p>
 
-              <p className="mt-2 text-sm text-white/40">
+              <p className="mt-2 text-sm text-white/75">
                 Please choose another date.
               </p>
             </div>

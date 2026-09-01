@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
@@ -144,7 +144,50 @@ export default function GiftCardsPage() {
 
         if (cancelled) return;
 
-        setServices(activeServices);
+        // Remove duplicate Gift Card treatments.
+        // Some Massage records contain the same service twice with
+        // different dash/encoding characters, so names are canonicalised
+        // before comparing them.
+        const uniqueGiftCardServices = activeServices.filter(
+          (service, index, allServices) => {
+            if (String(service.category || "").toLowerCase() !== "massage") {
+              return true;
+            }
+
+            const canonicalName = String(service.name || "")
+              .normalize("NFKC")
+              .replace(/â€“|â€”|âˆ’|â€¦|Â/g, " ")
+              .replace(/[—–−]/g, " ")
+              .replace(/[^a-zA-Z0-9]+/g, " ")
+              .replace(/\s+/g, " ")
+              .trim()
+              .toLowerCase();
+
+            return (
+              allServices.findIndex((candidate) => {
+                if (
+                  String(candidate.category || "").toLowerCase() !==
+                  "massage"
+                ) {
+                  return false;
+                }
+
+                const candidateName = String(candidate.name || "")
+                  .normalize("NFKC")
+                  .replace(/â€“|â€”|âˆ’|â€¦|Â/g, " ")
+                  .replace(/[—–−]/g, " ")
+                  .replace(/[^a-zA-Z0-9]+/g, " ")
+                  .replace(/\s+/g, " ")
+                  .trim()
+                  .toLowerCase();
+
+                return candidateName === canonicalName;
+              }) === index
+            );
+          }
+        );
+
+        setServices(uniqueGiftCardServices);
 
         setSelectedServiceIds(
           (current) =>
@@ -177,6 +220,19 @@ export default function GiftCardsPage() {
   }, []);
 
   const categories = useMemo(() => {
+    const preferredOrder = [
+      "Japanese Head Spa",
+      "Nails",
+      "Lashes",
+      "Waxing & Threading",
+      "Facials",
+      "Manicure",
+      "Pedicure",
+      "Tint",
+      "Massage",
+      "Packages",
+    ];
+
     const unique = Array.from(
       new Set(
         services
@@ -187,7 +243,24 @@ export default function GiftCardsPage() {
       )
     );
 
-    return ["all", ...unique];
+    const ordered = preferredOrder.filter((category) =>
+      unique.some(
+        (existingCategory) =>
+          existingCategory.toLowerCase() ===
+          category.toLowerCase()
+      )
+    );
+
+    const remaining = unique.filter(
+      (category) =>
+        !preferredOrder.some(
+          (preferredCategory) =>
+            preferredCategory.toLowerCase() ===
+            category.toLowerCase()
+        )
+    );
+
+    return ["all", ...ordered, ...remaining];
   }, [services]);
 
   const filteredServices = useMemo(() => {

@@ -151,11 +151,11 @@ export default function Step2Date() {
           Step Two
         </p>
 
-        <h2 className="mt-4 text-4xl font-light text-white md:text-5xl">
+        <h2 className="mt-4 text-3xl font-normal leading-tight text-white sm:text-4xl md:text-5xl">
           Choose Your Date
         </h2>
 
-        <p className="mt-5 text-white/60">
+        <p className="mt-5 text-white/75">
           Select a convenient appointment date,
           then continue from the top.
         </p>
@@ -236,7 +236,7 @@ export default function Step2Date() {
                       : "border-white/10 bg-white/5 text-white hover:border-[#D4AF37] hover:bg-[#D4AF37]/10",
                 ].join(" ")}
               >
-                <div className="text-xs uppercase tracking-[0.2em] text-white/40 max-sm:text-[8px] max-sm:tracking-normal">
+                <div className="text-xs uppercase tracking-[0.2em] text-white/75 max-sm:text-[8px] max-sm:tracking-normal">
                   {date.toLocaleDateString(
                     "en-GB",
                     {
@@ -255,7 +255,7 @@ export default function Step2Date() {
                   {date.getDate()}
                 </div>
 
-                <div className="mt-2 text-xs text-white/50 max-sm:mt-1 max-sm:text-[9px]">
+                <div className="mt-2 text-xs text-white/70 max-sm:mt-1 max-sm:text-[9px]">
                   {date.toLocaleDateString(
                     "en-GB",
                     {

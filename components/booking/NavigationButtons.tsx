@@ -68,12 +68,12 @@ export default function NavigationButtons() {
   };
 
   return (
-    <div className="flex items-center justify-between gap-4">
+    <div className="flex items-center justify-between gap-2.5 sm:gap-4">
       {!isFirstStep ? (
         <button
           type="button"
           onClick={previousStep}
-          className="inline-flex items-center gap-2 rounded-full border border-white/10 px-5 py-3 text-xs uppercase tracking-[0.16em] text-white/60 transition hover:border-[#D4AF37]/50 hover:text-[#D4AF37]"
+          className="inline-flex items-center gap-2 rounded-full border border-white/10 px-5 py-3 text-xs uppercase tracking-[0.16em] text-white/75 transition hover:border-[#D4AF37]/50 hover:text-[#D4AF37]"
         >
           <ArrowLeft size={16} />
           Back

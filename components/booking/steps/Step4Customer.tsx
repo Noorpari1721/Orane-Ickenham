@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import {
   useEffect,
@@ -331,11 +331,11 @@ export default function Step4Customer() {
           Step Four
         </p>
 
-        <h2 className="mt-4 text-4xl font-light text-white md:text-5xl">
+        <h2 className="mt-4 text-3xl font-normal leading-tight text-white sm:text-4xl md:text-5xl">
           Your Details
         </h2>
 
-        <p className="mt-5 text-white/60">
+        <p className="mt-5 text-white/75">
           Enter your details, then choose
           your consultation preference.
         </p>
@@ -344,14 +344,14 @@ export default function Step4Customer() {
       <div className="mt-10 space-y-6">
         <div className="grid gap-6 md:grid-cols-2">
           <div>
-            <label className="mb-2 block text-xs uppercase tracking-[0.2em] text-white/40">
+            <label className="mb-2 block text-xs uppercase tracking-[0.2em] text-white/75">
               First Name
             </label>
 
             <div className="relative">
               <User
                 size={18}
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-[#D4AF37]/70"
+                className="absolute left-4 top-1/2 -translate-y-1/2 text-[#D4AF37]"
               />
 
               <input
@@ -392,14 +392,14 @@ export default function Step4Customer() {
           </div>
 
           <div>
-            <label className="mb-2 block text-xs uppercase tracking-[0.2em] text-white/40">
+            <label className="mb-2 block text-xs uppercase tracking-[0.2em] text-white/75">
               Last Name
             </label>
 
             <div className="relative">
               <User
                 size={18}
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-[#D4AF37]/70"
+                className="absolute left-4 top-1/2 -translate-y-1/2 text-[#D4AF37]"
               />
 
               <input
@@ -441,14 +441,14 @@ export default function Step4Customer() {
         </div>
 
         <div>
-          <label className="mb-2 block text-xs uppercase tracking-[0.2em] text-white/40">
+          <label className="mb-2 block text-xs uppercase tracking-[0.2em] text-white/75">
             Phone Number
           </label>
 
           <div className="relative">
             <Phone
               size={18}
-              className="absolute left-4 top-1/2 -translate-y-1/2 text-[#D4AF37]/70"
+              className="absolute left-4 top-1/2 -translate-y-1/2 text-[#D4AF37]"
             />
 
             <input
@@ -492,14 +492,14 @@ export default function Step4Customer() {
         </div>
 
 <div>
-          <label className="mb-2 block text-xs uppercase tracking-[0.2em] text-white/40">
+          <label className="mb-2 block text-xs uppercase tracking-[0.2em] text-white/75">
             Email Address
           </label>
 
           <div className="relative">
             <Mail
               size={18}
-              className="absolute left-4 top-1/2 -translate-y-1/2 text-[#D4AF37]/70"
+              className="absolute left-4 top-1/2 -translate-y-1/2 text-[#D4AF37]"
             />
 
             <input
@@ -529,7 +529,7 @@ export default function Step4Customer() {
           </div>
 
           {checkingCustomer && (
-            <div className="mt-3 flex items-center gap-2 text-sm text-white/50">
+            <div className="mt-3 flex items-center gap-2 text-sm text-white/70">
               <Loader2
                 size={16}
                 className="animate-spin text-[#D4AF37]"
@@ -545,7 +545,7 @@ export default function Step4Customer() {
                 className={`mt-3 rounded-xl border px-4 py-3 text-sm leading-6 ${
                   existingCustomer
                     ? "border-[#D4AF37]/30 bg-[#D4AF37]/10 text-white/75"
-                    : "border-white/10 bg-white/[0.03] text-white/50"
+                    : "border-white/10 bg-white/[0.03] text-white/70"
                 }`}
               >
                 {existingCustomer && (
@@ -579,7 +579,7 @@ export default function Step4Customer() {
               Has your consultation information changed?
             </p>
 
-            <p className="mt-2 text-sm leading-6 text-white/50">
+            <p className="mt-2 text-sm leading-6 text-white/70">
               If your relevant health, allergy or treatment information has changed, please choose Yes. Otherwise, choose No to confirm that your information remains unchanged.
             </p>
 
@@ -595,7 +595,7 @@ export default function Step4Customer() {
                   consultationChoice ===
                   "changed"
                     ? "border-[#D4AF37] bg-[#D4AF37]/15 text-white"
-                    : "border-white/10 bg-white/[0.03] text-white/60 hover:border-[#D4AF37]/40"
+                    : "border-white/10 bg-white/[0.03] text-white/75 hover:border-[#D4AF37]/40"
                 }`}
               >
                 <span className="block font-medium">
@@ -618,7 +618,7 @@ export default function Step4Customer() {
                   consultationChoice ===
                   "unchanged"
                     ? "border-[#D4AF37] bg-[#D4AF37]/15 text-white"
-                    : "border-white/10 bg-white/[0.03] text-white/60 hover:border-[#D4AF37]/40"
+                    : "border-white/10 bg-white/[0.03] text-white/75 hover:border-[#D4AF37]/40"
                 }`}
               >
                 <span className="block font-medium">
@@ -641,7 +641,7 @@ export default function Step4Customer() {
                 How would you like to complete your consultation?
               </p>
 
-              <p className="mt-2 text-sm leading-6 text-white/50">
+              <p className="mt-2 text-sm leading-6 text-white/70">
                 You can complete your consultation online now, or skip it and complete it at the salon before your treatment.
               </p>
 
@@ -656,7 +656,7 @@ export default function Step4Customer() {
                   className={`rounded-xl border px-4 py-4 text-left text-sm transition-all duration-300 ${
                     booking.consultationStatus === "online"
                       ? "border-[#D4AF37] bg-[#D4AF37]/15 text-white"
-                      : "border-white/10 bg-white/[0.03] text-white/60 hover:border-[#D4AF37]/40"
+                      : "border-white/10 bg-white/[0.03] text-white/75 hover:border-[#D4AF37]/40"
                   }`}
                 >
                   <span className="block font-medium">
@@ -678,7 +678,7 @@ export default function Step4Customer() {
                   className={`rounded-xl border px-4 py-4 text-left text-sm transition-all duration-300 ${
                     booking.consultationStatus === "salon"
                       ? "border-[#D4AF37] bg-[#D4AF37]/15 text-white"
-                      : "border-white/10 bg-white/[0.03] text-white/60 hover:border-[#D4AF37]/40"
+                      : "border-white/10 bg-white/[0.03] text-white/75 hover:border-[#D4AF37]/40"
                   }`}
                 >
                   <span className="block font-medium">
@@ -702,7 +702,7 @@ export default function Step4Customer() {
         
 
         <div>
-          <label className="mb-2 block text-xs uppercase tracking-[0.2em] text-white/40">
+          <label className="mb-2 block text-xs uppercase tracking-[0.2em] text-white/75">
             Special Requests
             <span className="ml-2 normal-case tracking-normal text-white/25">
               Optional
@@ -712,7 +712,7 @@ export default function Step4Customer() {
           <div className="relative">
             <FileText
               size={18}
-              className="absolute left-4 top-5 text-[#D4AF37]/70"
+              className="absolute left-4 top-5 text-[#D4AF37]"
             />
 
             <textarea
@@ -735,7 +735,7 @@ export default function Step4Customer() {
         </div>
 
         <div className="rounded-2xl border border-[#D4AF37]/10 bg-[#D4AF37]/5 px-5 py-4">
-          <p className="text-sm leading-6 text-white/50">
+          <p className="text-sm leading-6 text-white/70">
             Your details are used only to
             manage and confirm your appointment.
           </p>

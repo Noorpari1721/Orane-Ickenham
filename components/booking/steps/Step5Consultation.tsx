@@ -442,14 +442,14 @@ export default function Step5Consultation() {
           Consultation & Consent
         </h2>
 
-        <p className="mx-auto mt-5 max-w-2xl text-white/60">
+        <p className="mx-auto mt-5 max-w-2xl text-white/75">
           Please complete the consultation information
           relevant to your selected treatment.
         </p>
       </div>
 
       {isSalon && (
-        <div className="mt-10 rounded-[28px] border border-[#D4AF37]/25 bg-[#D4AF37]/[0.06] p-7">
+        <div className="mt-10 rounded-[22px] sm:rounded-[28px] border border-[#D4AF37]/25 bg-[#D4AF37]/[0.06] p-4 sm:p-7">
           <div className="flex items-start gap-4">
             <CheckCircle2
               className="mt-1 shrink-0 text-[#D4AF37]"
@@ -473,7 +473,7 @@ export default function Step5Consultation() {
       )}
 
       {isExistingUnchanged && (
-        <div className="mt-10 rounded-[28px] border border-[#D4AF37]/25 bg-[#D4AF37]/[0.06] p-7">
+        <div className="mt-10 rounded-[22px] sm:rounded-[28px] border border-[#D4AF37]/25 bg-[#D4AF37]/[0.06] p-4 sm:p-7">
           <div className="flex items-start gap-4">
             <CheckCircle2
               className="mt-1 shrink-0 text-[#D4AF37]"
@@ -500,7 +500,7 @@ export default function Step5Consultation() {
             {requiredForms.map((form) => (
               <section
                 key={form.id}
-                className="overflow-hidden rounded-[28px] border border-white/10 bg-white/[0.035]"
+                className="overflow-hidden rounded-[22px] sm:rounded-[28px] border border-white/10 bg-white/[0.035]"
               >
                 <div className="border-b border-white/10 p-6 sm:p-8">
                   <div className="flex items-start gap-4">
@@ -517,7 +517,7 @@ export default function Step5Consultation() {
                         {form.title}
                       </p>
 
-                      <p className="mt-3 leading-6 text-white/50">
+                      <p className="mt-3 leading-6 text-white/70">
                         {form.description}
                       </p>
                     </div>
@@ -574,7 +574,7 @@ export default function Step5Consultation() {
                   </div>
 
                   <div className="mt-7 rounded-2xl border border-white/10 bg-white/[0.025] p-5">
-                    <label className="block text-xs uppercase tracking-[0.2em] text-white/40">
+                    <label className="block text-xs uppercase tracking-[0.2em] text-white/75">
                       If YES to any question,
                       please provide details
                     </label>
@@ -654,7 +654,7 @@ export default function Step5Consultation() {
               </section>
             ))}
 
-            <div className="rounded-[28px] border border-[#D4AF37]/15 bg-[#D4AF37]/[0.04] p-6">
+            <div className="rounded-[22px] sm:rounded-[28px] border border-[#D4AF37]/15 bg-[#D4AF37]/[0.04] p-6">
               <div className="flex items-start gap-4">
                 <Check
                   size={20}
@@ -666,7 +666,7 @@ export default function Step5Consultation() {
                     Treatment information
                   </p>
 
-                  <p className="mt-2 text-sm leading-6 text-white/50">
+                  <p className="mt-2 text-sm leading-6 text-white/70">
                     Please make sure all information
                     provided is accurate. Your therapist
                     may discuss your answers with you
@@ -681,7 +681,7 @@ export default function Step5Consultation() {
       {requiredForms.length === 0 &&
         !isSalon &&
         !isExistingUnchanged && (
-          <div className="mt-10 rounded-[28px] border border-white/10 bg-white/[0.035] p-7">
+          <div className="mt-10 rounded-[22px] sm:rounded-[28px] border border-white/10 bg-white/[0.035] p-4 sm:p-7">
             <div className="flex items-start gap-4">
               <CheckCircle2
                 className="mt-1 text-[#D4AF37]"
@@ -693,7 +693,7 @@ export default function Step5Consultation() {
                   No Consultation Required
                 </h3>
 
-                <p className="mt-3 leading-7 text-white/50">
+                <p className="mt-3 leading-7 text-white/70">
                   Your selected treatment does not
                   require an online consultation form.
                   You can continue with your booking.
@@ -713,7 +713,7 @@ export default function Step5Consultation() {
         <button
           type="button"
           onClick={completeConsultation}
-          className="mt-8 flex w-full items-center justify-center gap-3 rounded-full bg-[#D4AF37] px-7 py-4 text-sm font-semibold uppercase tracking-[0.18em] text-black transition hover:bg-[#e2c45a]"
+          className="mt-6 flex w-full items-center justify-center gap-3 sm:mt-8 rounded-full bg-[#D4AF37] px-4 py-3.5 sm:px-7 sm:py-4 text-sm font-semibold uppercase tracking-[0.18em] text-black transition hover:bg-[#e2c45a]"
         >
           <CheckCircle2 size={19} />
           Confirm Consultation
@@ -721,7 +721,7 @@ export default function Step5Consultation() {
       )}
 
       {booking.consultationCompleted && (
-        <div className="mt-8 flex items-center justify-center gap-3 rounded-full border border-[#D4AF37]/30 bg-[#D4AF37]/10 px-7 py-4 text-sm font-medium uppercase tracking-[0.15em] text-[#D4AF37]">
+        <div className="mt-8 flex items-center justify-center gap-3 rounded-full border border-[#D4AF37]/30 bg-[#D4AF37]/10 px-4 py-3.5 sm:px-7 sm:py-4 text-sm font-medium uppercase tracking-[0.15em] text-[#D4AF37]">
           <CheckCircle2 size={19} />
           Consultation Completed
         </div>

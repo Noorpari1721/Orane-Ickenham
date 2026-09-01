@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import {
   ArrowRight,
   CreditCard,
@@ -200,6 +200,12 @@ export default function GiftCards() {
                   sm:rounded-[30px]
                 "
               >
+                 {/* Full Gift Card click target */}
+                 <Link
+                   href="/gift-cards"
+                   aria-label="Open Gift Cards"
+                   className="absolute inset-0 z-[50] cursor-pointer rounded-[24px] sm:rounded-[30px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF5A]"
+                 />
 
                 {/* Card top highlight */}
                 <div
@@ -760,5 +766,9 @@ export default function GiftCards() {
     </section>
   );
 }
+
+
+
+
 
 
