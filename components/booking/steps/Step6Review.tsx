@@ -228,7 +228,7 @@ export default function Step6Review() {
                   Category
                 </p>
 
-                <p className="mt-2 text-xl font-light text-white">
+                <p className="mt-2 text-lg font-light text-white">
                   {categoryTitle}
                 </p>
               </div>
@@ -584,6 +584,7 @@ function ReviewItem({
     </div>
   );
 }
+
 
 
 
