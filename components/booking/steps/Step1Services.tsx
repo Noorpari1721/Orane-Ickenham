@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useMemo, useRef, useState } from "react";
 import {
@@ -69,37 +69,10 @@ export default function Step1Services() {
       ? selectedServices[0]
       : null;
 
-  const categoryFromSelectedService =
-    selectedService
-      ? serviceCategories.find((category) =>
-          category.services.some(
-            (service) => service.id === selectedService.id
-          )
-        )
-      : undefined;
-
-  const bookingCategory =
-    serviceCategories.find(
-      (category) => category.id === booking.category
-    );
-
-  const bookingCategoryContainsSelectedService =
-    !!bookingCategory &&
-    (!selectedService ||
-      bookingCategory.services.some(
-        (service) => service.id === selectedService.id
-      ));
-
   const activeCategoryId =
-    bookingCategoryContainsSelectedService && bookingCategory
-      ? bookingCategory.id
-      : categoryFromSelectedService?.id ||
-        bookingCategory?.id ||
-        serviceCategories[0]?.id ||
-        "";
-
-
-
+    booking.category ||
+    serviceCategories[0]?.id ||
+    "";
   // Only one treatment card can be expanded at a time.
   const [expandedServiceId, setExpandedServiceId] = useState<number | string | null>(null);
 
@@ -175,8 +148,20 @@ export default function Step1Services() {
   const selectCategory = (categoryId: string) => {
     setExpandedServiceId(null);
 
+    // Preserve the page's vertical scroll position when switching
+    // categories. Category content can change height, which otherwise
+    // causes the browser to visibly jump the page.
+    const scrollY = window.scrollY;
+
     updateBooking({
       category: categoryId,
+    });
+
+    requestAnimationFrame(() => {
+      window.scrollTo({
+        top: scrollY,
+        behavior: "auto",
+      });
     });
   };
 
@@ -221,16 +206,16 @@ export default function Step1Services() {
         <button
           type="button"
           onClick={() => scrollCategories("left")}
-          className="hidden md:flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/[0.025] text-white/60 transition-all duration-300 hover:border-[#D4AF37]/60 hover:bg-[#D4AF37]/10 hover:text-[#D4AF37]"
+          className="hidden md:flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/[0.025] text-white/75 transition-all duration-300 hover:border-[#D4AF37]/60 hover:bg-[#D4AF37]/10 hover:text-[#D4AF37]"
           aria-label="Scroll categories left"
         >
           <ChevronLeft size={19} />
         </button>
 
-        <div className="min-w-0 flex-1 rounded-full border border-white/10 bg-white/[0.025] p-2 shadow-[inset_0_1px_0_rgba(255,255,255,.035)]">
+        <div className="min-w-0 flex-1 rounded-full border border-white/10 bg-white/[0.025] p-2.5 sm:p-2 shadow-[inset_0_1px_0_rgba(255,255,255,.035)]">
           <div
             ref={categoryScroller}
-            className="flex gap-2 overflow-x-auto overscroll-x-contain scroll-smooth [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            className="flex gap-1.5 overflow-x-auto overscroll-x-contain scroll-smooth pb-0.5 sm:gap-2 sm:pb-0 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
           >
             {serviceCategories.map((category) => {
               const active = activeCategoryId === category.id;
@@ -246,7 +231,7 @@ export default function Step1Services() {
                   onClick={() => selectCategory(category.id)}
                   className={`
                     inline-flex shrink-0 items-center gap-2 rounded-full border
-                    px-5 py-2.5 text-sm transition-all duration-300
+                    px-4 py-3 text-sm transition-all duration-300 sm:px-5 sm:py-2.5
                     ${
                       active
                         ? "border-[#D4AF37] bg-[#D4AF37]/12 text-[#E7C95D] shadow-[0_0_25px_rgba(212,175,55,.10)]"
@@ -270,7 +255,7 @@ export default function Step1Services() {
         <button
           type="button"
           onClick={() => scrollCategories("right")}
-          className="hidden md:flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/[0.025] text-white/60 transition-all duration-300 hover:border-[#D4AF37]/60 hover:bg-[#D4AF37]/10 hover:text-[#D4AF37]"
+          className="hidden md:flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/[0.025] text-white/75 transition-all duration-300 hover:border-[#D4AF37]/60 hover:bg-[#D4AF37]/10 hover:text-[#D4AF37]"
           aria-label="Scroll categories right"
         >
           <ChevronRight size={19} />
@@ -284,7 +269,7 @@ export default function Step1Services() {
 
           <div className="mb-6 flex flex-col gap-3 border-b border-white/10 pb-5 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <p className="mb-2 text-[10px] uppercase tracking-[0.3em] text-[#D4AF37]/70">
+              <p className="mb-2 text-[10px] uppercase tracking-[0.3em] text-[#D4AF37]">
                 Treatment Collection
               </p>
 
@@ -407,7 +392,7 @@ export default function Step1Services() {
                       </span>
                     </div>
 
-                    <div className="mt-3 flex items-center gap-2 text-xs text-white/40">
+                    <div className="mt-3 flex items-center gap-2 text-xs text-white/75">
                       <Clock3 size={14} className="text-[#D4AF37]" />
                       <span>{service.duration}</span>
                     </div>
@@ -468,3 +453,4 @@ export default function Step1Services() {
     </div>
   );
 }
+
