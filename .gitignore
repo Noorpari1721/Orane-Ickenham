@@ -73,3 +73,7 @@ image-fix-backup/
 homepage-backups/
 orane-prisma-full-file-fix/
 production-audit-*.txt
+node_modules/
+.vercel/
+.env.*
+!.env.example

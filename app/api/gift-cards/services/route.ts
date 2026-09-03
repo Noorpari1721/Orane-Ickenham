@@ -87,6 +87,18 @@ export async function GET() {
 
       categoryMap.get(category)!.push(service);
     }
+    const categoryOrder = [
+      "Japanese Head Spa",
+      "Facials",
+      "Massage",
+      "Nails",
+      "Manicure",
+      "Pedicure",
+      "Lashes",
+      "Tint",
+      "Waxing & Threading",
+      "Packages",
+    ];
 
     const categoryServices = Array.from(categoryMap.entries())
       .map(([category, categoryItems]) => ({
@@ -97,12 +109,20 @@ export async function GET() {
             a.name.localeCompare(b.name)
         ),
       }))
-      .sort(
-        (a, b) =>
-          (a.services[0]?.price ?? 0) -
-            (b.services[0]?.price ?? 0) ||
+      .sort((a, b) => {
+        const ai = categoryOrder.indexOf(a.category);
+        const bi = categoryOrder.indexOf(b.category);
+
+        const aRank =
+          ai === -1 ? Number.MAX_SAFE_INTEGER : ai;
+        const bRank =
+          bi === -1 ? Number.MAX_SAFE_INTEGER : bi;
+
+        return (
+          aRank - bRank ||
           a.category.localeCompare(b.category)
-      );
+        );
+      });
 
     const serviceCategories = categoryServices.map(
       ({ category, services: categoryItems }) => ({

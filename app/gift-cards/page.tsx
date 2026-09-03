@@ -158,8 +158,6 @@ export default function GiftCardsPage() {
 
             const canonicalName = String(service.name || "")
               .normalize("NFKC")
-              .replace(/Ã¢£â€œ|Ã¢£â€|Ã¢Ë†â€™|Ã¢£Â¦|Ã‚/g, " ")
-              .replace(/[â€”â€“âˆ’]/g, " ")
               .replace(/[^a-zA-Z0-9]+/g, " ")
               .replace(/\s+/g, " ")
               .trim()
@@ -176,8 +174,6 @@ export default function GiftCardsPage() {
 
                 const candidateName = String(candidate.name || "")
                   .normalize("NFKC")
-                  .replace(/Ã¢£â€œ|Ã¢£â€|Ã¢Ë†â€™|Ã¢£Â¦|Ã‚/g, " ")
-                  .replace(/[â€”â€“âˆ’]/g, " ")
                   .replace(/[^a-zA-Z0-9]+/g, " ")
                   .replace(/\s+/g, " ")
                   .trim()
@@ -224,14 +220,14 @@ export default function GiftCardsPage() {
   const categories = useMemo(() => {
     const preferredOrder = [
       "Japanese Head Spa",
-      "Nails",
-      "Lashes",
-      "Waxing & Threading",
       "Facials",
+      "Massage",
+      "Nails",
       "Manicure",
       "Pedicure",
+      "Lashes",
       "Tint",
-      "Massage",
+      "Waxing & Threading",
       "Packages",
     ];
 
@@ -962,7 +958,102 @@ export default function GiftCardsPage() {
                     </div>
                   ) : (
                     <div className="mt-4 grid w-full min-w-0 grid-cols-1 gap-2.5 sm:grid-cols-2">
-                      {filteredServices.map(
+                      {activeCategory === "Massage" ? (
+                        [
+                          { title: "Swedish Full Body Massage", ids: ["48", "49"] },
+                          { title: "Deep Tissue Massage", ids: ["50", "51"] },
+                          { title: "Indian Head Massage", ids: ["52", "53"] },
+                        ].map((group) => {
+                          const groupServices = filteredServices.filter((service) =>
+  service.name
+    .toLowerCase()
+    .startsWith(group.title.toLowerCase())
+);
+                          if (!groupServices.length) return null;
+                          return (
+                            <div key={group.title} className="group w-full min-w-0 overflow-hidden rounded-[18px] border border-white/[0.09] bg-white/[0.018] p-4 transition-all duration-200 hover:border-[#D4AF37]/30 hover:bg-white/[0.035]">
+                              <div className="flex min-w-0 items-center gap-3">
+                                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-[#D4AF37]/35 text-[9px] font-semibold text-[#D4AF37]">{groupServices.length}</span>
+                                <span className="truncate text-sm font-medium text-white/90">{group.title}</span>
+                              </div>
+                              <div className="mt-3 space-y-2">
+                                {groupServices.map((service) => {
+                                  const active = selectedServiceIds.includes(service.id);
+                                  const variant = service.name.split("—")[1]?.trim() || service.name;
+                                  return (
+                                    <button key={service.id} type="button" onClick={() => { toggleService(service.id); setError(""); }} className={`flex w-full min-w-0 items-center justify-between gap-3 rounded-[14px] border px-3 py-2.5 text-left transition-all duration-200 ${active ? "border-[#D4AF37]/65 bg-[#C49A45]/10" : "border-white/[0.08] bg-black/10 hover:border-[#D4AF37]/30"}`}>
+                                      <div className="min-w-0"><span className="block truncate text-xs font-medium text-white/90">{cleanServiceText(variant)}</span><span className="mt-1 block text-[8px] font-semibold uppercase tracking-[0.12em] text-white/55">{cleanServiceText(variant)}</span></div>
+                                      <div className="flex shrink-0 items-center gap-2"><span className="font-serif text-sm text-[#D4AF37]">£{Number(service.price).toFixed(2)}</span><span className={`flex h-6 w-6 items-center justify-center rounded-full border ${active ? "border-[#D4AF37] bg-[#D4AF37] text-black" : "border-white/20 text-transparent"}`}><Check size={12} /></span></div>
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          );
+                        })
+                      ) /* MASSAGE_REMAINING_SERVICES_FIX */
+                        .concat(
+                          filteredServices
+                            .filter(
+                              (service) =>
+                                ![
+                                  "Swedish Full Body Massage",
+                                  "Deep Tissue Massage",
+                                  "Indian Head Massage",
+                                ].some((groupTitle) =>
+                                  String(service.name || "")
+                                    .toLowerCase()
+                                    .startsWith(groupTitle.toLowerCase())
+                                )
+                            )
+                            .map((service) => {
+                              const active =
+                                selectedServiceIds.includes(service.id);
+
+                              return (
+                                <button
+                                  key={`massage-individual-${service.id}`}
+                                  type="button"
+                                  onClick={() => {
+                                    toggleService(service.id);
+                                    setError("");
+                                  }}
+                                  className={`group flex w-full min-w-0 min-h-[82px] items-center justify-between gap-4 rounded-[18px] border px-4 py-3.5 text-left transition-all duration-200 ${
+                                    active
+                                      ? "border-[#D4AF37]/65 bg-[#C49A45]/10 shadow-lg shadow-[#C49A45]/5"
+                                      : "border-white/[0.09] bg-white/[0.018] hover:border-[#D4AF37]/30 hover:bg-white/[0.035]"
+                                  }`}
+                                >
+                                  <div className="flex min-w-0 items-center gap-3">
+                                    <span
+                                      className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border transition ${
+                                        active
+                                          ? "border-[#D4AF37] bg-[#D4AF37] text-black"
+                                          : "border-white/20 text-transparent group-hover:border-[#D4AF37]/50"
+                                      }`}
+                                    >
+                                      <Check size={13} />
+                                    </span>
+
+                                    <div className="min-w-0">
+                                      <span className="block truncate text-sm font-medium text-white/90">
+                                        {cleanServiceText(service.name)}
+                                      </span>
+
+                                      <span className="mt-1 block truncate text-[8px] font-semibold uppercase tracking-[0.16em] text-white/60">
+                                        {cleanServiceText(service.category)}
+                                      </span>
+                                    </div>
+                                  </div>
+
+                                  <span className="shrink-0 font-serif text-base text-[#D4AF37]">
+                                    £{Number(service.price).toFixed(2)}
+                                  </span>
+                                </button>
+                              );
+                            })
+                        )
+                        : filteredServices.map(
                         (service) => {
                           const active =
                             selectedServiceIds.includes(
@@ -997,18 +1088,38 @@ export default function GiftCardsPage() {
                                 </span>
 
                                 <div className="min-w-0">
-                                  <span className="block truncate text-sm font-medium text-white/90">
-                                    {cleanServiceText(
-                                      service.name
-                                    )}
-                                  </span>
+                                  
+                                  {/* ALL_TREATMENTS_MAIN_CATEGORY_HIERARCHY */}
+                                  {activeCategory === "all" ? (
+                                    <>
+                                      <span className="block truncate text-sm font-semibold text-white">
+                                        {cleanServiceText(
+                                          service.category
+                                        )}
+                                      </span>
 
-                                  <span className="mt-1 block truncate text-[8px] font-semibold uppercase tracking-[0.16em] text-white/60">
-                                    {cleanServiceText(
-                                      service.category
-                                    )}
-                                  </span>
-                                </div>
+                                      <span className="mt-1 block truncate text-[9px] font-medium text-white/55">
+                                        {cleanServiceText(
+                                          service.name
+                                        )}
+                                      </span>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <span className="block truncate text-sm font-medium text-white/90">
+                                        {cleanServiceText(
+                                          service.name
+                                        )}
+                                      </span>
+
+                                      <span className="mt-1 block truncate text-[8px] font-semibold uppercase tracking-[0.16em] text-white/60">
+                                        {cleanServiceText(
+                                          service.category
+                                        )}
+                                      </span>
+                                    </>
+                                  )}
+</div>
                               </div>
 
                               <span className="shrink-0 font-serif text-base text-[#D4AF37]">
@@ -1387,4 +1498,6 @@ export default function GiftCardsPage() {
     </main>
   );
 }
+
+
 

@@ -1,5 +1,5 @@
 "use client";
-
+import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 
@@ -21,12 +21,17 @@ export default function ContactPage() {
       {/* BACK TO HOME */}
       <div className="absolute left-6 top-6 z-10 md:left-10 md:top-10">
         <Link
-          href="/"
-          className="inline-flex items-center gap-3 rounded-full border border-[#C49A45]/50 bg-[#252525] px-5 py-3 text-sm font-medium text-[#E2C07D] transition duration-300 hover:border-[#C49A45] hover:bg-[#C49A45] hover:text-[#1d1d1d]"
-        >
-          <span className="text-lg leading-none">â†</span>
-          Back to Home
-        </Link>
+  href="/"
+  aria-label="Back to Home"
+  className="group inline-flex w-fit items-center gap-2.5 rounded-full border border-[#D4AF37]/45 bg-[#D4AF37]/10 px-5 py-2.5 text-sm font-medium text-[#D4AF37] shadow-[0_4px_18px_rgba(212,175,55,.06)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[#D4AF37]/75 hover:bg-[#D4AF37]/15 hover:shadow-[0_8px_25px_rgba(212,175,55,.14)]"
+>
+  <ArrowLeft
+    size={16}
+    strokeWidth={1.8}
+    className="shrink-0 transition-transform duration-300 group-hover:-translate-x-0.5"
+  />
+  <span>Back to Home</span>
+</Link>
       </div>
 
       <div className="relative mx-auto max-w-6xl">
@@ -36,7 +41,7 @@ export default function ContactPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="mb-3 text-sm uppercase tracking-[0.3em] text-[#C8A46A]"
+            className="mb-3 text-sm uppercase tracking-[0.3em] text-[#D4AF37]"
           >
             Get In Touch
           </motion.p>
@@ -54,24 +59,24 @@ export default function ContactPage() {
             <input
               type="text"
               placeholder="Your Name"
-              className="rounded-lg border border-[#C49A45]/30 bg-[#292929] px-4 py-3 text-white placeholder:text-gray-300 transition focus:border-[#C8A46A] focus:outline-none focus:ring-2 focus:ring-[#C8A46A]/20"
+              className="rounded-lg border border-[#D4AF37]/30 bg-[#292929] px-4 py-3 text-white placeholder:text-gray-300 transition focus:border-[#D4AF37] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/20"
             />
 
             <input
               type="email"
               placeholder="Your Email"
-              className="rounded-lg border border-[#C49A45]/30 bg-[#292929] px-4 py-3 text-white placeholder:text-gray-300 transition focus:border-[#C8A46A] focus:outline-none focus:ring-2 focus:ring-[#C8A46A]/20"
+              className="rounded-lg border border-[#D4AF37]/30 bg-[#292929] px-4 py-3 text-white placeholder:text-gray-300 transition focus:border-[#D4AF37] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/20"
             />
 
             <textarea
               placeholder="Your Message"
               rows={5}
-              className="rounded-lg border border-[#C49A45]/30 bg-[#292929] px-4 py-3 text-white placeholder:text-gray-300 transition focus:border-[#C8A46A] focus:outline-none focus:ring-2 focus:ring-[#C8A46A]/20"
+              className="rounded-lg border border-[#D4AF37]/30 bg-[#292929] px-4 py-3 text-white placeholder:text-gray-300 transition focus:border-[#D4AF37] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/20"
             />
 
             <button
               type="submit"
-              className="mt-2 rounded-full bg-[#D2B06F] px-8 py-4 font-medium text-[#1d1d1d] transition duration-300 hover:scale-[1.02] hover:bg-[#E2C07D]"
+              className="mt-2 rounded-full bg-[#D4AF37] px-8 py-4 font-medium text-[#1d1d1d] transition duration-300 hover:scale-[1.02] hover:bg-[#e2c45a]"
             >
               Send Message
             </button>
@@ -89,7 +94,7 @@ export default function ContactPage() {
           <div className="mb-6">
             <div className="grid items-start gap-8 text-center md:grid-cols-2 md:text-left">
               <div>
-                <p className="mb-2 text-sm uppercase tracking-[0.3em] text-[#C8A46A]">
+                <p className="mb-2 text-sm uppercase tracking-[0.3em] text-[#D4AF37]">
                   Visit Our Salon
                 </p>
 
@@ -102,17 +107,25 @@ export default function ContactPage() {
                 </p>
               </div>
 
-              <div className="border-t border-[#C49A45]/20 pt-6 md:border-l md:border-t-0 md:pl-8 md:pt-0">
-                <p className="mb-3 text-sm uppercase tracking-[0.3em] text-[#C8A46A]">
+              <div className="border-t border-[#D4AF37]/20 pt-6 md:border-l md:border-t-0 md:pl-8 md:pt-0">
+                <p className="mb-3 text-sm uppercase tracking-[0.3em] text-[#D4AF37]">
                   Getting Here
                 </p>
 
                 <div className="space-y-3 text-sm leading-7 text-gray-400">
+                  {/* CONTACT_GETTING_HERE_FINAL */}
+
                   <p>
                     <span className="font-medium text-white">
-                      Nearest Underground:
+                      Nearest Underground Station:
                     </span>{" "}
-                    West Ruislip Station – only 2 minutes&apos; walk.
+                    West Ruislip — 2 mins walk.
+                  </p>
+
+                  <p>
+                    <span className="font-medium text-white">
+                      Nearest Bus Stops:
+                    </span>
                   </p>
 
                   <p>
@@ -137,14 +150,14 @@ export default function ContactPage() {
                 href={directionsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex rounded-full bg-[#D2B06F] px-7 py-3 text-sm font-medium text-[#1d1d1d] transition duration-300 hover:bg-[#E2C07D]"
+                className="inline-flex rounded-full bg-[#D4AF37] px-7 py-3 text-sm font-medium text-[#1d1d1d] transition duration-300 hover:bg-[#e2c45a]"
               >
                 Get Directions
               </a>
             </div>
           </div>
 
-          <div className="overflow-hidden rounded-2xl border border-[#C49A45]/40 shadow-2xl">
+          <div className="overflow-hidden rounded-2xl border border-[#D4AF37]/40 shadow-2xl">
             <iframe
               title="Orane Ickenham Location"
               src={mapUrl}

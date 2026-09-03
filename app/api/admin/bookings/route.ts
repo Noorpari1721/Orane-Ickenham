@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+﻿import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { ADMIN_COOKIE, verifyAdminSession } from "@/lib/adminAuth";
 import { PrismaClient } from "@/app/generated/prisma/client";
@@ -85,6 +85,7 @@ function timesOverlap(
 function serializeBooking(booking: any) {
   return {
     id: booking.id,
+    createdAt: booking.createdAt,
     bookingNo: booking.bookingNo,
     date: booking.date,
     startTime: booking.startTime,
@@ -200,8 +201,7 @@ export async function GET(request: Request) {
       where,
       include: bookingInclude,
       orderBy: [
-        { date: "asc" },
-        { startTime: "asc" },
+        { createdAt: "desc" },
       ],
     });
 
@@ -860,3 +860,6 @@ export async function DELETE(request: Request) {
     );
   }
 }
+
+
+

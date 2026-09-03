@@ -1,4 +1,4 @@
-﻿export const serviceCategories = [
+export const serviceCategories = [
 {
     id: "head-spa",
     title: "Japanese Head Spa",
@@ -28,10 +28,132 @@
         price: 120,
         duration: "90 min",
         description:
-          "An indulgent full-body ritual combining aromatherapy, botanical foot soak, GUA SHA massage, facial cleanse and mask, CO2 bubble detox, scalp steam therapy, protein hair mask, deep-cleansing shampoo, relaxing massage and a herbal-infused waterfall rinse.",
+          "An indulgent ritual combining aromatherapy, botanical foot soak, GUA SHA massage, facial cleanse and mask, CO2 bubble detox, scalp steam therapy, protein hair mask, deep-cleansing shampoo, relaxing massage and a herbal-infused waterfall rinse.",
       },
     ],
   },
+
+
+
+{
+    id: "facials",
+    title: "Facials",
+    image: "/images/services/facial.jpg",
+    description:
+      "Thoughtfully selected facial treatments designed to refresh your complexion, support your skincare routine and leave your skin looking beautifully cared for.",
+    services: [
+      {
+        id: 6,
+        name: "Express Facial",
+        price: 30,
+        duration: "30 min",
+        description:
+          "Quick refresh for fresh, glowing-looking skin when you're short on time.",
+      },
+      {
+        id: 4,
+        name: "Deep Cleansing Facial",
+        price: 45,
+        duration: "45 min",
+        description:
+          "Deep cleanse to remove daily build-up and leave skin feeling clean, smooth and refreshed.",
+      },
+      {
+        id: 7,
+        name: "Herbal Facial",
+        price: 60,
+        duration: "60 min",
+        description:
+          "A relaxing herbal treatment to nourish, soften and refresh your skin.",
+      },
+      {
+        id: 5,
+        name: "ELEMIS Expert Facial",
+        price: 70,
+        duration: "60 min",
+        description:
+          "Our premium facial with ELEMIS skincare for a luxurious, fresh and beautifully cared-for finish.",
+      },
+    ],
+  },
+
+
+
+{
+    id: "massage",
+    title: "Massage",
+    image: "/images/gallery/massage.jpg",
+    description:
+      "Relaxing massage treatments designed to ease everyday tension, support relaxation and leave you feeling refreshed and restored.",
+    services: [
+      {
+        id: 48,
+        name: "Swedish Full Body Massage — 45 Minutes",
+        price: 45,
+        duration: "45 min",
+        description:
+          "A relaxing full-body Swedish massage designed to ease everyday tension and promote deep relaxation.",
+      },
+      {
+        id: 49,
+        name: "Swedish Full Body Massage — 60 Minutes",
+        price: 55,
+        duration: "60 min",
+        description:
+          "A longer Swedish full-body massage designed to provide deeper relaxation and soothing muscle care.",
+      },
+      {
+        id: 50,
+        name: "Deep Tissue Massage — 45 Minutes",
+        price: 50,
+        duration: "45 min",
+        description:
+          "A focused deep-tissue massage designed to target areas of muscular tension and promote relaxation.",
+      },
+      {
+        id: 51,
+        name: "Deep Tissue Massage — 60 Minutes",
+        price: 60,
+        duration: "60 min",
+        description:
+          "An extended deep-tissue massage designed to focus on areas of muscular tension and provide deeper relaxation.",
+      },
+      {
+        id: 52,
+        name: "Indian Head Massage — 30 Minutes",
+        price: 30,
+        duration: "30 min",
+        description:
+          "A soothing Indian head massage focused on the head, neck and shoulders to encourage relaxation.",
+      },
+      {
+        id: 53,
+        name: "Indian Head Massage — 45 Minutes",
+        price: 40,
+        duration: "45 min",
+        description:
+          "An extended Indian head massage focusing on the head, neck and shoulders for deeper relaxation.",
+      },
+      {
+        id: 54,
+        name: "Back, Neck & Shoulder Massage",
+        price: 30,
+        duration: "30 min",
+        description:
+          "A focused massage targeting the back, neck and shoulders to help release everyday muscular tension.",
+      },
+      {
+        id: 55,
+        name: "Hand & Foot Relaxation Massage",
+        price: 30,
+        duration: "30 min",
+        description:
+          "A calming massage focused on the hands and feet to promote relaxation and comfort.",
+      },
+    ],
+  },
+
+
 
 {
     id: "nails",
@@ -57,20 +179,6 @@
           "Repair of a damaged or broken nail.",
       },
       {
-        id: 108,
-        name: "Big Toe Fix",
-        price: 5,
-        duration: "10 min",
-        description: "Quick repair and reshaping of a damaged big toenail.",
-      },
-      {
-        id: 107,
-        name: "French Tips (Toes)",
-        price: 8,
-        duration: "10 min",
-        description: "Classic French-tip detailing for toenails.",
-      },
-      {
         id: 19,
         name: "Chrome / Glitter / Cat Eye",
         price: 8,
@@ -85,13 +193,6 @@
         duration: "10 min",
         description:
           "Classic French-tip detailing for a clean and elegant nail finish.",
-      },
-      {
-        id: 106,
-        name: "Remove Gel/Shellac from Toes Only",
-        price: 10,
-        duration: "20 min",
-        description: "Professional removal of gel polish or shellac from the toes.",
       },
       {
         id: 18,
@@ -247,6 +348,208 @@
       },],
   },
 
+
+
+{
+    id: "manicure",
+    title: "Manicure",
+    image: "/images/services/manicure.jpg",
+    description:
+      "Give your hands the attention they deserve with classic, express and luxury manicure experiences.",
+    services: [
+      {
+        id: 29,
+        name: 'Express "Dry" Manicure',
+        price: 15,
+        duration: "20 min",
+        description:
+          "A quick manicure including cut, file and shape, finished with nourishing cuticle oil.",
+      },
+      {
+        id: 31,
+        name: 'Express "Dry" Manicure with Normal Polish',
+        price: 20,
+        duration: "25 min",
+        description:
+          "A quick cut, file and shape manicure finished with normal polish and cuticle oil.",
+      },
+      {
+        id: 30,
+        name: 'Express "Dry" Manicure with Gel/Shellac',
+        price: 25,
+        duration: "30 min",
+        description:
+          "A quick cut, file and shape manicure finished with gel/shellac and cuticle oil.",
+      },
+      {
+        id: 32,
+        name: "Classic Manicure",
+        price: 32,
+        duration: "40 min",
+        description:
+          "A complete manicure with cut, file, shaping, cuticle care, hand scrub and hydrating cream, finished with complimentary normal polish.",
+      },
+      {
+        id: 34,
+        name: "Classic French Manicure",
+        price: 40,
+        duration: "50 min",
+        description:
+          "A classic manicure with French tips and complimentary normal polish for an elegant finish.",
+      },
+      {
+        id: 38,
+        name: "Paraffin Wax Manicure",
+        price: 40,
+        duration: "45 min",
+        description:
+          "A classic manicure enhanced with nourishing paraffin wax and complimentary normal polish.",
+      },
+      {
+        id: 36,
+        name: "Luxury Manicure",
+        price: 45,
+        duration: "60 min",
+        description:
+          "A complete luxury ritual with copper vessel soak, cuticle care, exfoliation, nourishing mask, relaxation massage, hot towel infusion, cuticle oil and hydration seal, finished with complimentary normal polish.",
+      },
+      {
+        id: 33,
+        name: "Classic Manicure with Gel/Shellac",
+        price: 37,
+        duration: "45 min",
+        description:
+          "A relaxing manicure with hand soak, nail shaping, cuticle care and hand scrub, finished with hydrating cream and gel/shellac.",
+      },
+      {
+        id: 35,
+        name: "Classic French Manicure with Gel/Shellac",
+        price: 45,
+        duration: "50 min",
+        description:
+          "A classic manicure finished with French tips and durable gel/shellac.",
+      },
+      {
+        id: 39,
+        name: "Paraffin Wax Manicure with Gel/Shellac",
+        price: 45,
+        duration: "50 min",
+        description:
+          "A classic manicure with a nourishing paraffin wax treatment, finished with gel/shellac.",
+      },
+      {
+        id: 37,
+        name: "Luxury Manicure with Gel/Shellac",
+        price: 50,
+        duration: "65 min",
+        description:
+          "The full luxury manicure ritual with copper soak, exfoliation, nourishing mask, massage and hot towel infusion, finished with gel/shellac, cuticle oil and hydration seal.",
+      },
+    ],
+  },
+
+
+
+{
+    id: "pedicure",
+    title: "Pedicure",
+    image: "/images/services/pedicure.jpg",
+    description:
+      "Relax, refresh and give your feet the care they deserve with our range of classic, express and luxury pedicures.",
+    services: [
+      {
+        id: 42,
+        name: "Express Pedicure",
+        price: 20,
+        duration: "25 min",
+        description:
+          "A quick foot treatment including nail cutting, filing, buffing and cuticle pushing, finished with complimentary normal polish.",
+      },
+      {
+        id: 43,
+        name: "Express Pedicure with Gel/Shellac",
+        price: 30,
+        duration: "35 min",
+        description:
+          "A quick pedicure with nail cutting, filing, buffing and cuticle pushing, finished with gel/shellac.",
+      },
+      {
+        id: 41,
+        name: "Classic Pedicure",
+        price: 38,
+        duration: "45 min",
+        description:
+          "A complete pedicure with foot cleanse, warm soak, nail and cuticle care, callus removal, exfoliation and relaxation massage, finished with hydrating cream and complimentary normal polish.",
+      },
+      {
+        id: 40,
+        name: "Classic Pedicure with Gel/Shellac",
+        price: 43,
+        duration: "50 min",
+        description:
+          "A complete classic pedicure with warm soak, nail and cuticle care, callus removal, exfoliation and massage, finished with hydrating cream and gel/shellac.",
+      },
+      {
+        id: 46,
+        name: "Paraffin Wax Pedicure",
+        price: 48,
+        duration: "55 min",
+        description:
+          "A classic pedicure enhanced with nourishing paraffin wax and callus peel treatment, finished with complimentary normal polish.",
+      },
+      {
+        id: 47,
+        name: "Paraffin Wax Pedicure with Gel/Shellac",
+        price: 53,
+        duration: "55 min",
+        description:
+          "A classic pedicure with paraffin wax and callus peel treatment, finished with gel/shellac.",
+      },
+      {
+        id: 44,
+        name: "Luxury Pedicure",
+        price: 65,
+        duration: "60 min",
+        description:
+          "A luxurious foot ritual combining aromatherapy, milk and honey soak, steam and hot towel infusion with an extended relaxation massage, finished with complimentary normal polish.",
+      },
+      {
+        id: 45,
+        name: "Luxury Pedicure with Gel/Shellac",
+        price: 70,
+        duration: "65 min",
+        description:
+          "A luxury pedicure with aromatherapy, milk and honey soak, steam and hot towel infusion, extended relaxation massage and calf massage, finished with gel/shellac.",
+      },
+
+      {
+        id: 108,
+        name: "Big Toe Fix",
+        price: 5,
+        duration: "10 min",
+        description: "Quick repair and reshaping of a damaged big toenail.",
+      },
+
+      {
+        id: 107,
+        name: "French Tips (Toes)",
+        price: 8,
+        duration: "10 min",
+        description: "Classic French-tip detailing for toenails.",
+      },
+
+      {
+        id: 106,
+        name: "Remove Gel/Shellac from Toes Only",
+        price: 10,
+        duration: "20 min",
+        description: "Professional removal of gel polish or shellac from the toes.",
+      },
+    ],
+  },
+
+
+
 {
     id: "lashes",
     title: "Lashes",
@@ -283,8 +586,7 @@
         name: "Korean Lash Lift",
         price: 65,
         duration: "90 min",
-        description:
-          "A lash-lifting treatment designed to enhance the natural curl and appearance of the lashes.",
+        description: "A modern lash-lifting treatment designed to enhance the natural curl, lift and appearance of your lashes, creating a beautifully defined and wide-awake look.",
       },
       {
         id: 57,
@@ -296,6 +598,44 @@
       },
     ],
   },
+
+
+
+{
+    id: "tint",
+    title: "Tint",
+    image: "/images/services/tint.jpg",
+    description:
+      "Define and enhance your natural features with beautifully finished brow and lash treatments.",
+    services: [
+      {
+        id: 26,
+        name: "Brow Tint",
+        price: 15,
+        duration: "20 min",
+        description:
+          "A brow tint treatment that enhances the colour and definition of the eyebrows.",
+      },
+      {
+        id: 27,
+        name: "Lash Tint",
+        price: 20,
+        duration: "20 min",
+        description:
+          "A lash tint treatment that enhances the natural colour and definition of the lashes.",
+      },
+      {
+        id: 25,
+        name: "Brow Lamination Including Tint",
+        price: 55,
+        duration: "50 min",
+        description:
+          "A brow-shaping treatment that smooths and sets the brow hairs into place, including tint for added definition.",
+      },
+    ],
+  },
+
+
 
 {
     id: "waxing-threading",
@@ -556,327 +896,7 @@
     ],
   },
 
-{
-    id: "facials",
-    title: "Facials",
-    image: "/images/services/facial.jpg",
-    description:
-      "Thoughtfully selected facial treatments designed to refresh your complexion, support your skincare routine and leave your skin looking beautifully cared for.",
-    services: [
-      {
-        id: 6,
-        name: "Express Facial",
-        price: 30,
-        duration: "30 min",
-        description:
-          "A refreshing facial designed to give the skin a quick, healthy-looking glow.",
-      },
-      {
-        id: 4,
-        name: "Deep Cleansing Facial",
-        price: 45,
-        duration: "45 min",
-        description:
-          "A purifying facial designed to deeply cleanse the skin and support a clearer, more balanced complexion.",
-      },
-      {
-        id: 7,
-        name: "Herbal Facial",
-        price: 60,
-        duration: "60 min",
-        description:
-          "A botanical nourishing facial designed to restore the skin’s natural glow and leave it feeling calm and refreshed.",
-      },
-      {
-        id: 5,
-        name: "ELEMIS Expert Facial",
-        price: 70,
-        duration: "60 min",
-        description:
-          "A luxury skin-renewing facial using premium ELEMIS skincare and professional treatment methods.",
-      },
-    ],
-  },
 
-{
-    id: "manicure",
-    title: "Manicure",
-    image: "/images/services/manicure.jpg",
-    description:
-      "Give your hands the attention they deserve with classic, express and luxury manicure experiences.",
-    services: [
-      {
-        id: 29,
-        name: 'Express "Dry" Manicure',
-        price: 15,
-        duration: "20 min",
-        description:
-          "A quick manicure including cut, file and shape, finished with nourishing cuticle oil.",
-      },
-      {
-        id: 31,
-        name: 'Express "Dry" Manicure with Normal Polish',
-        price: 20,
-        duration: "25 min",
-        description:
-          "A quick cut, file and shape manicure finished with normal polish and cuticle oil.",
-      },
-      {
-        id: 30,
-        name: 'Express "Dry" Manicure with Gel/Shellac',
-        price: 25,
-        duration: "30 min",
-        description:
-          "A quick cut, file and shape manicure finished with gel/shellac and cuticle oil.",
-      },
-      {
-        id: 32,
-        name: "Classic Manicure",
-        price: 32,
-        duration: "40 min",
-        description:
-          "A complete manicure with cut, file, shaping, cuticle care, hand scrub and hydrating cream, finished with complimentary normal polish.",
-      },
-      {
-        id: 34,
-        name: "Classic French Manicure",
-        price: 40,
-        duration: "50 min",
-        description:
-          "A classic manicure with French tips and complimentary normal polish for an elegant finish.",
-      },
-      {
-        id: 38,
-        name: "Paraffin Wax Manicure",
-        price: 40,
-        duration: "45 min",
-        description:
-          "A classic manicure enhanced with nourishing paraffin wax and complimentary normal polish.",
-      },
-      {
-        id: 36,
-        name: "Luxury Manicure",
-        price: 45,
-        duration: "60 min",
-        description:
-          "A complete luxury ritual with copper vessel soak, cuticle care, exfoliation, nourishing mask, relaxation massage, hot towel infusion, cuticle oil and hydration seal, finished with complimentary normal polish.",
-      },
-      {
-        id: 33,
-        name: "Classic Manicure with Gel/Shellac",
-        price: 37,
-        duration: "45 min",
-        description:
-          "A relaxing manicure with hand soak, nail shaping, cuticle care and hand scrub, finished with hydrating cream and gel/shellac.",
-      },
-      {
-        id: 35,
-        name: "Classic French Manicure with Gel/Shellac",
-        price: 45,
-        duration: "50 min",
-        description:
-          "A classic manicure finished with French tips and durable gel/shellac.",
-      },
-      {
-        id: 39,
-        name: "Paraffin Wax Manicure with Gel/Shellac",
-        price: 45,
-        duration: "50 min",
-        description:
-          "A classic manicure with a nourishing paraffin wax treatment, finished with gel/shellac.",
-      },
-      {
-        id: 37,
-        name: "Luxury Manicure with Gel/Shellac",
-        price: 50,
-        duration: "65 min",
-        description:
-          "The full luxury manicure ritual with copper soak, exfoliation, nourishing mask, massage and hot towel infusion, finished with gel/shellac, cuticle oil and hydration seal.",
-      },
-    ],
-  },
-
-{
-    id: "pedicure",
-    title: "Pedicure",
-    image: "/images/services/pedicure.jpg",
-    description:
-      "Relax, refresh and give your feet the care they deserve with our range of classic, express and luxury pedicures.",
-    services: [
-      {
-        id: 42,
-        name: "Express Pedicure",
-        price: 20,
-        duration: "25 min",
-        description:
-          "A quick foot treatment including nail cutting, filing, buffing and cuticle pushing, finished with complimentary normal polish.",
-      },
-      {
-        id: 43,
-        name: "Express Pedicure with Gel/Shellac",
-        price: 30,
-        duration: "35 min",
-        description:
-          "A quick pedicure with nail cutting, filing, buffing and cuticle pushing, finished with gel/shellac.",
-      },
-      {
-        id: 41,
-        name: "Classic Pedicure",
-        price: 38,
-        duration: "45 min",
-        description:
-          "A complete pedicure with foot cleanse, warm soak, nail and cuticle care, callus removal, exfoliation and relaxation massage, finished with hydrating cream and complimentary normal polish.",
-      },
-      {
-        id: 40,
-        name: "Classic Pedicure with Gel/Shellac",
-        price: 43,
-        duration: "50 min",
-        description:
-          "A complete classic pedicure with warm soak, nail and cuticle care, callus removal, exfoliation and massage, finished with hydrating cream and gel/shellac.",
-      },
-      {
-        id: 46,
-        name: "Paraffin Wax Pedicure",
-        price: 48,
-        duration: "55 min",
-        description:
-          "A classic pedicure enhanced with nourishing paraffin wax and callus peel treatment, finished with complimentary normal polish.",
-      },
-      {
-        id: 47,
-        name: "Paraffin Wax Pedicure with Gel/Shellac",
-        price: 53,
-        duration: "55 min",
-        description:
-          "A classic pedicure with paraffin wax and callus peel treatment, finished with gel/shellac.",
-      },
-      {
-        id: 44,
-        name: "Luxury Pedicure",
-        price: 65,
-        duration: "60 min",
-        description:
-          "A luxurious foot ritual combining aromatherapy, milk and honey soak, steam and hot towel infusion with an extended relaxation massage, finished with complimentary normal polish.",
-      },
-      {
-        id: 45,
-        name: "Luxury Pedicure with Gel/Shellac",
-        price: 70,
-        duration: "65 min",
-        description:
-          "A luxury pedicure with aromatherapy, milk and honey soak, steam and hot towel infusion, extended relaxation massage and calf massage, finished with gel/shellac.",
-      },
-    ],
-  },
-
-{
-    id: "tint",
-    title: "Tint",
-    image: "/images/services/tint.jpg",
-    description:
-      "Define and enhance your natural features with beautifully finished brow and lash treatments.",
-    services: [
-      {
-        id: 26,
-        name: "Brow Tint",
-        price: 15,
-        duration: "20 min",
-        description:
-          "A brow tint treatment that enhances the colour and definition of the eyebrows.",
-      },
-      {
-        id: 27,
-        name: "Lash Tint",
-        price: 20,
-        duration: "20 min",
-        description:
-          "A lash tint treatment that enhances the natural colour and definition of the lashes.",
-      },
-      {
-        id: 25,
-        name: "Brow Lamination Including Tint",
-        price: 55,
-        duration: "50 min",
-        description:
-          "A brow-shaping treatment that smooths and sets the brow hairs into place, including tint for added definition.",
-      },
-    ],
-  },
-
-{
-    id: "massage",
-    title: "Massage",
-    image: "/images/gallery/massage.jpg",
-    description:
-      "Relaxing massage treatments designed to ease everyday tension, support relaxation and leave you feeling refreshed and restored.",
-    services: [
-      {
-        id: 48,
-        name: "Swedish Full Body Massage — 45 Minutes",
-        price: 45,
-        duration: "45 min",
-        description:
-          "A relaxing full-body Swedish massage designed to ease everyday tension and promote deep relaxation.",
-      },
-      {
-        id: 49,
-        name: "Swedish Full Body Massage — 60 Minutes",
-        price: 55,
-        duration: "60 min",
-        description:
-          "A longer Swedish full-body massage designed to provide deeper relaxation and soothing muscle care.",
-      },
-      {
-        id: 50,
-        name: "Deep Tissue Massage — 45 Minutes",
-        price: 50,
-        duration: "45 min",
-        description:
-          "A focused deep-tissue massage designed to target areas of muscular tension and promote relaxation.",
-      },
-      {
-        id: 51,
-        name: "Deep Tissue Massage — 60 Minutes",
-        price: 60,
-        duration: "60 min",
-        description:
-          "An extended deep-tissue massage designed to focus on areas of muscular tension and provide deeper relaxation.",
-      },
-      {
-        id: 52,
-        name: "Indian Head Massage — 30 Minutes",
-        price: 30,
-        duration: "30 min",
-        description:
-          "A soothing Indian head massage focused on the head, neck and shoulders to encourage relaxation.",
-      },
-      {
-        id: 53,
-        name: "Indian Head Massage — 45 Minutes",
-        price: 40,
-        duration: "45 min",
-        description:
-          "An extended Indian head massage focusing on the head, neck and shoulders for deeper relaxation.",
-      },
-      {
-        id: 54,
-        name: "Back, Neck & Shoulder Massage",
-        price: 30,
-        duration: "30 min",
-        description:
-          "A focused massage targeting the back, neck and shoulders to help release everyday muscular tension.",
-      },
-      {
-        id: 55,
-        name: "Hand & Foot Relaxation Massage",
-        price: 30,
-        duration: "30 min",
-        description:
-          "A calming massage focused on the hands and feet to promote relaxation and comfort.",
-      },
-    ],
-  },
 
 {
     id: "packages",

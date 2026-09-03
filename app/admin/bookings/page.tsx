@@ -18,6 +18,7 @@ import {
 
 type Customer = {
   id: string;
+  createdAt: string;
   customerNo: string;
   firstName: string;
   lastName: string;
@@ -27,6 +28,7 @@ type Customer = {
 
 type Service = {
   id: string;
+  createdAt: string;
   serviceNo: string;
   name: string;
   category: string;
@@ -37,6 +39,7 @@ type Service = {
 
 type Tech = {
   id: string;
+  createdAt: string;
   techNo: string;
   firstName: string;
   lastName: string;
@@ -53,6 +56,7 @@ type BookingStatus =
 
 type Booking = {
   id: string;
+  createdAt: string;
   bookingNo: string;
   date: string;
   startTime: string;
@@ -66,6 +70,7 @@ type Booking = {
   tech: Tech | null;
   payment: {
     id: string;
+  createdAt: string;
     paymentNo: string;
     amount: number;
     method: string;
@@ -216,6 +221,15 @@ export default function BookingsPage() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] =
     useState<BookingStatus | "ALL">("ALL");
+  const [dateFrom, setDateFrom] = useState("");
+  const [dateTo, setDateTo] = useState("");
+  const [techFilter, setTechFilter] = useState("ALL");
+  const [serviceFilter, setServiceFilter] = useState("ALL");
+  const [consultationFilter, setConsultationFilter] = useState("ALL");
+  const [paymentFilter, setPaymentFilter] = useState("ALL");
+  const [sortOrder, setSortOrder] =
+    useState<"ASC" | "DESC">("DESC");
+  const [showFilters, setShowFilters] = useState(false);
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -513,53 +527,152 @@ export default function BookingsPage() {
       : conflictingBooking
         ? "This technician already has a booking at this time."
         : "";
+  const paymentStatuses = useMemo(() => {
+    const values = bookings
+      .map((booking) => booking.payment?.status)
+      .filter(Boolean)
+      .map(String);
+
+    return Array.from(new Set(values)).sort();
+  }, [bookings]);
+
+  const consultationOptions = useMemo(() => {
+    const values = bookings
+      .map((booking) => booking.consultationStatus)
+      .filter(Boolean)
+      .map(String);
+
+    return Array.from(new Set(values)).sort();
+  }, [bookings]);
+
+  const activeFilterCount = [
+    dateFrom,
+    dateTo,
+    techFilter !== "ALL" ? techFilter : "",
+    serviceFilter !== "ALL" ? serviceFilter : "",
+    consultationFilter !== "ALL" ? consultationFilter : "",
+    paymentFilter !== "ALL" ? paymentFilter : "",
+    statusFilter !== "ALL" ? statusFilter : "",
+  ].filter(Boolean).length;
+
+  function clearFilters() {
+    setDateFrom("");
+    setDateTo("");
+    setTechFilter("ALL");
+    setServiceFilter("ALL");
+    setConsultationFilter("ALL");
+    setPaymentFilter("ALL");
+    setStatusFilter("ALL");
+    setSearch("");
+    setSortOrder("DESC");
+  }
+
   const filteredBookings = useMemo(() => {
     const query = search.trim().toLowerCase();
 
-    return bookings.filter((booking) => {
+    const filtered = bookings.filter((booking) => {
+      const bookingDate = booking.date.split("T")[0];
+
       const matchesStatus =
         statusFilter === "ALL" ||
         booking.status === statusFilter;
 
-      const customerName = getCustomerName(
-        booking.customer
-      );
+      const matchesDateFrom =
+        !dateFrom || bookingDate >= dateFrom;
+
+      const matchesDateTo =
+        !dateTo || bookingDate <= dateTo;
+
+      const matchesTech =
+        techFilter === "ALL" ||
+        booking.tech?.id === techFilter;
+
+      const bookingServices =
+        booking.services && booking.services.length > 0
+          ? booking.services
+          : booking.service
+            ? [booking.service]
+            : [];
+
+      const matchesService =
+        serviceFilter === "ALL" ||
+        bookingServices.some(
+          (service) => service.id === serviceFilter
+        );
+
+      const matchesConsultation =
+        consultationFilter === "ALL" ||
+        String(booking.consultationStatus || "") ===
+          consultationFilter;
+
+      const matchesPayment =
+        paymentFilter === "ALL" ||
+        String(booking.payment?.status || "") ===
+          paymentFilter;
+
+      const customerName =
+        getCustomerName(booking.customer);
 
       const techName = booking.tech
         ? getTechName(booking.tech)
         : "";
 
+      const serviceNames = bookingServices
+        .map((service) => service.name)
+        .join(" ");
+
+      const searchValues = [
+        booking.bookingNo,
+        customerName,
+        booking.customer?.email,
+        serviceNames,
+        techName,
+        booking.date,
+        booking.startTime,
+        booking.consultationStatus || "",
+        booking.payment?.status || "",
+      ].map((value) =>
+        String(value ?? "").toLowerCase()
+      );
+
       const matchesSearch =
         !query ||
-        [
-          booking.bookingNo,
-          customerName,
-          booking.customer.email,
-          booking.service.name,
-          techName,
-          booking.date,
-          booking.startTime,
-        ].some((value) =>
-          value.toLowerCase().includes(query)
+        searchValues.some((value) =>
+          value.includes(query)
         );
 
-      return matchesStatus && matchesSearch;
+      return (
+        matchesStatus &&
+        matchesDateFrom &&
+        matchesDateTo &&
+        matchesTech &&
+        matchesService &&
+        matchesConsultation &&
+        matchesPayment &&
+        matchesSearch
+      );
+    });
+
+    return filtered.sort((a, b) => {
+      const aCreated = new Date(a.createdAt).getTime();
+      const bCreated = new Date(b.createdAt).getTime();
+
+      return sortOrder === "ASC"
+        ? aCreated - bCreated
+        : bCreated - aCreated;
     });
   }, [
     bookings,
     search,
     statusFilter,
+    dateFrom,
+    dateTo,
+    techFilter,
+    serviceFilter,
+    consultationFilter,
+    paymentFilter,
+    sortOrder,
   ]);
-
-  /*
-   * LOCAL DATE
-   *
-   * Do NOT use:
-   * new Date().toISOString().split("T")[0]
-   *
-   * because that uses UTC and can produce the
-   * wrong calendar day for UK/local time.
-   */
   const todayString = getLocalDateString();
 
   const todayBookings = bookings.filter(
@@ -911,89 +1024,309 @@ try {
           </div>
         </div>
 
-        <div className="mt-8 flex flex-col gap-3 md:flex-row">
+        <div className="mt-8 space-y-4">
 
-          <div className="relative flex-1">
-            <Search
-              size={18}
-              className="absolute left-4 top-1/2 -translate-y-1/2 text-white/65"
-            />
+          <div className="flex flex-col gap-3 lg:flex-row">
 
-            <input
-              type="text"
-              value={search}
-              onChange={(event) =>
-                setSearch(
-                  event.target.value
-                )
+            <div className="relative flex-1">
+              <Search
+                size={18}
+                className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40"
+              />
+
+              <input
+                type="text"
+                value={search}
+                onChange={(event) =>
+                  setSearch(event.target.value)
+                }
+                placeholder="Search customer, booking or service..."
+                className="w-full rounded-xl border border-white/10 bg-white/[0.04] py-3 pl-11 pr-4 text-sm text-white outline-none placeholder:text-white/30 focus:border-[#D4AF37]/50"
+              />
+            </div>
+
+            <button
+              type="button"
+              onClick={() =>
+                setShowFilters((current) => !current)
               }
-              placeholder="Search customer, booking or service..."
-              className="w-full rounded-xl border border-white/10 bg-white/[0.04] py-3 pl-11 pr-4 text-sm text-white outline-none placeholder:text-white/65 focus:border-[#D4AF37]/50"
-            />
-          </div>
-
-          <div className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-4">
-            <Filter
-              size={17}
-              className="text-white/70"
-            />
-
-            <select
-              value={statusFilter}
-              onChange={(event) =>
-                setStatusFilter(
-                  event.target.value as
-                    | BookingStatus
-                    | "ALL"
-                )
-              }
-              className="bg-transparent py-3 text-sm text-white/70 outline-none"
+              className={`flex items-center justify-center gap-2 rounded-xl border px-5 py-3 text-sm transition ${
+                showFilters || activeFilterCount > 0
+                  ? "border-[#D4AF37]/40 bg-[#D4AF37]/10 text-[#D4AF37]"
+                  : "border-white/10 bg-white/[0.04] text-white/70 hover:bg-white/[0.07] hover:text-white"
+              }`}
             >
-              <option
-                value="ALL"
-                className="bg-[#111]"
-              >
-                All Statuses
-              </option>
+              Booking Filters
 
-              <option
-                value="PENDING"
-                className="bg-[#111]"
-              >
-                Pending
-              </option>
+              {activeFilterCount > 0 && (
+                <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-[#D4AF37] px-1.5 text-[10px] font-semibold text-black">
+                  {activeFilterCount}
+                </span>
+              )}
+            </button>
 
-              <option
-                value="CONFIRMED"
-                className="bg-[#111]"
-              >
-                Confirmed
-              </option>
+            <div className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-4">
 
-              <option
-                value="COMPLETED"
-                className="bg-[#111]"
-              >
-                Completed
-              </option>
+              <Filter
+                size={17}
+                className="text-white/40"
+              />
 
-              <option
-                value="CANCELLED"
-                className="bg-[#111]"
+              <select
+                value={statusFilter}
+                onChange={(event) =>
+                  setStatusFilter(
+                    event.target.value as
+                      | BookingStatus
+                      | "ALL"
+                  )
+                }
+                className="bg-transparent py-3 text-sm text-white/70 outline-none"
               >
-                Cancelled
-              </option>
+                <option value="ALL" className="bg-[#111]">
+                  All Statuses
+                </option>
 
-              <option
-                value="NO_SHOW"
-                className="bg-[#111]"
-              >
-                No Show
-              </option>
-            </select>
+                <option value="PENDING" className="bg-[#111]">
+                  Pending
+                </option>
+
+                <option value="CONFIRMED" className="bg-[#111]">
+                  Confirmed
+                </option>
+
+                <option value="COMPLETED" className="bg-[#111]">
+                  Completed
+                </option>
+
+                <option value="CANCELLED" className="bg-[#111]">
+                  Cancelled
+                </option>
+
+                <option value="NO_SHOW" className="bg-[#111]">
+                  No Show
+                </option>
+              </select>
+            </div>
           </div>
-        </div>
 
+          {showFilters && (
+            <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5 sm:p-6">
+
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+
+                <div>
+                  <h3 className="text-sm font-medium text-white">
+                    Booking Filters
+                  </h3>
+
+                  <p className="mt-1 text-xs text-white/50">
+                    Narrow down appointments using multiple filters.
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={clearFilters}
+                  className="flex w-fit items-center gap-2 rounded-lg border border-white/10 px-3 py-2 text-xs text-white/60 transition hover:bg-white/5 hover:text-white"
+                >
+                  Clear Filters
+                </button>
+
+              </div>
+
+              <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+
+                <div>
+                  <label className="mb-2 block text-xs uppercase tracking-wider text-white/50">
+                    From Date
+                  </label>
+
+                  <input
+                    type="date"
+                    value={dateFrom}
+                    onChange={(event) =>
+                      setDateFrom(event.target.value)
+                    }
+                    className="w-full rounded-xl border border-white/10 bg-black/30 px-3 py-3 text-sm text-white outline-none focus:border-[#D4AF37]/50"
+                  />
+                </div>
+
+                <div>
+                  <label className="mb-2 block text-xs uppercase tracking-wider text-white/50">
+                    To Date
+                  </label>
+
+                  <input
+                    type="date"
+                    value={dateTo}
+                    onChange={(event) =>
+                      setDateTo(event.target.value)
+                    }
+                    className="w-full rounded-xl border border-white/10 bg-black/30 px-3 py-3 text-sm text-white outline-none focus:border-[#D4AF37]/50"
+                  />
+                </div>
+
+                <div>
+                  <label className="mb-2 block text-xs uppercase tracking-wider text-white/50">
+                    Technician
+                  </label>
+
+                  <select
+                    value={techFilter}
+                    onChange={(event) =>
+                      setTechFilter(event.target.value)
+                    }
+                    className="w-full rounded-xl border border-white/10 bg-black/30 px-3 py-3 text-sm text-white outline-none focus:border-[#D4AF37]/50"
+                  >
+                    <option value="ALL" className="bg-[#111]">
+                      All Technicians
+                    </option>
+
+                    {techs.map((tech) => (
+                      <option
+                        key={tech.id}
+                        value={tech.id}
+                        className="bg-[#111]"
+                      >
+                        {getTechName(tech)}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="mb-2 block text-xs uppercase tracking-wider text-white/50">
+                    Service
+                  </label>
+
+                  <select
+                    value={serviceFilter}
+                    onChange={(event) =>
+                      setServiceFilter(event.target.value)
+                    }
+                    className="w-full rounded-xl border border-white/10 bg-black/30 px-3 py-3 text-sm text-white outline-none focus:border-[#D4AF37]/50"
+                  >
+                    <option value="ALL" className="bg-[#111]">
+                      All Services
+                    </option>
+
+                    {services.map((service) => (
+                      <option
+                        key={service.id}
+                        value={service.id}
+                        className="bg-[#111]"
+                      >
+                        {service.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="mb-2 block text-xs uppercase tracking-wider text-white/50">
+                    Consultation
+                  </label>
+
+                  <select
+                    value={consultationFilter}
+                    onChange={(event) =>
+                      setConsultationFilter(event.target.value)
+                    }
+                    className="w-full rounded-xl border border-white/10 bg-black/30 px-3 py-3 text-sm text-white outline-none focus:border-[#D4AF37]/50"
+                  >
+                    <option value="ALL" className="bg-[#111]">
+                      All Consultations
+                    </option>
+
+                    {consultationOptions.map((option) => (
+                      <option
+                        key={option}
+                        value={option}
+                        className="bg-[#111]"
+                      >
+                        {option}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="mb-2 block text-xs uppercase tracking-wider text-white/50">
+                    Payment
+                  </label>
+
+                  <select
+                    value={paymentFilter}
+                    onChange={(event) =>
+                      setPaymentFilter(event.target.value)
+                    }
+                    className="w-full rounded-xl border border-white/10 bg-black/30 px-3 py-3 text-sm text-white outline-none focus:border-[#D4AF37]/50"
+                  >
+                    <option value="ALL" className="bg-[#111]">
+                      All Payments
+                    </option>
+
+                    {paymentStatuses.map((status) => (
+                      <option
+                        key={status}
+                        value={status}
+                        className="bg-[#111]"
+                      >
+                        {status}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="mb-2 block text-xs uppercase tracking-wider text-white/50">
+                    Sort
+                  </label>
+
+                  <select
+                    value={sortOrder}
+                    onChange={(event) =>
+                      setSortOrder(
+                        event.target.value as
+                          | "ASC"
+                          | "DESC"
+                      )
+                    }
+                    className="w-full rounded-xl border border-white/10 bg-black/30 px-3 py-3 text-sm text-white outline-none focus:border-[#D4AF37]/50"
+                  >
+                    <option value="ASC" className="bg-[#111]">
+                      Date &amp; Time — Earliest
+                    </option>
+
+                    <option value="DESC" className="bg-[#111]">
+                      Date &amp; Time — Latest
+                    </option>
+                  </select>
+                </div>
+
+              </div>
+
+              <div className="mt-5 flex flex-wrap items-center gap-2 text-xs text-white/45">
+
+                <span>
+                  {filteredBookings.length} matching booking
+                  {filteredBookings.length === 1 ? "" : "s"}
+                </span>
+
+                {activeFilterCount > 0 && (
+                  <span className="rounded-full border border-[#D4AF37]/20 bg-[#D4AF37]/5 px-2.5 py-1 text-[#D4AF37]">
+                    {activeFilterCount} active filter
+                    {activeFilterCount === 1 ? "" : "s"}
+                  </span>
+                )}
+
+              </div>
+
+            </div>
+          )}
+
+        </div>
         {error && (
           <div className="mt-5 flex items-center justify-between rounded-xl border border-red-400/20 bg-red-400/5 px-4 py-3 text-sm text-red-300">
             <span>{error}</span>
@@ -1351,7 +1684,7 @@ try {
               </p>
 
               <p className="text-xs text-white/70">
-                {service.duration} min {" · "}
+                {service.duration} min {" Â· "}
                 {formatMoney(Number(service.price))}
               </p>
             </div>
@@ -1811,6 +2144,7 @@ try {
     </main>
   );
 }
+
 
 
 

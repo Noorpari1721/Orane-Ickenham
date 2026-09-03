@@ -62,10 +62,17 @@ export default function CTA() {
 
                 <div className="space-y-3 text-sm leading-6 text-gray-300">
                   <p>
+                    {/* HOME_GETTING_HERE_UNDERGROUND */}
                     <span className="font-medium text-white">
-                      Nearest Underground:
+                      Nearest Underground Station:
                     </span>{" "}
-                    West Ruislip Station – 2 mins walk.
+                    West Ruislip — 2 mins walk.
+                  </p>
+
+                  <p>
+                    <span className="font-medium text-white">
+                      Nearest Bus Stops:
+                    </span>
                   </p>
 
                   <p>
