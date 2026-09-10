@@ -281,7 +281,7 @@ export default function Step6Review() {
                         </div>
 
                         <p className="text-[#D4AF37]">
-                          Â£{Number(
+                          £{Number(
                             service.price
                           ).toFixed(2)}
                         </p>
@@ -550,7 +550,7 @@ export default function Step6Review() {
           </div>
 
           <p className="text-3xl font-light text-[#D4AF37]">
-            Â£{totalPrice.toFixed(2)}
+            £{totalPrice.toFixed(2)}
           </p>
         </div>
       </motion.div>
