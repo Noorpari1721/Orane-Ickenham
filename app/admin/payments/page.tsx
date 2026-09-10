@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -116,7 +116,7 @@ export default function AdminPaymentsPage() {
   }, []);
 
   const formatAmount = (amount?: number, currency = "GBP") => {
-    if (typeof amount !== "number") return "â€”";
+    if (typeof amount !== "number") return "—";
 
     return new Intl.NumberFormat("en-GB", {
       style: "currency",
@@ -125,7 +125,7 @@ export default function AdminPaymentsPage() {
   };
 
   const formatDate = (value?: string) => {
-    if (!value) return "â€”";
+    if (!value) return "—";
 
     const date = new Date(value);
 
@@ -274,7 +274,7 @@ export default function AdminPaymentsPage() {
                       </td>
 
                       <td className="px-6 py-5 text-xs text-white/65">
-                        {payment.id ?? "â€”"}
+                        {payment.id ?? "—"}
                       </td>
                     </tr>
                   ))}

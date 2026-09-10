@@ -2908,7 +2908,7 @@ function AppointmentsPanel({
                         </span>
 
                         <span className="text-sm text-white/60">
-                          Â£{total.toFixed(2)}
+                          £{total.toFixed(2)}
                         </span>
                       </div>
                     </div>

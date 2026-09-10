@@ -1,4 +1,4 @@
-﻿export const serviceCategories = [
+export const serviceCategories = [
 {
     id: "head-spa",
     title: "Japanese Head Spa",
@@ -88,7 +88,7 @@
     services: [
       {
         id: 48,
-        name: "Swedish Full Body Massage â€” 45 Minutes",
+        name: "Swedish Full Body Massage — 45 Minutes",
         price: 45,
         duration: "45 min",
         description:
@@ -96,7 +96,7 @@
       },
       {
         id: 49,
-        name: "Swedish Full Body Massage â€” 60 Minutes",
+        name: "Swedish Full Body Massage — 60 Minutes",
         price: 55,
         duration: "60 min",
         description:
@@ -104,7 +104,7 @@
       },
       {
         id: 50,
-        name: "Deep Tissue Massage â€” 45 Minutes",
+        name: "Deep Tissue Massage — 45 Minutes",
         price: 50,
         duration: "45 min",
         description:
@@ -112,7 +112,7 @@
       },
       {
         id: 51,
-        name: "Deep Tissue Massage â€” 60 Minutes",
+        name: "Deep Tissue Massage — 60 Minutes",
         price: 60,
         duration: "60 min",
         description:
@@ -120,7 +120,7 @@
       },
       {
         id: 52,
-        name: "Indian Head Massage â€” 30 Minutes",
+        name: "Indian Head Massage — 30 Minutes",
         price: 30,
         duration: "30 min",
         description:
@@ -128,7 +128,7 @@
       },
       {
         id: 53,
-        name: "Indian Head Massage â€” 45 Minutes",
+        name: "Indian Head Massage — 45 Minutes",
         price: 40,
         duration: "45 min",
         description:

@@ -1,4 +1,4 @@
-﻿/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -398,7 +398,7 @@ export default function GiftCardsPage() {
       (amount < 25 || amount > 500)
     ) {
       setError(
-        "Custom Gift Cards must be between Ã‚£25 and Ã‚£500."
+        "Custom Gift Cards must be between £25 and £500."
       );
       return;
     }
@@ -638,7 +638,7 @@ export default function GiftCardsPage() {
                     type: "custom" as const,
                     icon: Gift,
                     title: "Custom Gift Card",
-                    text: "Choose any value from Ã‚£25 to Ã‚£500.",
+                    text: "Choose any value from £25 to £500.",
                   },
                 ].map((option) => {
                   const Icon = option.icon;
@@ -937,7 +937,7 @@ export default function GiftCardsPage() {
 
                       {selectedCount > 0 && (
                         <p className="text-[9px] uppercase tracking-[0.18em] text-[#D4AF37]">
-                          Ã‚£{serviceTotal.toFixed(2)}{" "}
+                          £{serviceTotal.toFixed(2)}{" "}
                           selected
                         </p>
                       )}
@@ -984,7 +984,7 @@ export default function GiftCardsPage() {
                                   return (
                                     <button key={service.id} type="button" onClick={() => { toggleService(service.id); setError(""); }} className={`flex w-full min-w-0 items-center justify-between gap-3 rounded-[14px] border px-3 py-2.5 text-left transition-all duration-200 ${active ? "border-[#D4AF37]/65 bg-[#C49A45]/10" : "border-white/[0.08] bg-black/10 hover:border-[#D4AF37]/30"}`}>
                                       <div className="min-w-0"><span className="block truncate text-xs font-medium text-white/90">{cleanServiceText(variant)}</span><span className="mt-1 block text-[8px] font-semibold uppercase tracking-[0.12em] text-white/55">{cleanServiceText(variant)}</span></div>
-                                      <div className="flex shrink-0 items-center gap-2"><span className="font-serif text-sm text-[#D4AF37]">Ã‚£{Number(service.price).toFixed(2)}</span><span className={`flex h-6 w-6 items-center justify-center rounded-full border ${active ? "border-[#D4AF37] bg-[#D4AF37] text-black" : "border-white/20 text-transparent"}`}><Check size={12} /></span></div>
+                                      <div className="flex shrink-0 items-center gap-2"><span className="font-serif text-sm text-[#D4AF37]">£{Number(service.price).toFixed(2)}</span><span className={`flex h-6 w-6 items-center justify-center rounded-full border ${active ? "border-[#D4AF37] bg-[#D4AF37] text-black" : "border-white/20 text-transparent"}`}><Check size={12} /></span></div>
                                     </button>
                                   );
                                 })}
@@ -1048,7 +1048,7 @@ export default function GiftCardsPage() {
                                   </div>
 
                                   <span className="shrink-0 font-serif text-base text-[#D4AF37]">
-                                    Ã‚£{Number(service.price).toFixed(2)}
+                                    £{Number(service.price).toFixed(2)}
                                   </span>
                                 </button>
                               );
@@ -1124,7 +1124,7 @@ export default function GiftCardsPage() {
                               </div>
 
                               <span className="shrink-0 font-serif text-base text-[#D4AF37]">
-                                Ã‚£
+                                £
                                 {Number(
                                   service.price
                                 ).toFixed(2)}
@@ -1160,7 +1160,7 @@ export default function GiftCardsPage() {
                                 : "border-white/10 bg-white/[0.02] text-white/70 hover:border-[#D4AF37]/35"
                             }`}
                           >
-                            Ã‚£{value}
+                            £{value}
                           </button>
                         );
                       }
@@ -1169,7 +1169,7 @@ export default function GiftCardsPage() {
 
                   <div className="relative mt-4">
                     <span className="pointer-events-none absolute left-5 top-1/2 -translate-y-1/2 font-serif text-xl text-[#D4AF37]">
-                      Ã‚£
+                      £
                     </span>
 
                     <input
@@ -1188,8 +1188,8 @@ export default function GiftCardsPage() {
                   </div>
 
                   <p className="mt-3 text-[10px] text-white/60">
-                    Gift cards can be created from Ã‚£25
-                    up to Ã‚£500.
+                    Gift cards can be created from £25
+                    up to £500.
                   </p>
                 </div>
               )}
@@ -1437,7 +1437,7 @@ export default function GiftCardsPage() {
                     </span>
 
                     <span className="font-serif text-4xl text-[#D4AF37]">
-                      Ã‚£{amount.toFixed(2)}
+                      £{amount.toFixed(2)}
                     </span>
                   </div>
                 </div>

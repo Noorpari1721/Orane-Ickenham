@@ -1,4 +1,4 @@
-﻿import { NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { randomBytes } from "crypto";
 import { PrismaClient } from "@/app/generated/prisma/client";
@@ -365,8 +365,8 @@ export async function POST(request: Request) {
 
       productName =
         services.length === 1
-          ? `${services[0].name} â€” ORANE Gift Voucher`
-          : `ORANE Gift Voucher â€” ${services.length} Treatments`;
+          ? `${services[0].name} — ORANE Gift Voucher`
+          : `ORANE Gift Voucher — ${services.length} Treatments`;
 
       productDescription =
         `Gift voucher for ${serviceDisplayNames} at ORANE Ickenham`;
@@ -385,7 +385,7 @@ export async function POST(request: Request) {
         return NextResponse.json(
           {
             error:
-              "Custom Gift Cards must be between Â£25 and Â£500.",
+              "Custom Gift Cards must be between £25 and £500.",
           },
           { status: 400 }
         );

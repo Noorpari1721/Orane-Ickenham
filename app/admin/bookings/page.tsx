@@ -1297,11 +1297,11 @@ try {
                     className="w-full rounded-xl border border-white/10 bg-black/30 px-3 py-3 text-sm text-white outline-none focus:border-[#D4AF37]/50"
                   >
                     <option value="ASC" className="bg-[#111]">
-                      Date &amp; Time â€” Earliest
+                      Date &amp; Time — Earliest
                     </option>
 
                     <option value="DESC" className="bg-[#111]">
-                      Date &amp; Time â€” Latest
+                      Date &amp; Time — Latest
                     </option>
                   </select>
                 </div>
