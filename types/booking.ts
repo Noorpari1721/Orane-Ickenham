@@ -1,8 +1,9 @@
-export interface Service {
+﻿export interface Service {
   id: number;
   name: string;
   price: number;
   duration: string;
+  quantity?: number;
 }
 
 export interface Treatment {

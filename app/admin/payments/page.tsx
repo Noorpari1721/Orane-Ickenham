@@ -1,8 +1,26 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
+type AdminBookingRecord = {
+  id?: string | number;
+  amount?: number;
+  total?: number;
+  currency?: string;
+  paymentStatus?: string;
+  status?: string;
+  customerName?: string;
+  customerEmail?: string;
+  date?: string;
+  createdAt?: string;
+  customer?: {
+    name?: string;
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+  };
+};
 type Payment = {
   id?: string | number;
   amount?: number;
@@ -44,7 +62,7 @@ export default function AdminPaymentsPage() {
             ? data.bookings
             : [];
 
-        const mapped: Payment[] = bookings.map((booking: any) => ({
+        const mapped: Payment[] = bookings.map((booking: AdminBookingRecord) => ({
           id: booking.id,
           amount:
             typeof booking.amount === "number"
@@ -98,7 +116,7 @@ export default function AdminPaymentsPage() {
   }, []);
 
   const formatAmount = (amount?: number, currency = "GBP") => {
-    if (typeof amount !== "number") return "—";
+    if (typeof amount !== "number") return "â€”";
 
     return new Intl.NumberFormat("en-GB", {
       style: "currency",
@@ -107,7 +125,7 @@ export default function AdminPaymentsPage() {
   };
 
   const formatDate = (value?: string) => {
-    if (!value) return "—";
+    if (!value) return "â€”";
 
     const date = new Date(value);
 
@@ -136,7 +154,7 @@ export default function AdminPaymentsPage() {
     data-testid="payments-back-dashboard-button"
     className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/[0.03] px-4 py-2.5 text-sm font-medium text-white/80 transition hover:border-[#D4AF37]/40 hover:bg-white/[0.06] hover:text-[#D4AF37]"
   >
-    <span aria-hidden="true">←</span>
+    <span aria-hidden="true">â†</span>
     Back to Dashboard
   </Link>
 </div>
@@ -256,7 +274,7 @@ export default function AdminPaymentsPage() {
                       </td>
 
                       <td className="px-6 py-5 text-xs text-white/65">
-                        {payment.id ?? "—"}
+                        {payment.id ?? "â€”"}
                       </td>
                     </tr>
                   ))}
@@ -269,3 +287,4 @@ export default function AdminPaymentsPage() {
     </main>
   );
 }
+

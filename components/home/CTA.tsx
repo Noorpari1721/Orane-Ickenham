@@ -1,3 +1,4 @@
+﻿import Image from "next/image";
 import Link from "next/link";
 
 const MAP_QUERY =
@@ -25,7 +26,7 @@ export default function CTA() {
 
           {/* LEFT SIDE - CONTACT + MAP */}
           <div className="text-center lg:text-left">
-            <div className="mb-5 h-[2px] w-20 bg-[#D4AF37] mx-auto lg:mx-0" />
+            <div className="mx-auto mb-5 h-[2px] w-20 bg-[#D4AF37] lg:mx-0" />
 
             <p className="mb-5 text-sm font-semibold uppercase tracking-[0.45em] text-[#D4AF37]">
               CONTACT US
@@ -37,7 +38,7 @@ export default function CTA() {
               Luxury Salon
             </h2>
 
-            <p className="mt-6 max-w-2xl text-lg leading-8 text-gray-300 mx-auto lg:mx-0">
+            <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-gray-300 lg:mx-0">
               Experience premium beauty treatments in a relaxing and luxurious
               environment at Orane Ickenham.
             </p>
@@ -66,7 +67,7 @@ export default function CTA() {
                     <span className="font-medium text-white">
                       Nearest Underground Station:
                     </span>{" "}
-                    West Ruislip — 2 mins walk.
+                    West Ruislip – 2 mins walk.
                   </p>
 
                   <p>
@@ -168,9 +169,11 @@ export default function CTA() {
                     aria-label="Instagram"
                     className="group flex items-center justify-center transition duration-300 hover:scale-110"
                   >
-                    <img
+                    <Image
                       src="/images/icons/instagram-icon.png"
                       alt="Instagram"
+                      width={80}
+                      height={80}
                       className="h-16 w-16 object-contain md:h-20 md:w-20"
                     />
                   </a>
@@ -182,9 +185,11 @@ export default function CTA() {
                     aria-label="Facebook"
                     className="group flex items-center justify-center transition duration-300 hover:scale-110"
                   >
-                    <img
+                    <Image
                       src="/images/icons/facebook-icon.png"
                       alt="Facebook"
+                      width={112}
+                      height={112}
                       className="h-24 w-24 object-contain md:h-28 md:w-28"
                     />
                   </a>

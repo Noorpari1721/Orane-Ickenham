@@ -1,6 +1,6 @@
-"use client";
+﻿"use client";
 
-import { FormEvent, Suspense, useEffect, useState } from "react";
+import { FormEvent, Suspense, useState } from "react";
 import {
   LockKeyhole,
   Mail,
@@ -33,11 +33,6 @@ function AdminLoginContent() {
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
 
-  useEffect(() => {
-    if (token) {
-      setMode("reset");
-    }
-  }, [token]);
 
   function clearMessages() {
     setError("");
@@ -410,3 +405,4 @@ export default function AdminLoginPage() {
     </Suspense>
   );
 }
+

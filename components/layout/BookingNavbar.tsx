@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+
 import { motion } from "framer-motion";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Phone } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import GlassPill from "./GlassPill";
@@ -11,7 +11,7 @@ import MyAccountButton from "./MyAccountButton";
 import { useBooking } from "@/context/BookingContext";
 
 export default function BookingNavbar() {
-  const router = useRouter();
+
   const { goToStep } = useBooking();
   const [navbarVisible, setNavbarVisible] = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -129,8 +129,8 @@ export default function BookingNavbar() {
               sm:justify-center
               sm:gap-10
               sm:px-12
-              lg:gap-20
-              lg:px-24
+              lg:gap-10
+              lg:px-16
             "
           >
             {/* ORANE */}
@@ -212,6 +212,49 @@ export default function BookingNavbar() {
             {/* My Account */}
 
             <MyAccountButton variant="booking" />
+            {/* Call Salon - Desktop */}
+
+            <a
+              href="tel:01895217151"
+              aria-label="Call Orane Ickenham"
+              className="
+                hidden
+                lg:flex
+                shrink-0
+                items-center
+                gap-2
+                rounded-full
+                border
+                border-[#D4AF37]/70
+                bg-black/[0.72]
+                px-4
+                py-2.5
+                text-sm
+                font-semibold
+                uppercase
+                tracking-[0.12em]
+                text-[#D4AF37]
+                shadow-[0_10px_30px_rgba(0,0,0,.48)]
+                backdrop-blur-2xl
+                backdrop-saturate-150
+                ml-2
+                transition-all
+                duration-300
+                hover:-translate-y-0.5
+                hover:scale-[1.03]
+                hover:border-[#D4AF37]
+                hover:bg-black/[0.82]
+                hover:shadow-[0_12px_35px_rgba(212,175,55,.28)]
+                active:scale-95
+              "
+            >
+              <Phone
+                size={16}
+                strokeWidth={1.8}
+              />
+
+              <span>Call Salon</span>
+            </a>
 
             {/* Mobile Hamburger */}
 
@@ -365,3 +408,6 @@ export default function BookingNavbar() {
     </motion.div>
   );
 }
+
+
+

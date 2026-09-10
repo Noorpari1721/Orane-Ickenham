@@ -1,6 +1,8 @@
-﻿"use client";
+﻿/* eslint-disable @typescript-eslint/no-unused-vars, react-hooks/exhaustive-deps */
+"use client";
 
-import { useMemo, useRef, useState } from "react";
+import Image from "next/image";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import {
   Check,
   ChevronLeft,
@@ -8,7 +10,6 @@ import {
   Clock3,
   Minus,
   Plus,
-  Sparkles,
   X,
 } from "lucide-react";
 
@@ -24,7 +25,9 @@ export default function Step1Services() {
   } = useBooking();
 
   const categoryScroller = useRef<HTMLDivElement | null>(null);
-  /*
+  const categoryScrollRestoreY = useRef<number | null>(null);
+  const categoryScrollLockTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+/*
    * BookingContext is the single source of truth for the
    * currently selected category.
    *
@@ -85,6 +88,16 @@ export default function Step1Services() {
     savings: number;
   } | null>(null);
 
+  const massageDescriptions: Record<number, string> = {
+    48: "A gentle full-body massage using flowing techniques to release everyday tension, improve relaxation, and leave you feeling refreshed.",
+    49: "A longer, more immersive full-body massage designed to ease muscle tension, promote deep relaxation, and provide a complete sense of wellbeing.",
+    50: "A focused, firmer massage targeting areas of muscular tension and stiffness, helping to relax tight and tired muscles.",
+    51: "An extended deep tissue treatment working more thoroughly on areas of persistent tension and stiffness for deeper muscle relaxation.",
+    52: "A relaxing treatment focusing on the head, scalp, neck and shoulders to release everyday tension and promote relaxation.",
+    53: "An extended head, scalp, neck and shoulder massage designed to provide deeper relaxation and help ease built-up tension and stress.",
+    54: "A targeted treatment to relieve tension in the back, neck and shoulders. Perfect for stress relief and relaxation.",
+    55: "A soothing massage focusing on tired hands and feet — perfect for relaxation and unwinding.",
+  };
   const activeCategory =
     serviceCategories.find(
       (category) => category.id === activeCategoryId
@@ -159,11 +172,51 @@ export default function Step1Services() {
 
           return false;
         })
-        .sort(
-          (a, b) =>
-            Number(a.price || 0) -
-            Number(b.price || 0)
-        );
+
+      /* Fixed paired order for Acrylic, BIAB and Builder Gel. */
+      const pairedOrder = [
+        "Acrylic Infill Without Polish",
+        "Acrylic Infill With Gel/Shellac",
+        "Acrylic Overlay Without Polish",
+        "Acrylic Overlay With Gel/Shellac",
+        "Acrylic Extension Full Set (Coloured)",
+        "Acrylic Extension Full Set with Gel/Shellac",
+
+        "BIAB Infill Without Polish",
+        "BIAB Infill With Gel/Shellac",
+        "BIAB Overlay Without Polish",
+        "BIAB Overlay With Gel/Shellac",
+
+        "Builder Gel Infill Without Polish",
+        "Builder Gel Infill With Gel/Shellac",
+        "Builder Gel Overlay Without Polish",
+        "Builder Gel Overlay With Gel/Shellac",
+        "Builder Gel Full Set Extensions",
+        "Builder Gel Full Set Extensions with Gel/Shellac",
+      ];
+
+      const pairedOrderMap = new Map(
+        pairedOrder.map((name, index) => [name, index])
+      );
+
+      mainServices.sort((a, b) => {
+        const aIndex = pairedOrderMap.get(a.name);
+        const bIndex = pairedOrderMap.get(b.name);
+
+        if (aIndex === undefined && bIndex === undefined) {
+          return 0;
+        }
+
+        if (aIndex === undefined) {
+          return 1;
+        }
+
+        if (bIndex === undefined) {
+          return -1;
+        }
+
+        return aIndex - bIndex;
+      });
 
       const addOns = services
         .filter((service) => NAIL_ADD_ONS.has(service.name))
@@ -207,45 +260,6 @@ export default function Step1Services() {
     isPedicureCategory,
   ]);
 
-
-  const packageHighlightCategoryIds = new Set([
-    "nails",
-    "manicure",
-    "pedicure",
-  ]);
-
-  const shouldHighlightPackages = packageHighlightCategoryIds.has(
-    activeCategoryId
-  );
-
-  const packageCategory = serviceCategories.find(
-    (category) => category.id === "packages"
-  );
-
-  const recommendedPackages = useMemo(() => {
-    if (!shouldHighlightPackages) return [];
-
-    const adultPackages = [...(packageCategory?.services ?? [])].filter(
-      (service) => {
-        const name = String(service.name || "").trim().toLowerCase();
-
-        return (
-          !name.includes("kid") &&
-          !name.includes("child") &&
-          !name.includes("junior") &&
-          name !== "kids mani & pedi combo"
-        );
-      }
-    );
-
-    return adultPackages
-      .sort(
-        (a, b) =>
-          Number(a.price || 0) -
-          Number(b.price || 0)
-      )
-      .slice(0, 3);
-  }, [packageCategory, shouldHighlightPackages]);
 
   const selectedIds = useMemo(
     () => new Set(selectedServices.map((service) => service.id)),
@@ -297,15 +311,21 @@ export default function Step1Services() {
   }, [totalMinutes]);
 
   const selectCategory = (categoryId: string) => {
+    /*
+     * Capture the exact vertical viewport position BEFORE changing
+     * category state. DOM scroll-lock mutations are deliberately kept
+     * inside useLayoutEffect so React's immutability lint rule remains
+     * clean.
+     */
+    categoryScrollRestoreY.current = window.scrollY;
+
+    const activeElement = document.activeElement;
+
+    if (activeElement instanceof HTMLElement) {
+      activeElement.blur();
+    }
+
     setExpandedServiceId(null);
-
-    // Lock the current document position while React swaps
-    // the category content. This prevents the browser from
-    // applying its own scroll anchoring during the layout change.
-    const scrollY = window.scrollY;
-
-    document.documentElement.style.scrollBehavior = "auto";
-    document.documentElement.style.overflowAnchor = "none";
 
     if (categoryId === "nails") {
       setCatalogueFilter("acrylic");
@@ -317,17 +337,6 @@ export default function Step1Services() {
 
     updateBooking({
       category: categoryId,
-    });
-
-    window.scrollTo(0, scrollY);
-
-    requestAnimationFrame(() => {
-      window.scrollTo(0, scrollY);
-
-      requestAnimationFrame(() => {
-        window.scrollTo(0, scrollY);
-        document.documentElement.style.overflowAnchor = "";
-      });
     });
   };
 
@@ -343,7 +352,20 @@ export default function Step1Services() {
   };
 
   const handleServiceToggle = (service: (typeof selectedServices)[number]) => {
+    /*
+     * Clicking the same service again intentionally adds
+     * another treatment instance.
+     */
     toggleService(service);
+  };
+
+  const getServiceQuantity = (serviceId: number | string) =>
+    selectedServices.filter(
+      (item) => Number(item.id) === Number(serviceId)
+    ).length;
+
+  const decrementService = (serviceId: number | string) => {
+    removeService(Number(serviceId));
   };
 
   const handlePackageSelect = (packageService: (typeof selectedServices)[number]) => {
@@ -397,8 +419,163 @@ export default function Step1Services() {
     }
   };
 
+    
+/*
+   * CATEGORY CHANGE VERTICAL SCROLL LOCK
+   *
+   * Category changes alter the amount of rendered content. The browser
+   * can therefore apply scroll anchoring and move the document vertically.
+   *
+   * IMPORTANT:
+   * All DOM style mutations happen inside this layout effect, not inside
+   * the click handler, so react-hooks/immutability stays at 0 errors.
+   *
+   * The lock is applied before paint, the original scrollY is restored
+   * over several frames/ticks, and html/body anchoring is released only
+   * after the layout has settled.
+   */
+  useLayoutEffect(() => {
+    const restoreY = categoryScrollRestoreY.current;
+
+    if (restoreY === null) {
+      return;
+    }
+
+    const html = document.documentElement;
+    const body = document.body;
+
+    const previousHtmlOverflowAnchor = html.style.overflowAnchor;
+    const previousBodyOverflowAnchor = body.style.overflowAnchor;
+
+    const restore = () => {
+      window.scrollTo({
+        top: restoreY,
+        left: window.scrollX,
+        behavior: "auto",
+      });
+    };
+
+    /*
+     * Lock scroll anchoring before the browser paints the new category.
+     */
+    html.style.overflowAnchor = "none";
+    body.style.overflowAnchor = "none";
+
+    restore();
+
+    const frameOne = requestAnimationFrame(() => {
+      restore();
+
+      requestAnimationFrame(() => {
+        restore();
+
+        requestAnimationFrame(() => {
+          restore();
+
+          if (categoryScrollLockTimer.current) {
+            clearTimeout(categoryScrollLockTimer.current);
+          }
+
+          categoryScrollLockTimer.current = setTimeout(() => {
+            restore();
+
+            categoryScrollLockTimer.current = setTimeout(() => {
+              restore();
+
+              html.style.overflowAnchor = previousHtmlOverflowAnchor;
+              body.style.overflowAnchor = previousBodyOverflowAnchor;
+              categoryScrollLockTimer.current = null;
+            }, 100);
+          }, 50);
+        });
+      });
+    });
+
+    categoryScrollRestoreY.current = null;
+
+    return () => {
+      cancelAnimationFrame(frameOne);
+
+      if (categoryScrollLockTimer.current) {
+        clearTimeout(categoryScrollLockTimer.current);
+        categoryScrollLockTimer.current = null;
+      }
+
+      html.style.overflowAnchor = previousHtmlOverflowAnchor;
+      body.style.overflowAnchor = previousBodyOverflowAnchor;
+    };
+  }, [activeCategoryId]);
+
+  /*
+   * CATEGORY CAPSULE FULL VISIBILITY FIX
+   *
+   * Whenever a category is selected, make sure the
+   * complete capsule is visible inside the horizontal
+   * scroller.
+   *
+   * Existing horizontal sliding is preserved.
+   */
+
+useEffect(() => {
+    if (!activeCategoryId) {
+      return;
+    }
+
+    const container = categoryScroller.current;
+
+    if (!container) {
+      return;
+    }
+
+    const activeButton =
+      container.querySelector<HTMLElement>(
+        `[data-category-id="${activeCategoryId}"]`
+      );
+
+    if (!activeButton) {
+      return;
+    }
+
+    const frameId = requestAnimationFrame(() => {
+      const viewportWidth = container.clientWidth;
+      const activeWidth = activeButton.offsetWidth;
+      const activeLeft = activeButton.offsetLeft;
+
+      const maxScroll = Math.max(
+        0,
+        container.scrollWidth - viewportWidth
+      );
+
+      const targetScroll =
+        activeLeft -
+        (viewportWidth - activeWidth) / 2;
+
+      const safeTarget = Math.max(
+        0,
+        Math.min(targetScroll, maxScroll)
+      );
+
+      if (
+        Math.abs(
+          safeTarget - container.scrollLeft
+        ) < 2
+      ) {
+        return;
+      }
+
+      container.scrollTo({
+        left: safeTarget,
+        behavior: "smooth",
+      });
+    });
+
+    return () => {
+      cancelAnimationFrame(frameId);
+    };
+  }, [activeCategoryId]);
+
   return (
-    <div className="w-full space-y-8 lg:space-y-10">
+    <div className="w-full space-y-8 lg:space-y-10 " style={{ overflowAnchor: "none" }}>
 
       {/* INTRO */}
       <div className="mx-auto max-w-3xl text-center">
@@ -432,7 +609,7 @@ export default function Step1Services() {
         <div className="min-w-0 flex-1 rounded-full border border-white/10 bg-white/[0.025] p-2.5 sm:p-2 shadow-[inset_0_1px_0_rgba(255,255,255,.035)]">
           <div
             ref={categoryScroller}
-            className="flex gap-1.5 overflow-x-auto overscroll-x-contain scroll-smooth pb-0.5 sm:gap-2 sm:pb-0 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            className="flex gap-1.5 overflow-x-auto overscroll-x-contain pb-0.5 sm:gap-2 sm:pb-0 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
           >
             {serviceCategories.map((category) => {
               const active = activeCategoryId === category.id;
@@ -445,7 +622,12 @@ export default function Step1Services() {
                 <button
                   key={category.id}
                   type="button"
+                  onMouseDown={(event) => {
+                    event.preventDefault();
+                  }}
                   onClick={() => selectCategory(category.id)}
+
+              data-category-id={category.id}
                   className={`
                     inline-flex shrink-0 items-center gap-2 rounded-full border
                     px-4 py-3 text-sm transition-all duration-300 sm:px-5 sm:py-2.5
@@ -492,11 +674,13 @@ export default function Step1Services() {
 
               <div className="flex items-center gap-3">
                 <div className="h-[105px] w-[150px] shrink-0 overflow-hidden rounded-[22px] border border-[#D4AF37]/30 bg-black/20 shadow-[0_8px_25px_rgba(0,0,0,0.25)]">
-                  <img
-                    src={activeCategory.image}
-                    alt=""
-                    className="h-full w-full object-cover"
-                  />
+                  <Image
+    src={activeCategory.image}
+    alt=""
+    width={150}
+    height={105}
+    className="h-full w-full object-cover"
+/>
                 </div>
 
                 <h3 className="text-2xl font-light tracking-tight text-white sm:text-3xl">
@@ -593,276 +777,330 @@ export default function Step1Services() {
                 { title: "Swedish Full Body Massage", ids: [48, 49] },
                 { title: "Deep Tissue Massage", ids: [50, 51] },
                 { title: "Indian Head Massage", ids: [52, 53] },
+                { title: "Back, Neck & Shoulder Massage", ids: [54] },
+                { title: "Hand & Foot Relaxation Massage", ids: [55] },
               ].map((group) => {
                 const groupServices = filteredActiveServices.filter((service) =>
                   group.ids.includes(Number(service.id))
                 );
+
                 if (!groupServices.length) return null;
+
                 return (
-                  <div key={group.title} className="group relative w-full overflow-hidden rounded-[22px] border border-white/10 bg-white/[0.018] p-5 transition-all duration-300 hover:border-[#D4AF37]/45 hover:bg-white/[0.035] hover:shadow-[0_12px_35px_rgba(212,175,55,0.18)]">
+                  <div
+                    key={group.title}
+                    className="group relative w-full overflow-hidden rounded-[22px] border border-white/10 bg-white/[0.018] p-5 transition-all duration-300 hover:border-[#D4AF37]/45 hover:bg-white/[0.035] hover:shadow-[0_12px_35px_rgba(212,175,55,0.18)]"
+                  >
                     <div className="absolute left-0 top-4 bottom-4 w-[2px] rounded-full bg-[#D4AF37]/70" />
-                    <h4 className="text-base font-medium text-white sm:text-lg">{group.title}</h4>
+
+                    <h4 className="text-base font-medium text-white sm:text-lg">
+                      {group.title}
+                    </h4>
+
                     <div className="mt-4 space-y-2">
                       {groupServices.map((service) => {
                         const selected = selectedIds.has(service.id);
-                        const variant = service.name.split("—")[1]?.trim() || service.name;
+                        const massageDescription =
+                          massageDescriptions[Number(service.id)] || "";
+
                         return (
-                          <button key={service.id} type="button" onClick={() => handleServiceToggle(service)} className={`flex w-full items-center justify-between gap-3 rounded-[16px] border px-3.5 py-3 text-left transition-all duration-200 ${selected ? "border-[#D4AF37]/65 bg-[#D4AF37]/[0.08]" : "border-white/10 bg-black/10 hover:border-[#D4AF37]/35"}`}>
-                            <div className="min-w-0">
-                              <p className="text-sm font-medium text-white">{variant}</p>
-                              <div className="mt-1 flex items-center gap-2 text-xs text-white/60"><Clock3 size={13} className="text-[#D4AF37]" /><span>{service.duration}</span><span>•</span><span className="text-[#D4AF37]">£{Number(service.price).toFixed(2)}</span></div>
+                          <div
+                            key={service.id}
+                            role="button"
+                            tabIndex={0}
+                            onClick={() => handleServiceToggle(service)}
+                            onKeyDown={(event) => {
+                              if (event.key === "Enter" || event.key === " ") {
+                                event.preventDefault();
+                                handleServiceToggle(service);
+                              }
+                            }}
+                            className={`w-full rounded-[16px] border px-3.5 py-3 text-left transition-all duration-200 ${
+                              selected
+                                ? "border-[#D4AF37]/65 bg-[#D4AF37]/[0.08]"
+                                : "border-white/10 bg-black/10 hover:border-[#D4AF37]/35"
+                            }`}
+                          >
+                            <div className="flex items-start justify-between gap-3">
+                              <div className="min-w-0 flex-1">
+                                <p className="text-sm font-medium text-white">
+                                  {service.name}
+                                </p>
+
+                                {massageDescription.trim().length > 0 && (
+                                  <>
+                                    <p
+                                      className={`mt-1 text-xs leading-5 text-white/70 sm:text-sm ${
+                                        expandedServiceId === service.id
+                                          ? ""
+                                          : "line-clamp-2"
+                                      }`}
+                                    >
+                                      {massageDescription}
+                                    </p>
+
+                                    <span
+                                      role="button"
+                                      tabIndex={0}
+                                      onClick={(event) => {
+                                        event.stopPropagation();
+
+                                        setExpandedServiceId(
+                                          expandedServiceId === service.id
+                                            ? null
+                                            : service.id
+                                        );
+                                      }}
+                                      onKeyDown={(event) => {
+                                        if (
+                                          event.key === "Enter" ||
+                                          event.key === " "
+                                        ) {
+                                          event.preventDefault();
+                                          event.stopPropagation();
+
+                                          setExpandedServiceId(
+                                            expandedServiceId === service.id
+                                              ? null
+                                              : service.id
+                                          );
+                                        }
+                                      }}
+                                      className="mt-1 inline-flex cursor-pointer select-none text-[11px] font-medium text-[#D4AF37] transition-colors hover:text-[#E7C95D]"
+                                    >
+                                      {expandedServiceId === service.id
+                                        ? "Read less"
+                                        : "Read more"}
+                                    </span>
+                                  </>
+                                )}
+
+                                <div className="mt-2 flex items-center gap-2 text-xs text-white/60">
+                                  <Clock3
+                                    size={13}
+                                    className="shrink-0 text-[#D4AF37]"
+                                  />
+
+                                  <span>{service.duration}</span>
+
+                                  <span>{"\u2022"}</span>
+
+                                  <span className="text-[#D4AF37]">
+                                    {"\u00A3"}
+                                    {Number(service.price).toFixed(2)}
+                                  </span>
+                                </div>
+                              </div>
+
+                              {selected ? (
+                                <div
+                                  className="flex shrink-0 items-center gap-1 rounded-full border border-[#D4AF37]/35 bg-black/30 p-1 shadow-[0_0_18px_rgba(212,175,55,.08)]"
+                                  onClick={(event) => event.stopPropagation()}
+                                >
+                                  <button
+                                    type="button"
+                                    aria-label="Decrease service quantity"
+                                    onClick={(event) => {
+                                      event.stopPropagation();
+                                      decrementService(service.id);
+                                    }}
+                                    className="flex h-8 w-8 items-center justify-center rounded-full text-white/70 transition-all duration-200 hover:bg-white/10 hover:text-white active:scale-90"
+                                  >
+                                    <Minus className="h-4 w-4" />
+                                  </button>
+
+                                  <span className="min-w-[24px] text-center text-sm font-semibold text-white">
+                                    {getServiceQuantity(service.id)}
+                                  </span>
+
+                                  <button
+                                    type="button"
+                                    aria-label="Increase service quantity"
+                                    onClick={(event) => {
+                                      event.stopPropagation();
+                                      handleServiceToggle(service);
+                                    }}
+                                    className="flex h-8 w-8 items-center justify-center rounded-full bg-[#D4AF37]/15 text-[#D4AF37] transition-all duration-200 hover:bg-[#D4AF37]/25 hover:text-[#E7C95D] active:scale-90"
+                                  >
+                                    <Plus className="h-4 w-4" />
+                                  </button>
+                                </div>
+                              ) : (
+                                <div
+                                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/15 text-white/40 transition-all duration-300 hover:border-[#D4AF37]/50 hover:bg-[#D4AF37]/10 hover:text-[#D4AF37] active:scale-90"
+                                  aria-hidden="true"
+                                >
+                                  <Plus size={16} />
+                                </div>
+                              )}
                             </div>
-                            <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full border ${selected ? "border-[#D4AF37] bg-[#D4AF37] text-black" : "border-white/15 text-transparent"}`}>{selected ? <Check size={16} /> : <Plus size={16} />}</span>
-                          </button>
+                          </div>
                         );
                       })}
                     </div>
                   </div>
                 );
               })
-            ) /* MASSAGE_REMAINING_SERVICES_FIX */
-              .concat(
-                filteredActiveServices
-                  .filter(
-                    (service) =>
-                      ![
-                        48,
-                        49,
-                        50,
-                        51,
-                        52,
-                        53,
-                      ].includes(Number(service.id))
-                  )
-                  .map((service) => {
-                    const selected = selectedIds.has(service.id);
-
-                    return (
-                      <button
-                        key={`massage-individual-${service.id}`}
-                        type="button"
-                        onClick={() => handleServiceToggle(service)}
-                        className={`
-                          group relative flex min-h-[118px] w-full items-center gap-4
-                          overflow-hidden rounded-[22px] border p-5 text-left
-                          transition-all duration-300 sm:p-5
-                          ${
-                            selected
-                              ? "border-[#D4AF37]/70 bg-[#D4AF37]/[0.065] shadow-[0_0_35px_rgba(212,175,55,.08)]"
-                              : "border-white/10 bg-white/[0.018] hover:-translate-y-[2px] hover:border-[#D4AF37]/45 hover:bg-white/[0.035] hover:shadow-[0_12px_35px_rgba(212,175,55,0.18)]"
-                          }
-                        `}
-                      >
-                        <div
-                          className={`
-                            absolute left-0 top-4 bottom-4 w-[2px] rounded-full
-                            transition-all duration-300
-                            ${
-                              selected
-                                ? "bg-[#D4AF37] shadow-[0_0_12px_rgba(212,175,55,.7)]"
-                                : "bg-transparent"
-                            }
-                          `}
-                        />
-
-                        <div className="min-w-0 flex-1">
-                          <div className="flex items-start justify-between gap-3">
-                            <div className="min-w-0">
-                              <h4 className="text-base font-medium text-white sm:text-lg">
-                                {service.name}
-                              </h4>
-
-                              <p
-                                className={`mt-1 text-xs leading-5 text-white/75 sm:text-sm ${
-                                  expandedServiceId === service.id
-                                    ? ""
-                                    : "line-clamp-2"
-                                }`}
-                              >
-                                {service.description}
-                              </p>
-
-                              {service.description.length > 95 && (
-                                <span
-                                  role="button"
-                                  tabIndex={0}
-                                  onClick={(event) => {
-                                    event.stopPropagation();
-                                    setExpandedServiceId(
-                                      expandedServiceId === service.id
-                                        ? null
-                                        : service.id
-                                    );
-                                  }}
-                                  onKeyDown={(event) => {
-                                    if (
-                                      event.key === "Enter" ||
-                                      event.key === " "
-                                    ) {
-                                      event.preventDefault();
-                                      event.stopPropagation();
-                                      setExpandedServiceId(
-                                        expandedServiceId === service.id
-                                          ? null
-                                          : service.id
-                                      );
-                                    }
-                                  }}
-                                  className="mt-1 inline-flex cursor-pointer select-none text-[11px] font-medium text-[#D4AF37] transition-colors hover:text-[#E7C95D]"
-                                >
-                                  {expandedServiceId === service.id
-                                    ? "Read less"
-                                    : "Read more"}
-                                </span>
-                              )}
-                            </div>
-
-                            <span className="shrink-0 text-base font-medium text-[#D4AF37]">
-                              {"\u00A3"}
-                              {Number(service.price).toFixed(2)}
-                            </span>
-                          </div>
-
-                          <div className="mt-3 flex items-center gap-2 text-xs text-white/75">
-                            <Clock3 size={14} className="text-[#D4AF37]" />
-                            <span>{service.duration}</span>
-                          </div>
-                        </div>
-
-                        <div
-                          className={`
-                            flex h-9 w-9 shrink-0 items-center justify-center rounded-full
-                            border transition-all duration-300
-                            ${
-                              selected
-                                ? "border-[#D4AF37] bg-[#D4AF37] text-black shadow-[0_0_18px_rgba(212,175,55,.20)]"
-                                : "border-white/15 text-transparent group-hover:border-white/30"
-                            }
-                          `}
-                        >
-                          {selected ? <Check size={18} /> : <Plus size={18} />}
-                        </div>
-                      </button>
-                    );
-                  })
-              )
-              : filteredActiveServices.filter((service) => !isAddOnService(service)).map((service) => {
+) : filteredActiveServices.filter((service) => !isAddOnService(service)).map((service) => {
               const selected = selectedIds.has(service.id);
 
               return (
-                <button
-                  key={service.id}
-                  type="button"
-                  onClick={() => handleServiceToggle(service)}
+              <div
+                key={service.id}
+                role="button"
+                tabIndex={0}
+                onClick={() => handleServiceToggle(service)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    handleServiceToggle(service);
+                  }
+                }}
+                className={`
+                  group relative flex min-h-[118px] w-full items-start gap-4
+                  overflow-hidden rounded-[22px] border p-5 text-left
+                  transition-all duration-300 sm:p-5
+                  ${
+                    selected
+                      ? "border-[#D4AF37]/70 bg-[#D4AF37]/[0.065] shadow-[0_0_35px_rgba(212,175,55,.08)]"
+                      : "border-white/10 bg-white/[0.018] hover:-translate-y-[2px] hover:border-[#D4AF37]/45 hover:bg-white/[0.035] hover:shadow-[0_12px_35px_rgba(212,175,55,0.18)]"
+                  }
+                `}
+              >
+
+                {/* GOLD ACCENT */}
+                <div
                   className={`
-                    group relative flex min-h-[118px] w-full items-center gap-4
-                    overflow-hidden rounded-[22px] border p-5 text-left
-                    transition-all duration-300 sm:p-5
+                    absolute left-0 top-4 bottom-4 w-[2px] rounded-full
+                    transition-all duration-300
                     ${
                       selected
-                        ? "border-[#D4AF37]/70 bg-[#D4AF37]/[0.065] shadow-[0_0_35px_rgba(212,175,55,.08)]"
-                        : "border-white/10 bg-white/[0.018] hover:-translate-y-[2px] hover:border-[#D4AF37]/45 hover:bg-white/[0.035] hover:shadow-[0_12px_35px_rgba(212,175,55,0.18)]"
+                        ? "bg-[#D4AF37] shadow-[0_0_12px_rgba(212,175,55,.7)]"
+                        : "bg-transparent"
                     }
                   `}
-                >
+                />
 
-                  {/* GOLD ACCENT */}
-                  <div
-                    className={`
-                      absolute left-0 top-4 bottom-4 w-[2px] rounded-full
-                      transition-all duration-300
-                      ${
-                        selected
-                          ? "bg-[#D4AF37] shadow-[0_0_12px_rgba(212,175,55,.7)]"
-                          : "bg-transparent"
-                      }
-                    `}
-                  />
+                {/* CONTENT */}
+                <div className="min-w-0 flex-1">
 
+                  <div className="flex items-start justify-between gap-3">
 
-                  {/* CONTENT */}
-                  <div className="min-w-0 flex-1">
+                    <div className="min-w-0">
 
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="min-w-0">
-                        <h4 className="text-base font-medium text-white sm:text-lg">
-                          {service.name}
-                        </h4>
+                      <h4 className="text-base font-medium text-white sm:text-lg">
+                        {service.name}
+                      </h4>
 
-                                                <p
-                          className={`mt-1 text-xs leading-5 text-white/75 sm:text-sm ${
-                            expandedServiceId === service.id
-                              ? ""
-                              : "line-clamp-2"
-                          }`}
-                        >
-                          {service.description}
-                        </p>
+                      <p
+                        className={`mt-1 text-xs leading-5 text-white/75 sm:text-sm ${
+                          expandedServiceId === service.id
+                            ? ""
+                            : "line-clamp-2"
+                        }`}
+                      >
+                        {service.description}
+                      </p>
 
-                        {service.description.length > 95 && (
-                          <span
-                            role="button"
-                            tabIndex={0}
-                            onClick={(event) => {
+                      {service.description.trim().length > 0 && (
+                        <span
+                          role="button"
+                          tabIndex={0}
+                          onClick={(event) => {
+                            event.stopPropagation();
+
+                            setExpandedServiceId(
+                              expandedServiceId === service.id
+                                ? null
+                                : service.id
+                            );
+                          }}
+                          onKeyDown={(event) => {
+                            if (
+                              event.key === "Enter" ||
+                              event.key === " "
+                            ) {
+                              event.preventDefault();
                               event.stopPropagation();
+
                               setExpandedServiceId(
                                 expandedServiceId === service.id
                                   ? null
                                   : service.id
                               );
-                            }}
-                            onKeyDown={(event) => {
-                              if (
-                                event.key === "Enter" ||
-                                event.key === " "
-                              ) {
-                                event.preventDefault();
-                                event.stopPropagation();
-                                setExpandedServiceId(
-                                  expandedServiceId === service.id
-                                    ? null
-                                    : service.id
-                                );
-                              }
-                            }}
-                            className="mt-1 inline-flex cursor-pointer select-none text-[11px] font-medium text-[#D4AF37] transition-colors hover:text-[#E7C95D]"
-                          >
-                            {expandedServiceId === service.id
-                              ? "Read less"
-                              : "Read more"}
-                          </span>
-                        )}
-                      </div>
+                            }
+                          }}
+                          className="mt-1 inline-flex cursor-pointer select-none text-[11px] font-medium text-[#D4AF37] transition-colors hover:text-[#E7C95D]"
+                        >
+                          {expandedServiceId === service.id
+                            ? "Read less"
+                            : "Read more"}
+                        </span>
+                      )}
 
-                      <span className="shrink-0 text-base font-medium text-[#D4AF37]">
-                        {"\u00A3"}
-                        {Number(service.price).toFixed(2)}
+                    </div>
+
+
+                  </div>
+
+                  <div className="mt-3 flex items-center gap-2 text-xs text-white/75">
+                    <Clock3 size={14} className="text-[#D4AF37]" />
+                    <span>{service.duration}</span>
+                  </div>
+
+                </div>
+                {/* PRICE + INLINE QUANTITY CONTROLS */}
+                <div className="flex h-full w-[112px] shrink-0 flex-col items-end justify-between gap-3">
+
+                  <span className="block w-full whitespace-nowrap text-right text-base font-semibold leading-none text-[#D4AF37]">
+                    {"\u00A3"}
+                    {Number(service.price).toFixed(2)}
+                  </span>
+
+                  {selected ? (
+                    <div
+                      className="flex items-center gap-1 rounded-full border border-[#D4AF37]/35 bg-black/30 p-1 shadow-[0_0_18px_rgba(212,175,55,.08)]"
+                      onClick={(event) => event.stopPropagation()}
+                    >
+                      <button
+                        type="button"
+                        aria-label="Decrease service quantity"
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          decrementService(service.id);
+                        }}
+                        className="flex h-8 w-8 items-center justify-center rounded-full text-white/70 transition-all duration-200 hover:bg-white/10 hover:text-white active:scale-90"
+                      >
+                        <Minus className="h-4 w-4" />
+                      </button>
+
+                      <span className="min-w-[26px] text-center text-sm font-semibold text-white">
+                        {getServiceQuantity(service.id)}
                       </span>
+
+                      <button
+                        type="button"
+                        aria-label="Increase service quantity"
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          handleServiceToggle(service);
+                        }}
+                        className="flex h-8 w-8 items-center justify-center rounded-full bg-[#D4AF37]/15 text-[#D4AF37] transition-all duration-200 hover:bg-[#D4AF37]/25 hover:text-[#E7C95D] active:scale-90"
+                      >
+                        <Plus className="h-4 w-4" />
+                      </button>
                     </div>
-
-                    <div className="mt-3 flex items-center gap-2 text-xs text-white/75">
-                      <Clock3 size={14} className="text-[#D4AF37]" />
-                      <span>{service.duration}</span>
+                  ) : (
+                    <div
+className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 text-white/40 transition-all duration-300 group-hover:border-[#D4AF37]/50 group-hover:bg-[#D4AF37]/10 group-hover:text-[#D4AF37] active:scale-90"
+                    >
+                      <Plus size={18} />
                     </div>
+                  )}
 
-                  </div>
+                </div>
 
-                  {/* SELECT CONTROL */}
-                  <div
-                    className={`
-                      flex h-9 w-9 shrink-0 items-center justify-center rounded-full
-                      border transition-all duration-300
-                      ${
-                        selected
-                          ? "border-[#D4AF37] bg-[#D4AF37] text-black shadow-[0_0_18px_rgba(212,175,55,.20)]"
-                          : "border-white/15 text-transparent group-hover:border-white/30"
-                      }
-                    `}
-                  >
-                    {selected ? <Check size={18} /> : <Plus size={18} />}
-                  </div>
-
-                </button>
+              </div>
               );
             })}
           </div>
@@ -885,9 +1123,8 @@ export default function Step1Services() {
               const selected = selectedIds.has(service.id);
 
               return (
-                <button
+                <div role="button" tabIndex={0}
                   key={service.id}
-                  type="button"
                   onClick={() => handleServiceToggle(service)}
                   className={`
                     group relative flex min-h-[118px] w-full items-center gap-4
@@ -934,7 +1171,7 @@ export default function Step1Services() {
                           {service.description}
                         </p>
 
-                        {service.description.length > 95 && (
+                        {service.description.trim().length > 0 && (
                           <span
                             role="button"
                             tabIndex={0}
@@ -983,21 +1220,64 @@ export default function Step1Services() {
                   </div>
 
                   {/* SELECT CONTROL */}
-                  <div
-                    className={`
-                      flex h-9 w-9 shrink-0 items-center justify-center rounded-full
-                      border transition-all duration-300
-                      ${
-                        selected
-                          ? "border-[#D4AF37] bg-[#D4AF37] text-black shadow-[0_0_18px_rgba(212,175,55,.20)]"
-                          : "border-white/15 text-transparent group-hover:border-white/30"
-                      }
-                    `}
-                  >
-                    {selected ? <Check size={18} /> : <Plus size={18} />}
-                  </div>
+                  {(isNailsCategory || isPedicureCategory) ? (
+                    selected ? (
+                      <div
+                        className="flex shrink-0 items-center gap-1 rounded-full border border-[#D4AF37]/35 bg-black/30 p-1 shadow-[0_0_18px_rgba(212,175,55,.08)]"
+                        onClick={(event) => event.stopPropagation()}
+                      >
+                        <button
+                          type="button"
+                          aria-label="Decrease nail add-on quantity"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            decrementService(service.id);
+                          }}
+                          className="flex h-8 w-8 items-center justify-center rounded-full text-white/70 transition-all duration-200 hover:bg-white/10 hover:text-white active:scale-90"
+                        >
+                          <Minus className="h-4 w-4" />
+                        </button>
 
-                </button>
+                        <span className="min-w-[26px] text-center text-sm font-semibold text-white">
+                          {getServiceQuantity(service.id)}
+                        </span>
+
+                        <button
+                          type="button"
+                          aria-label="Increase nail add-on quantity"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            handleServiceToggle(service);
+                          }}
+                          className="flex h-8 w-8 items-center justify-center rounded-full bg-[#D4AF37]/15 text-[#D4AF37] transition-all duration-200 hover:bg-[#D4AF37]/25 hover:text-[#E7C95D] active:scale-90"
+                        >
+                          <Plus className="h-4 w-4" />
+                        </button>
+                      </div>
+                    ) : (
+                      <div
+                        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 text-white/40 transition-all duration-300 group-hover:border-[#D4AF37]/50 group-hover:bg-[#D4AF37]/10 group-hover:text-[#D4AF37] active:scale-90"
+                      >
+                        <Plus size={18} />
+                      </div>
+                    )
+                  ) : (
+                    <div
+                      className={`
+                        flex h-9 w-9 shrink-0 items-center justify-center rounded-full
+                        border transition-all duration-300
+                        ${
+                          selected
+                            ? "border-[#D4AF37] bg-[#D4AF37] text-black shadow-[0_0_18px_rgba(212,175,55,.20)]"
+                            : "border-white/15 text-transparent group-hover:border-white/30"
+                        }
+                      `}
+                    >
+                      {selected ? <Check size={18} /> : <Plus size={18} />}
+                    </div>
+                  )}
+
+                </div>
               );
             })}
           </div>
@@ -1005,92 +1285,7 @@ export default function Step1Services() {
 
               </div>
             )}
-          {shouldHighlightPackages && recommendedPackages.length > 0 && (
-            <div className="mt-8 rounded-[24px] border border-[#D4AF37]/25 bg-[#D4AF37]/[0.035] p-4 shadow-[0_10px_35px_rgba(212,175,55,.06)] sm:p-5">
-              <div className="mb-4 flex items-start gap-3">
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#D4AF37]/30 bg-[#D4AF37]/10 text-[#D4AF37]">
-                  <Sparkles size={17} />
-                </div>
-
-                <div>
-                  <p className="text-[10px] uppercase tracking-[0.28em] text-[#D4AF37]">
-                    Recommended For You
-                  </p>
-
-                  <h4 className="mt-1 text-lg font-light text-white sm:text-xl">
-                    Explore Our Packages
-                  </h4>
-
-                  <p className="mt-1 text-xs leading-5 text-white/55 sm:text-sm">
-                    Complete your experience with one of our curated packages.
-                  </p>
-                </div>
-              </div>
-
-              <div className="grid gap-3 lg:grid-cols-3">
-                {recommendedPackages.map((service) => {
-                  const selected = selectedIds.has(service.id);
-
-                  return (
-                    <button
-                      key={service.id}
-                      type="button"
-                      onClick={() => handlePackageSelect(service)}
-                      className={`
-                        group relative flex min-h-[112px] w-full flex-col justify-between
-                        rounded-[20px] border p-4 text-left transition-all duration-300
-                        ${
-                          selected
-                            ? "border-[#D4AF37]/70 bg-[#D4AF37]/[0.10] shadow-[0_0_30px_rgba(212,175,55,.10)]"
-                            : "border-white/10 bg-white/[0.018] hover:-translate-y-[2px] hover:border-[#D4AF37]/45 hover:bg-white/[0.035]"
-                        }
-                      `}
-                    >
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="min-w-0">
-                          <h5 className="text-sm font-medium text-white">
-                            {service.name}
-                          </h5>
-
-                          {service.description && (
-                            <p className="mt-1 line-clamp-2 text-[11px] leading-5 text-white/55">
-                              {service.description}
-                            </p>
-                          )}
-                        </div>
-
-                        <span className="shrink-0 text-sm font-medium text-[#D4AF37]">
-                          {"\u00A3"}
-                          {Number(service.price).toFixed(2)}
-                        </span>
-                      </div>
-
-                      <div className="mt-3 flex items-center justify-between gap-3">
-                        <span className="flex items-center gap-1.5 text-[11px] text-white/60">
-                          <Clock3 size={12} className="text-[#D4AF37]" />
-                          {service.duration}
-                        </span>
-
-                        <span
-                          className={`
-                            flex h-7 w-7 items-center justify-center rounded-full border
-                            transition-all duration-300
-                            ${
-                              selected
-                                ? "border-[#D4AF37] bg-[#D4AF37] text-black"
-                                : "border-white/15 text-white/50 group-hover:border-[#D4AF37]/50 group-hover:text-[#D4AF37]"
-                            }
-                          `}
-                        >
-                          {selected ? <Check size={15} /> : <Plus size={15} />}
-                        </span>
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          )}        </section>
+        </section>
       )}
 
       {/* SELECTION SUMMARY */}
@@ -1197,6 +1392,31 @@ export default function Step1Services() {
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

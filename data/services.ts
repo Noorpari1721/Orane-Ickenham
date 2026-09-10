@@ -1,4 +1,4 @@
-export const serviceCategories = [
+﻿export const serviceCategories = [
 {
     id: "head-spa",
     title: "Japanese Head Spa",
@@ -88,7 +88,7 @@ export const serviceCategories = [
     services: [
       {
         id: 48,
-        name: "Swedish Full Body Massage — 45 Minutes",
+        name: "Swedish Full Body Massage â€” 45 Minutes",
         price: 45,
         duration: "45 min",
         description:
@@ -96,7 +96,7 @@ export const serviceCategories = [
       },
       {
         id: 49,
-        name: "Swedish Full Body Massage — 60 Minutes",
+        name: "Swedish Full Body Massage â€” 60 Minutes",
         price: 55,
         duration: "60 min",
         description:
@@ -104,7 +104,7 @@ export const serviceCategories = [
       },
       {
         id: 50,
-        name: "Deep Tissue Massage — 45 Minutes",
+        name: "Deep Tissue Massage â€” 45 Minutes",
         price: 50,
         duration: "45 min",
         description:
@@ -112,7 +112,7 @@ export const serviceCategories = [
       },
       {
         id: 51,
-        name: "Deep Tissue Massage — 60 Minutes",
+        name: "Deep Tissue Massage â€” 60 Minutes",
         price: 60,
         duration: "60 min",
         description:
@@ -120,7 +120,7 @@ export const serviceCategories = [
       },
       {
         id: 52,
-        name: "Indian Head Massage — 30 Minutes",
+        name: "Indian Head Massage â€” 30 Minutes",
         price: 30,
         duration: "30 min",
         description:
@@ -128,7 +128,7 @@ export const serviceCategories = [
       },
       {
         id: 53,
-        name: "Indian Head Massage — 45 Minutes",
+        name: "Indian Head Massage â€” 45 Minutes",
         price: 40,
         duration: "45 min",
         description:
@@ -219,22 +219,6 @@ export const serviceCategories = [
           "Safe removal of existing nail extensions while taking care of the natural nails.",
       },
       {
-        id: 13,
-        name: "BIAB Infill Without Polish",
-        price: 34,
-        duration: "50 min",
-        description:
-          "Refreshes the grown-out BIAB while maintaining strength and a smooth finish.",
-      },
-      {
-        id: 16,
-        name: "Builder Gel Infill Without Polish",
-        price: 34,
-        duration: "50 min",
-        description:
-          "Refreshes the grown-out builder gel and restores a smooth, strong finish.",
-      },
-      {
         id: 11,
         name: "Acrylic Infill Without Polish",
         price: 35,
@@ -242,54 +226,7 @@ export const serviceCategories = [
         description:
           "Refreshes existing acrylic extensions by filling the grown-out area and restoring a neat, balanced finish.",
       },
-      {
-        id: 60,
-        name: "Acrylic Overlay Without Polish",
-        price: 38,
-        duration: "60 min",
-        description:
-          "Acrylic is applied over the natural nails to add strength and durability, with an optional gel/shellac finish.",
-      },
-      {
-        id: 62,
-        name: "BIAB Overlay Without Polish",
-        price: 38,
-        duration: "60 min",
-        description:
-          "BIAB is applied over the natural nails to provide added strength and a smooth, durable finish.",
-      },
-      {
-        id: 12,
-        name: "BIAB Infill With Gel/Shellac",
-        price: 39,
-        duration: "60 min",
-        description:
-          "Refreshes the grown-out BIAB while maintaining strength and a smooth finish.",
-      },
-      {
-        id: 17,
-        name: "Builder Gel Infill With Gel/Shellac",
-        price: 39,
-        duration: "60 min",
-        description:
-          "Refreshes the grown-out builder gel and restores a smooth, strong finish.",
-      },
-      {
-        id: 9,
-        name: "Acrylic Extension Full Set (Coloured)",
-        price: 40,
-        duration: "60 min",
-        description:
-          "A complete acrylic extension set finished with your choice of colour.",
-      },
-      {
-        id: 64,
-        name: "Builder Gel Overlay Without Polish",
-        price: 40,
-        duration: "60 min",
-        description:
-          "A builder gel overlay strengthens the natural nails while creating a smooth and durable finish.",
-      },
+
       {
         id: 10,
         name: "Acrylic Infill With Gel/Shellac",
@@ -298,6 +235,16 @@ export const serviceCategories = [
         description:
           "Refreshes existing acrylic extensions by filling the grown-out area and restoring a neat, balanced finish.",
       },
+
+      {
+        id: 60,
+        name: "Acrylic Overlay Without Polish",
+        price: 38,
+        duration: "60 min",
+        description:
+          "Acrylic is applied over the natural nails to add strength and durability, with an optional gel/shellac finish.",
+      },
+
       {
         id: 61,
         name: "Acrylic Overlay With Gel/Shellac",
@@ -306,14 +253,16 @@ export const serviceCategories = [
         description:
           "Acrylic is applied over the natural nails to add strength and durability, with an optional gel/shellac finish.",
       },
+
       {
-        id: 63,
-        name: "BIAB Overlay With Gel/Shellac",
-        price: 43,
-        duration: "70 min",
+        id: 9,
+        name: "Acrylic Extension Full Set (Coloured)",
+        price: 40,
+        duration: "60 min",
         description:
-          "BIAB is applied over the natural nails to provide added strength and a smooth, durable finish.",
+          "A complete acrylic extension set finished with your choice of colour.",
       },
+
       {
         id: 8,
         name: "Acrylic Extension Full Set with Gel/Shellac",
@@ -322,14 +271,70 @@ export const serviceCategories = [
         description:
           "A complete acrylic extension set finished with gel/shellac for a polished, long-lasting finish.",
       },
+
       {
-        id: 14,
-        name: "Builder Gel Full Set Extensions",
-        price: 45,
+        id: 13,
+        name: "BIAB Infill Without Polish",
+        price: 34,
+        duration: "50 min",
+        description:
+          "Refreshes the grown-out BIAB while maintaining strength and a smooth finish.",
+      },
+
+      {
+        id: 12,
+        name: "BIAB Infill With Gel/Shellac",
+        price: 39,
         duration: "60 min",
         description:
-          "Full set extensions created using builder gel for strength and a natural-looking finish.",
+          "Refreshes the grown-out BIAB while maintaining strength and a smooth finish.",
       },
+
+      {
+        id: 62,
+        name: "BIAB Overlay Without Polish",
+        price: 38,
+        duration: "60 min",
+        description:
+          "BIAB is applied over the natural nails to provide added strength and a smooth, durable finish.",
+      },
+
+      {
+        id: 63,
+        name: "BIAB Overlay With Gel/Shellac",
+        price: 43,
+        duration: "70 min",
+        description:
+          "BIAB is applied over the natural nails to provide added strength and a smooth, durable finish.",
+      },
+
+      {
+        id: 16,
+        name: "Builder Gel Infill Without Polish",
+        price: 34,
+        duration: "50 min",
+        description:
+          "Refreshes the grown-out builder gel and restores a smooth, strong finish.",
+      },
+
+      {
+        id: 17,
+        name: "Builder Gel Infill With Gel/Shellac",
+        price: 39,
+        duration: "60 min",
+        description:
+          "Refreshes the grown-out builder gel and restores a smooth, strong finish.",
+      },
+
+      {
+        id: 64,
+        name: "Builder Gel Overlay Without Polish",
+        price: 40,
+        duration: "60 min",
+        description:
+          "A builder gel overlay strengthens the natural nails while creating a smooth and durable finish.",
+      },
+
       {
         id: 65,
         name: "Builder Gel Overlay With Gel/Shellac",
@@ -338,6 +343,16 @@ export const serviceCategories = [
         description:
           "A builder gel overlay strengthens the natural nails while creating a smooth and durable finish.",
       },
+
+      {
+        id: 14,
+        name: "Builder Gel Full Set Extensions",
+        price: 45,
+        duration: "60 min",
+        description:
+          "Full set extensions created using builder gel for strength and a natural-looking finish.",
+      },
+
       {
         id: 15,
         name: "Builder Gel Full Set Extensions with Gel/Shellac",

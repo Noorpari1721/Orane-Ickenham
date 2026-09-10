@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useMemo, useState } from "react";
 import {
@@ -10,6 +10,7 @@ import {
 
 import { useBooking } from "@/context/BookingContext";
 import { serviceCategories } from "@/data/services";
+import type { BookingState, Service } from "@/types/booking";
 
 type Answer = string | boolean;
 
@@ -264,7 +265,7 @@ const CONSULTATION_CATEGORY_IDS = new Set([
   "massage",
 ]);
 
-function getSelectedServices(booking: any) {
+function getSelectedServices(booking: BookingState): Service[] {
   return booking.services?.length
     ? booking.services
     : booking.service
@@ -272,7 +273,7 @@ function getSelectedServices(booking: any) {
       : [];
 }
 
-function getRequiredForms(services: any[]) {
+function getRequiredForms(services: Service[]) {
   const ids = new Set<string>();
 
   for (const service of services) {
@@ -729,3 +730,4 @@ export default function Step5Consultation() {
     </div>
   );
 }
+

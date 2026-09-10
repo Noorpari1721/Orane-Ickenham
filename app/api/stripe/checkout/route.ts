@@ -1,4 +1,4 @@
-﻿import { NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { getDurationMinutes } from "@/lib/duration";
 
 
@@ -126,13 +126,16 @@ export async function POST(request: Request) {
 
     const prisma = getPrisma();
 
-    const normalizedServiceIds = Array.from(
-      new Set(
-        serviceIds
-          .map((id) => String(id).trim())
-          .filter(Boolean)
-      )
-    );
+    /*
+     * Preserve duplicate IDs.
+     *
+     * Duplicate service IDs are intentional:
+     * [A, A, B] = A x2 + B x1
+     */
+    const normalizedServiceIds =
+      serviceIds
+        .map((id) => String(id).trim())
+        .filter(Boolean);
 
     if (normalizedServiceIds.length === 0) {
       return NextResponse.json(
@@ -260,9 +263,61 @@ export async function POST(request: Request) {
     const origin =
       new URL(request.url).origin;
 
+    /*
+     * MULTIPLE SERVICE QUANTITY SUPPORT
+     *
+     * The services array has the exact same order as
+     * normalizedServiceIds because both are resolved with
+     * the same input order.
+     *
+     * Therefore:
+     *
+     * [5, 5] -> [Hydra, Hydra] -> quantity 2
+     *
+     * We group using the resolved database service.id.
+     * We NEVER compare numeric serviceNo values with UUID ids.
+     */
+
+    const serviceGroups = new Map<
+      string,
+      {
+        service: (typeof selectedServices)[number];
+        quantity: number;
+      }
+    >();
+
+    for (const service of selectedServices) {
+      const key = String(service.id);
+      const existing = serviceGroups.get(key);
+
+      if (existing) {
+        existing.quantity += 1;
+      }
+
+      if (!existing) {
+        serviceGroups.set(key, {
+          service,
+          quantity: 1,
+        });
+      }
+    }
+
+    const groupedServices =
+      Array.from(serviceGroups.values());
+
+    if (groupedServices.length === 0) {
+      return NextResponse.json(
+        {
+          error:
+            "At least one treatment must be selected.",
+        },
+        { status: 400 }
+      );
+    }
+
     const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] =
-      selectedServices.map(
-        (service) => ({
+      groupedServices.map(
+        ({ service, quantity }) => ({
           price_data: {
             currency: "gbp",
 
@@ -278,18 +333,56 @@ export async function POST(request: Request) {
               ),
           },
 
-          quantity: 1,
+          quantity,
         })
       );
 
     const totalPrice =
-      selectedServices.reduce(
-        (total, service) =>
+      groupedServices.reduce(
+        (total, item) =>
           total +
-          Number(service.price),
+          Number(item.service.price) *
+            item.quantity,
         0
       );
 
+    const totalPricePence =
+      Math.round(totalPrice * 100);
+
+    if (
+      !Number.isInteger(totalPricePence) ||
+      totalPricePence <= 0
+    ) {
+      return NextResponse.json(
+        {
+          error:
+            "Invalid checkout total.",
+        },
+        { status: 400 }
+      );
+    }
+
+    console.log(
+      "STRIPE_CHECKOUT_QUANTITY_DIAGNOSTIC",
+      JSON.stringify({
+        normalizedServiceIds,
+        resolvedServiceIds:
+          selectedServices.map(
+            (service) => service.id
+          ),
+        groupedServices:
+          groupedServices.map(
+            ({ service, quantity }) => ({
+              id: service.id,
+              name: service.name,
+              price: Number(service.price),
+              quantity,
+            })
+          ),
+        totalPrice,
+        totalPricePence,
+      })
+    );
     const totalDuration =
       selectedServices.reduce(
         (total, service) =>
@@ -413,4 +506,6 @@ export async function POST(request: Request) {
     );
   }
 }
+
+
 

@@ -3,7 +3,7 @@
 import {
   createContext,
   useContext,
-  useState,
+  useSyncExternalStore,
   ReactNode,
 } from "react";
 
@@ -15,6 +15,8 @@ import type {
   Treatment,
   Staff,
 } from "@/types/booking";
+
+const BOOKING_STORAGE_KEY = "orane-booking-state";
 
 const createEmptyCustomer = (): Customer => ({
   firstName: "",
@@ -43,6 +45,141 @@ const createInitialState = (): BookingState => ({
   editingReview: false,
 });
 
+const serverBookingSnapshot = createInitialState();
+
+const bookingListeners = new Set<() => void>();
+
+let bookingStoreState = createInitialState();
+let bookingStoreLoaded = false;
+
+const restoreBookingState = (): BookingState => {
+  if (typeof window === "undefined") {
+    return createInitialState();
+  }
+
+  try {
+    const saved = window.sessionStorage.getItem(
+      BOOKING_STORAGE_KEY
+    );
+
+    if (!saved) {
+      return createInitialState();
+    }
+
+    const parsed = JSON.parse(saved) as Partial<BookingState> & {
+      date?: string | null;
+    };
+
+    const initialState = createInitialState();
+
+    const restoredDate =
+      parsed.date
+        ? new Date(parsed.date)
+        : null;
+
+    const validDate =
+      restoredDate &&
+      !Number.isNaN(restoredDate.getTime())
+        ? restoredDate
+        : null;
+
+    return {
+      ...initialState,
+      ...parsed,
+      date: validDate,
+      customer: {
+        ...initialState.customer,
+        ...(parsed.customer ?? {}),
+      },
+      services: Array.isArray(parsed.services)
+        ? parsed.services
+        : initialState.services,
+      consultationResponses:
+        parsed.consultationResponses &&
+        typeof parsed.consultationResponses === "object"
+          ? parsed.consultationResponses
+          : initialState.consultationResponses,
+    };
+  } catch {
+    return createInitialState();
+  }
+};
+
+const getBookingSnapshot = (): BookingState => {
+  if (
+    typeof window !== "undefined" &&
+    !bookingStoreLoaded
+  ) {
+    bookingStoreState = restoreBookingState();
+    bookingStoreLoaded = true;
+  }
+
+  return bookingStoreState;
+};
+
+const getServerBookingSnapshot = (): BookingState =>
+  serverBookingSnapshot;
+
+const subscribeToBookingStore = (
+  listener: () => void
+) => {
+  bookingListeners.add(listener);
+
+  return () => {
+    bookingListeners.delete(listener);
+  };
+};
+
+const persistBookingState = (state: BookingState) => {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  try {
+    window.sessionStorage.setItem(
+      BOOKING_STORAGE_KEY,
+      JSON.stringify(state)
+    );
+  } catch {
+    // Session storage can be unavailable in restricted browsers.
+  }
+};
+
+type BookingUpdater =
+  | BookingState
+  | ((prev: BookingState) => BookingState);
+
+const updateBookingStore = (
+  updater: BookingUpdater
+) => {
+  const nextState =
+    typeof updater === "function"
+      ? updater(bookingStoreState)
+      : updater;
+
+  bookingStoreState = nextState;
+
+  persistBookingState(nextState);
+
+  bookingListeners.forEach((listener) => {
+    listener();
+  });
+};
+
+const clearPersistedBookingState = () => {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  try {
+    window.sessionStorage.removeItem(
+      BOOKING_STORAGE_KEY
+    );
+  } catch {
+    // Ignore unavailable session storage.
+  }
+};
+
 const BookingContext = createContext<
   BookingContextType | undefined
 >(undefined);
@@ -52,25 +189,28 @@ export function BookingProvider({
 }: {
   children: ReactNode;
 }) {
-  const [booking, setBooking] =
-    useState<BookingState>(createInitialState);
+  const booking = useSyncExternalStore(
+    subscribeToBookingStore,
+    getBookingSnapshot,
+    getServerBookingSnapshot
+  );
 
   const nextStep = () => {
-    setBooking((prev) => ({
+    updateBookingStore((prev) => ({
       ...prev,
       step: Math.min(prev.step + 1, 7),
     }));
   };
 
   const previousStep = () => {
-    setBooking((prev) => ({
+    updateBookingStore((prev) => ({
       ...prev,
       step: Math.max(prev.step - 1, 1),
     }));
   };
 
   const goToStep = (step: number) => {
-    setBooking((prev) => ({
+    updateBookingStore((prev) => ({
       ...prev,
       step: Math.min(Math.max(step, 1), 7),
     }));
@@ -79,7 +219,7 @@ export function BookingProvider({
   const updateBooking = (
     data: Partial<BookingState>
   ) => {
-    setBooking((prev) => ({
+    updateBookingStore((prev) => ({
       ...prev,
       ...data,
     }));
@@ -92,7 +232,7 @@ export function BookingProvider({
   });
 
   const setService = (service: Service) => {
-    setBooking((prev) => ({
+    updateBookingStore((prev) => ({
       ...prev,
       service,
       services: [service],
@@ -105,16 +245,22 @@ export function BookingProvider({
   };
 
   const toggleService = (service: Service) => {
-    setBooking((prev) => {
-      const exists = prev.services.some(
-        (item) => item.id === service.id
-      );
-
-      const services = exists
-        ? prev.services.filter(
-            (item) => item.id !== service.id
-          )
-        : [...prev.services, service];
+    updateBookingStore((prev) => {
+      /*
+       * MULTIPLE SERVICE BOOKING
+       *
+       * Clicking an already selected service adds another
+       * instance of the same service.
+       *
+       * Example:
+       * Japanese Head Spa
+       * Japanese Head Spa
+       * Japanese Head Spa
+       *
+       * This allows one customer to book the same treatment
+       * for themselves and friends inside one checkout.
+       */
+      const services = [...prev.services, service];
 
       return {
         ...prev,
@@ -133,10 +279,21 @@ export function BookingProvider({
   };
 
   const removeService = (serviceId: number) => {
-    setBooking((prev) => {
-      const services = prev.services.filter(
-        (item) => item.id !== serviceId
+    updateBookingStore((prev) => {
+      /*
+       * Remove only ONE instance.
+       * This gives us quantity-style decrement behaviour.
+       */
+      const index = prev.services.findIndex(
+        (item) => item.id === serviceId
       );
+
+      const services =
+        index === -1
+          ? prev.services
+          : prev.services.filter(
+              (_, itemIndex) => itemIndex !== index
+            );
 
       return {
         ...prev,
@@ -155,7 +312,7 @@ export function BookingProvider({
   };
 
   const clearServices = () => {
-    setBooking((prev) => ({
+    updateBookingStore((prev) => ({
       ...prev,
       service: null,
       services: [],
@@ -168,21 +325,21 @@ export function BookingProvider({
   };
 
   const setTreatment = (treatment: Treatment) => {
-    setBooking((prev) => ({
+    updateBookingStore((prev) => ({
       ...prev,
       treatment,
     }));
   };
 
   const setStaff = (staff: Staff | null) => {
-    setBooking((prev) => ({
+    updateBookingStore((prev) => ({
       ...prev,
       staff,
     }));
   };
 
   const setDate = (date: Date) => {
-    setBooking((prev) => ({
+    updateBookingStore((prev) => ({
       ...prev,
       date,
       time: "",
@@ -190,7 +347,7 @@ export function BookingProvider({
   };
 
   const setTime = (time: string) => {
-    setBooking((prev) => ({
+    updateBookingStore((prev) => ({
       ...prev,
       time,
     }));
@@ -199,7 +356,7 @@ export function BookingProvider({
   const updateCustomer = (
     customer: Partial<Customer>
   ) => {
-    setBooking((prev) => ({
+    updateBookingStore((prev) => ({
       ...prev,
       customer: {
         ...prev.customer,
@@ -209,7 +366,14 @@ export function BookingProvider({
   };
 
   const resetBooking = () => {
-    setBooking(createInitialState());
+    const initialState = createInitialState();
+
+    bookingStoreState = initialState;
+    clearPersistedBookingState();
+
+    bookingListeners.forEach((listener) => {
+      listener();
+    });
   };
 
   return (

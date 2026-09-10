@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { motion } from "framer-motion";
@@ -280,7 +281,7 @@ export default function Step6Review() {
                         </div>
 
                         <p className="text-[#D4AF37]">
-                          £{Number(
+                          Â£{Number(
                             service.price
                           ).toFixed(2)}
                         </p>
@@ -549,7 +550,7 @@ export default function Step6Review() {
           </div>
 
           <p className="text-3xl font-light text-[#D4AF37]">
-            £{totalPrice.toFixed(2)}
+            Â£{totalPrice.toFixed(2)}
           </p>
         </div>
       </motion.div>

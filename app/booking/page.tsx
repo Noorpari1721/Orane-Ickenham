@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
@@ -15,6 +15,7 @@ import Step7Payment from "@/components/booking/steps/Step7Payment";
 
 import { useBooking } from "@/context/BookingContext";
 import { serviceCategories } from "@/data/services";
+import FloatingCallButton from "@/components/layout/FloatingCallButton";
 
 export default function BookingPage() {
   const {
@@ -147,6 +148,40 @@ export default function BookingPage() {
   }, [updateBooking]);
 
   useEffect(() => {
+    const savedPolicyScroll = sessionStorage.getItem(
+      "orane-policy-return-scroll"
+    );
+
+    if (savedPolicyScroll !== null) {
+      const parsedScroll = Number(savedPolicyScroll);
+
+      sessionStorage.removeItem("orane-policy-return-scroll");
+
+      const restoreScroll = () => {
+        window.scrollTo({
+          top: Number.isFinite(parsedScroll) ? parsedScroll : 0,
+          left: 0,
+          behavior: "instant",
+        });
+      };
+
+      restoreScroll();
+
+      requestAnimationFrame(() => {
+        restoreScroll();
+
+        requestAnimationFrame(() => {
+          restoreScroll();
+        });
+      });
+
+      window.setTimeout(restoreScroll, 50);
+      window.setTimeout(restoreScroll, 150);
+      window.setTimeout(restoreScroll, 300);
+
+      return;
+    }
+
     window.scrollTo({
       top: 0,
       left: 0,
@@ -183,7 +218,9 @@ export default function BookingPage() {
   };
 
   return (
-    <BookingShell>
+    <>
+        <FloatingCallButton />
+<BookingShell>
       <motion.div
         key={booking.step}
         initial={{
@@ -214,5 +251,7 @@ export default function BookingPage() {
         {renderStep()}
       </motion.div>
     </BookingShell>
-  );
+      </>
+    );
 }
+

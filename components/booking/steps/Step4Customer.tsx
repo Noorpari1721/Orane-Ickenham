@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import {
@@ -85,6 +86,104 @@ export default function Step4Customer() {
       "changed" | "unchanged" | ""
     >("");
 
+  /*
+   * LOGGED-IN ACCOUNT PREFILL
+   *
+   * My Account is the source of truth when the customer
+   * is authenticated.
+   *
+   * Guests/direct bookings remain manual.
+   */
+  const accountPrefillStorageKey =
+    "orane-booking-account-prefilled-email";
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadLoggedInCustomer = async () => {
+      try {
+        const response = await fetch(
+          "/api/customer/me",
+          {
+            method: "GET",
+            credentials: "include",
+            cache: "no-store",
+          }
+        );
+
+        if (!response.ok) {
+          return;
+        }
+
+        const data = await response.json();
+        const customer = data?.customer;
+
+        if (!customer || cancelled) {
+          return;
+        }
+
+        const accountEmail =
+          String(customer.email ?? "")
+            .trim()
+            .toLowerCase();
+
+        if (!accountEmail) {
+          return;
+        }
+
+        const currentEmail =
+          booking.customer.email
+            .trim()
+            .toLowerCase();
+
+        const prefilledEmail =
+          window.sessionStorage.getItem(
+            accountPrefillStorageKey
+          );
+
+        /*
+         * If this same account has already been loaded
+         * for this booking and the email is still the same,
+         * don't overwrite any manual edits on revisit.
+         */
+        if (
+          prefilledEmail === accountEmail &&
+          currentEmail === accountEmail
+        ) {
+          return;
+        }
+
+        updateCustomer({
+          firstName: String(
+            customer.firstName ?? ""
+          ),
+          lastName: String(
+            customer.lastName ?? ""
+          ),
+          email: accountEmail,
+          phone: String(
+            customer.phone ?? ""
+          ),
+        });
+
+        window.sessionStorage.setItem(
+          accountPrefillStorageKey,
+          accountEmail
+        );
+      } catch {
+        /*
+         * Guest/direct booking or temporary account lookup
+         * failure: keep the normal manual form available.
+         */
+      }
+    };
+
+    void loadLoggedInCustomer();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
   const checkedEmailRef =
     useRef("");
 
@@ -195,15 +294,6 @@ export default function Step4Customer() {
         .toLowerCase();
 
     if (!validateEmail(email)) {
-      setExistingCustomer(null);
-      setCustomerCheckMessage("");
-      setConsultationChoice("");
-      checkedEmailRef.current = "";
-
-      updateBooking({
-        consultationStatus: null,
-      });
-
       return;
     }
 
@@ -510,9 +600,20 @@ export default function Step4Customer() {
                 booking.customer.email
               }
               onChange={(e) => {
+                const email =
+                  e.target.value.toLowerCase();
+
                 updateCustomer({
-                  email:
-                    e.target.value.toLowerCase(),
+                  email,
+                });
+
+                setExistingCustomer(null);
+                setCustomerCheckMessage("");
+                setConsultationChoice("");
+                checkedEmailRef.current = "";
+
+                updateBooking({
+                  consultationStatus: null,
                 });
 
                 if (errors.email) {
@@ -744,6 +845,7 @@ export default function Step4Customer() {
     </div>
   );
 }
+
 
 
 

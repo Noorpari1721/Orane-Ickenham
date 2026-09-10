@@ -1,12 +1,13 @@
-import { NextResponse } from "next/server";
+﻿import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import {
   ADMIN_COOKIE,
   verifyAdminSession,
 } from "@/lib/adminAuth";
 import {
-  PrismaClient,
   Prisma,
+  PrismaClient,
+  $Enums,
 } from "@/app/generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 
@@ -48,7 +49,20 @@ async function requireAdmin() {
   );
 }
 
-function serializeGiftCard(card: any) {
+const giftCardInclude = {
+  service: true,
+  redemptions: {
+    orderBy: {
+      redeemedAt: "desc",
+    },
+  },
+} as const;
+
+type GiftCardWithRelations = Prisma.GiftCardGetPayload<{
+  include: typeof giftCardInclude;
+}>;
+
+function serializeGiftCard(card: GiftCardWithRelations) {
   return {
     id: card.id,
     giftCardNo: card.giftCardNo,
@@ -81,7 +95,7 @@ function serializeGiftCard(card: any) {
     createdAt: card.createdAt,
     updatedAt: card.updatedAt,
     redemptions: (card.redemptions ?? []).map(
-      (redemption: any) => ({
+      (redemption) => ({
         id: redemption.id,
         redemptionNo: redemption.redemptionNo,
         amount: Number(redemption.amount),
@@ -122,10 +136,10 @@ export async function GET(request: Request) {
       url.searchParams.get("status") ?? ""
     ).trim();
 
-    const where: any = {};
+    const where: Prisma.GiftCardWhereInput = {};
 
     if (status && status !== "ALL") {
-      where.status = status;
+      where.status = status as $Enums.GiftCardStatus;
     }
 
     if (search) {
@@ -183,14 +197,7 @@ export async function GET(request: Request) {
 
     const cards = await prisma.giftCard.findMany({
       where,
-      include: {
-        service: true,
-        redemptions: {
-          orderBy: {
-            redeemedAt: "desc",
-          },
-        },
-      },
+      include: giftCardInclude,
       orderBy: {
         createdAt: "desc",
       },
@@ -246,7 +253,7 @@ export async function POST(request: Request) {
       amount <= 0
     ) {
       return NextResponse.json(
-        { error: "Redemption amount must be greater than ┬ú0." },
+        { error: "Redemption amount must be greater than â”¬Ãº0." },
         { status: 400 }
       );
     }
@@ -319,7 +326,7 @@ export async function POST(request: Request) {
 
         if (amount > remaining + 0.0001) {
           throw new Error(
-            `Maximum redeemable amount is ┬ú${remaining.toFixed(2)}.`
+            `Maximum redeemable amount is â”¬Ãº${remaining.toFixed(2)}.`
           );
         }
 

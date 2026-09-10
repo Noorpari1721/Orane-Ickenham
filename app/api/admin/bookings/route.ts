@@ -1,7 +1,7 @@
 ﻿import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { ADMIN_COOKIE, verifyAdminSession } from "@/lib/adminAuth";
-import { PrismaClient } from "@/app/generated/prisma/client";
+import { Prisma, PrismaClient, $Enums } from "@/app/generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 
 const globalForPrisma = globalThis as unknown as {
@@ -82,7 +82,10 @@ function timesOverlap(
     endAMinutes > startBMinutes
   );
 }
-function serializeBooking(booking: any) {
+type BookingWithRelations = Prisma.BookingGetPayload<{
+  include: typeof bookingInclude;
+}>;
+function serializeBooking(booking: BookingWithRelations) {
   return {
     id: booking.id,
     createdAt: booking.createdAt,
@@ -109,7 +112,7 @@ function serializeBooking(booking: any) {
       price: Number(booking.service.price),
     },
     services: booking.bookingServices.map(
-      (bookingService: any) => ({
+      (bookingService) => ({
         id: bookingService.service.id,
         serviceNo:
           bookingService.service.serviceNo,
@@ -121,6 +124,8 @@ function serializeBooking(booking: any) {
           bookingService.service.duration,
         price:
           Number(bookingService.service.price),
+        quantity:
+          Number(bookingService.quantity ?? 1),
       })
     ),
     tech: booking.tech
@@ -154,7 +159,7 @@ const bookingInclude = {
   },
   tech: true,
   payment: true,
-};
+} as const;
 
 export async function GET(request: Request) {
   if (!(await requireAdmin())) {
@@ -172,7 +177,7 @@ export async function GET(request: Request) {
     const date = searchParams.get("date");
     const status = searchParams.get("status");
 
-    const where: any = {};
+    const where: Prisma.BookingWhereInput = {};
 
     if (date) {
       const start = new Date(`${date}T00:00:00`);
@@ -194,7 +199,7 @@ export async function GET(request: Request) {
         "NO_SHOW",
       ].includes(status)
     ) {
-      where.status = status;
+      where.status = status as $Enums.BookingStatus;
     }
 
     const bookings = await prisma.booking.findMany({
@@ -458,13 +463,50 @@ export async function POST(request: Request) {
             primaryService.id,
           bookingServices: {
             create:
-              serviceIds.map(
-                (selectedServiceId) => ({
+              Array.from(
+                serviceIds.reduce(
+                  (
+                    groups,
+                    selectedServiceId
+                  ) => {
+                    const existing =
+                      groups.get(selectedServiceId);
+
+                    if (existing) {
+                      existing.quantity += 1;
+                    } else {
+                      groups.set(
+                        selectedServiceId,
+                        {
+                          serviceId:
+                            selectedServiceId,
+                          quantity: 1,
+                        }
+                      );
+                    }
+
+                    return groups;
+                  },
+                  new Map<
+                    string,
+                    {
+                      serviceId: string;
+                      quantity: number;
+                    }
+                  >()
+                ).values()
+              ).map(
+                ({
+                  serviceId:
+                    selectedServiceId,
+                  quantity,
+                }) => ({
                   service: {
                     connect: {
                       id: selectedServiceId,
                     },
                   },
+                  quantity,
                 })
               ),
           },
@@ -728,13 +770,50 @@ export async function PUT(request: Request) {
           bookingServices: {
             deleteMany: {},
             create:
-              serviceIds.map(
-                (selectedServiceId) => ({
+              Array.from(
+                serviceIds.reduce(
+                  (
+                    groups,
+                    selectedServiceId
+                  ) => {
+                    const existing =
+                      groups.get(selectedServiceId);
+
+                    if (existing) {
+                      existing.quantity += 1;
+                    } else {
+                      groups.set(
+                        selectedServiceId,
+                        {
+                          serviceId:
+                            selectedServiceId,
+                          quantity: 1,
+                        }
+                      );
+                    }
+
+                    return groups;
+                  },
+                  new Map<
+                    string,
+                    {
+                      serviceId: string;
+                      quantity: number;
+                    }
+                  >()
+                ).values()
+              ).map(
+                ({
+                  serviceId:
+                    selectedServiceId,
+                  quantity,
+                }) => ({
                   service: {
                     connect: {
                       id: selectedServiceId,
                     },
                   },
+                  quantity,
                 })
               ),
           },
@@ -797,7 +876,7 @@ export async function PATCH(request: Request) {
     const booking = await prisma.booking.update({
       where: { id },
       data: {
-        status: status as any,
+        status: status as $Enums.BookingStatus,
       },
       include: bookingInclude,
     });
@@ -860,6 +939,9 @@ export async function DELETE(request: Request) {
     );
   }
 }
+
+
+
 
 
 

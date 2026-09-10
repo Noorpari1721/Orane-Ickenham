@@ -1,7 +1,7 @@
-import { NextResponse } from "next/server";
+﻿import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { ADMIN_COOKIE, verifyAdminSession } from "@/lib/adminAuth";
-import { PrismaClient } from "@/app/generated/prisma/client";
+import { Prisma, PrismaClient } from "@/app/generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 
 const globalForPrisma = globalThis as unknown as {
@@ -35,22 +35,33 @@ async function requireAdmin() {
   );
 }
 
-function serializeCustomer(customer: any) {
+const customerInclude = {
+  bookings: {
+    include: {
+      service: true,
+    },
+  },
+  payments: true,
+} as const;
+type CustomerWithRelations = Prisma.CustomerGetPayload<{
+  include: typeof customerInclude;
+}>;
+function serializeCustomer(customer: CustomerWithRelations) {
   const bookings = customer.bookings ?? [];
   const payments = customer.payments ?? [];
 
   const paidPayments = payments.filter(
-    (payment: any) => payment.status === "PAID"
+    (payment) => payment.status === "PAID"
   );
 
   const spent = paidPayments.reduce(
-    (total: number, payment: any) =>
+    (total: number, payment) =>
       total + Number(payment.amount),
     0
   );
 
   const sortedBookings = [...bookings].sort(
-    (a: any, b: any) =>
+    (a, b) =>
       new Date(b.date).getTime() -
       new Date(a.date).getTime()
   );
@@ -195,14 +206,7 @@ export async function POST(request: Request) {
         notes,
         status: "ACTIVE",
       },
-      include: {
-        bookings: {
-          include: {
-            service: true,
-          },
-        },
-        payments: true,
-      },
+      include: customerInclude,
     });
 
     return NextResponse.json(
@@ -276,14 +280,7 @@ export async function PUT(request: Request) {
         phone,
         notes,
       },
-      include: {
-        bookings: {
-          include: {
-            service: true,
-          },
-        },
-        payments: true,
-      },
+      include: customerInclude,
     });
 
     return NextResponse.json({
@@ -329,14 +326,7 @@ export async function PATCH(request: Request) {
     const customer = await prisma.customer.update({
       where: { id },
       data: { status },
-      include: {
-        bookings: {
-          include: {
-            service: true,
-          },
-        },
-        payments: true,
-      },
+      include: customerInclude,
     });
 
     return NextResponse.json({
@@ -415,3 +405,4 @@ export async function DELETE(request: Request) {
     );
   }
 }
+

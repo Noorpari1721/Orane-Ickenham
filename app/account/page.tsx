@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @next/next/no-location-assign-relative-destination */
 "use client";
 
 import Link from "next/link";
@@ -9,6 +11,8 @@ import {
 } from "react";
 import {
   ArrowRight,
+  Eye,
+  EyeOff,
   CalendarDays,
   Clock3,
   Heart,
@@ -42,33 +46,221 @@ type PreferencesData = {
   appointmentReminders: boolean;
 };
 
+
+type CustomerMe = {
+  id: string;
+  customerNo: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string | null;
+  dateOfBirth: string | null;
+};
+
+type CustomerBooking = {
+  id: string;
+  bookingNo?: string | null;
+  status?: string | null;
+  paymentStatus?: string | null;
+  appointmentDate?: string | null;
+  date?: string | null;
+  time?: string | null;
+  totalPrice?: number;
+  services?: {
+    id?: string | number;
+    name?: string;
+    price?: number;
+    quantity?: number;
+  }[];
+  bookingServices?: {
+    id?: string;
+    quantity?: number;
+    service?: {
+      id?: string;
+      name?: string;
+      price?: number;
+      duration?: string;
+    };
+  }[];
+};
 export default function AccountPage() {
   const [authReady, setAuthReady] = useState(false);
   const [isAuthenticated, setIsAuthenticated] =
     useState(false);
 
-  
-  const handleLogout = () => {
-    try {
-      window.localStorage.removeItem(
-        "orane-account-session"
-      );
-    } catch {
-      // Ignore storage errors.
-    }
-
-    setIsAuthenticated(false);
-    setAuthPassword("");
-    setAuthMessage("");
-    setAuthMode("login");
-  };
-const [authMode, setAuthMode] =
+  const [authMode, setAuthMode] =
     useState<"login" | "signup">("login");
 
-  const [authName, setAuthName] = useState("");
+  const [authFirstName, setAuthFirstName] = useState("");
+  const [authLastName, setAuthLastName] = useState("");
   const [authEmail, setAuthEmail] = useState("");
+  const [authPhone, setAuthPhone] = useState("");
+  const [authDateOfBirth, setAuthDateOfBirth] = useState("");
   const [authPassword, setAuthPassword] = useState("");
+  const [calendarOpen, setCalendarOpen] = useState(false);
+
+  const [calendarMonth, setCalendarMonth] = useState(() => {
+    const today = new Date();
+    return new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      1
+    );
+  });
+
+  const calendarMonthLabel = calendarMonth.toLocaleDateString(
+    "en-GB",
+    {
+      month: "long",
+      year: "numeric",
+    }
+  );
+
+  const calendarDays = (() => {
+    const year = calendarMonth.getFullYear();
+    const month = calendarMonth.getMonth();
+
+    const firstDay = new Date(year, month, 1).getDay();
+    const mondayOffset =
+      firstDay === 0 ? 6 : firstDay - 1;
+
+    const daysInMonth = new Date(
+      year,
+      month + 1,
+      0
+    ).getDate();
+
+    const previousMonthDays = new Date(
+      year,
+      month,
+      0
+    ).getDate();
+
+    const days: Array<{
+      day: number;
+      date: Date;
+      currentMonth: boolean;
+    }> = [];
+
+    for (let index = 0; index < mondayOffset; index += 1) {
+      const day =
+        previousMonthDays -
+        mondayOffset +
+        index +
+        1;
+
+      days.push({
+        day,
+        date: new Date(
+          year,
+          month - 1,
+          day
+        ),
+        currentMonth: false,
+      });
+    }
+
+    for (
+      let day = 1;
+      day <= daysInMonth;
+      day += 1
+    ) {
+      days.push({
+        day,
+        date: new Date(year, month, day),
+        currentMonth: true,
+      });
+    }
+
+    while (days.length < 42) {
+      const day =
+        days.length -
+        mondayOffset -
+        daysInMonth +
+        1;
+
+      days.push({
+        day,
+        date: new Date(
+          year,
+          month + 1,
+          day
+        ),
+        currentMonth: false,
+      });
+    }
+
+    return days;
+  })();
+
+  const calendarToday = new Date();
+
+  const calendarTodayString = [
+    calendarToday.getFullYear(),
+    String(
+      calendarToday.getMonth() + 1
+    ).padStart(2, "0"),
+    String(
+      calendarToday.getDate()
+    ).padStart(2, "0"),
+  ].join("-");
+
+  const selectCalendarDate = (date: Date) => {
+    const year = date.getFullYear();
+
+    const month = String(
+      date.getMonth() + 1
+    ).padStart(2, "0");
+
+    const day = String(
+      date.getDate()
+    ).padStart(2, "0");
+
+    setAuthDateOfBirth(
+      `${year}-${month}-${day}`
+    );
+
+    setCalendarOpen(false);
+    setAuthMessage("");
+  };
+
+  const previousCalendarMonth = () => {
+    setCalendarMonth(
+      (current) =>
+        new Date(
+          current.getFullYear(),
+          current.getMonth() - 1,
+          1
+        )
+    );
+  };
+
+  const nextCalendarMonth = () => {
+    setCalendarMonth(
+      (current) =>
+        new Date(
+          current.getFullYear(),
+          current.getMonth() + 1,
+          1
+        )
+    );
+  };
+
+  const [showPassword, setShowPassword] = useState(false);
   const [authMessage, setAuthMessage] = useState("");
+
+  const [customer, setCustomer] =
+    useState<CustomerMe | null>(null);
+
+  const [customerBookings, setCustomerBookings] =
+    useState<CustomerBooking[]>([]);
+
+  const [bookingsLoading, setBookingsLoading] =
+    useState(false);
+
+  const [bookingsError, setBookingsError] =
+    useState("");
+
   const [activeTab, setActiveTab] =
     useState<DashboardTab>("overview");
 
@@ -93,25 +285,156 @@ const [authMode, setAuthMode] =
   const [preferencesLoaded, setPreferencesLoaded] =
     useState(false);
 
-  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
-    try {
-      const session = window.localStorage.getItem(
-        "orane-account-session"
-      );
+    let cancelled = false;
 
-      if (session === "authenticated") {
+    const loadCustomer = async () => {
+      try {
+        const response = await fetch(
+          "/api/customer/me",
+          {
+            method: "GET",
+            credentials: "include",
+            cache: "no-store",
+          }
+        );
+
+        if (cancelled) {
+          return;
+        }
+
+        if (!response.ok) {
+          setCustomer(null);
+          setIsAuthenticated(false);
+          setAuthReady(true);
+          return;
+        }
+
+        const data = await response.json();
+        const nextCustomer =
+          data.customer ?? data;
+
+        if (!nextCustomer?.email) {
+          setCustomer(null);
+          setIsAuthenticated(false);
+          setAuthReady(true);
+          return;
+        }
+
+        setCustomer(nextCustomer);
         setIsAuthenticated(true);
-      }
-    } catch {
-      // Ignore storage errors.
-    } finally {
-      setAuthReady(true);
-    }
-  }, []);
-  /* eslint-enable react-hooks/set-state-in-effect */
 
-  function handleAuthSubmit(
+        setProfile((current) => ({
+          ...current,
+          name:
+            `${nextCustomer.firstName ?? ""} ${nextCustomer.lastName ?? ""}`
+              .trim(),
+          email: nextCustomer.email ?? "",
+          phone: nextCustomer.phone ?? "",
+        dateOfBirth: nextCustomer.dateOfBirth ?? "",
+        }));
+
+        setAuthReady(true);
+      } catch {
+        if (!cancelled) {
+          setCustomer(null);
+          setIsAuthenticated(false);
+          setAuthReady(true);
+        }
+      }
+    };
+
+    void loadCustomer();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      return;
+    }
+
+    let cancelled = false;
+
+    const loadBookings = async () => {
+      setBookingsLoading(true);
+      setBookingsError("");
+
+      try {
+        const response = await fetch(
+          "/api/customer/bookings",
+          {
+            method: "GET",
+            credentials: "include",
+            cache: "no-store",
+          }
+        );
+
+        const data = await response.json();
+
+        if (cancelled) {
+          return;
+        }
+
+        if (!response.ok) {
+          setCustomerBookings([]);
+          setBookingsError(
+            data.error ??
+              "Unable to load your appointments."
+          );
+          return;
+        }
+
+        setCustomerBookings(
+          Array.isArray(data.bookings)
+            ? data.bookings
+            : []
+        );
+      } catch {
+        if (!cancelled) {
+          setCustomerBookings([]);
+          setBookingsError(
+            "Unable to load your appointments."
+          );
+        }
+      } finally {
+        if (!cancelled) {
+          setBookingsLoading(false);
+        }
+      }
+    };
+
+    void loadBookings();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [isAuthenticated]);
+
+  const handleLogout = async () => {
+    try {
+      await fetch(
+        "/api/customer/logout",
+        {
+          method: "POST",
+          credentials: "include",
+        }
+      );
+    } catch {
+      // Ignore logout network errors.
+    }
+
+    setCustomer(null);
+    setCustomerBookings([]);
+    setIsAuthenticated(false);
+    setAuthPassword("");
+    setAuthMessage("");
+    setAuthMode("login");
+  };
+
+  async function handleAuthSubmit(
     event: React.FormEvent<HTMLFormElement>
   ) {
     event.preventDefault();
@@ -126,101 +449,134 @@ const [authMode, setAuthMode] =
       return;
     }
 
+    if (authMode === "signup") {
+      if (!authFirstName.trim()) {
+        setAuthMessage(
+          "Please enter your first name."
+        );
+        return;
+      }
+
+      if (!authLastName.trim()) {
+        setAuthMessage(
+          "Please enter your last name."
+        );
+        return;
+      }
+
+      if (!authPhone.trim()) {
+        setAuthMessage(
+          "Please enter your phone number."
+        );
+        return;
+      }
+
+      if (!authDateOfBirth.trim()) {
+        setAuthMessage(
+          "Please enter your date of birth."
+        );
+        return;
+      }
+    }
+
+    setAuthMessage("");
+
     try {
-      if (authMode === "signup") {
-        if (!authName.trim()) {
-          setAuthMessage(
-            "Please enter your full name."
-          );
-          return;
+      const endpoint =
+        authMode === "signup"
+          ? "/api/customer/signup"
+          : "/api/customer/login";
+
+      const firstName =
+        authFirstName.trim();
+
+      const lastName =
+        authLastName.trim();
+
+      const body =
+        authMode === "signup"
+          ? {
+              name: `${firstName} ${lastName}`.trim(),
+              firstName,
+              lastName,
+              email,
+              phone: authPhone.trim(),
+              dateOfBirth: authDateOfBirth,
+              password: authPassword,
+            }
+          : {
+              email,
+              password: authPassword,
+            };
+
+      const response = await fetch(
+        endpoint,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify(body),
         }
+      );
 
-        const account = {
-          name: authName.trim(),
-          email,
-          password: authPassword,
-        };
+      const data = await response.json();
 
-        window.localStorage.setItem(
-          "orane-account-user",
-          JSON.stringify(account)
-        );
-
-        setProfile((current) => ({
-          ...current,
-          name: account.name,
-          email: account.email,
-        }));
-
-        window.localStorage.setItem(
-          "orane-account-session",
-          "authenticated"
-        );
-
-        setIsAuthenticated(true);
-        return;
-      }
-
-      const savedAccount =
-        window.localStorage.getItem(
-          "orane-account-user"
-        );
-
-      if (!savedAccount) {
+      if (!response.ok) {
         setAuthMessage(
-          "No account found. Please create an account first."
+          data.error ??
+            "Unable to complete your request."
         );
         return;
       }
 
-      const account =
-        JSON.parse(savedAccount);
+      const nextCustomer =
+        data.customer ?? data;
 
-      if (
-        String(account.email || "").toLowerCase() !==
-          email ||
-        account.password !== authPassword
-      ) {
-        setAuthMessage(
-          "Incorrect email or password."
-        );
-        return;
-      }
+      setCustomer(nextCustomer);
+      setIsAuthenticated(true);
+      setAuthPassword("");
+      setAuthMessage("");
 
       setProfile((current) => ({
         ...current,
-        name: account.name ?? current.name,
-        email: account.email ?? current.email,
+        name:
+          `${nextCustomer.firstName ?? ""} ${nextCustomer.lastName ?? ""}`
+            .trim() || current.name,
+        email:
+          nextCustomer.email ?? email,
+        phone:
+          nextCustomer.phone ?? current.phone,
       }));
-
-      window.localStorage.setItem(
-        "orane-account-session",
-        "authenticated"
-      );
-
-      setIsAuthenticated(true);
     } catch {
       setAuthMessage(
         "Something went wrong. Please try again."
       );
     }
   }
+
   /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     try {
-      const savedProfile = window.localStorage.getItem(
-        "orane-account-profile"
-      );
+      const savedProfile =
+        window.localStorage.getItem(
+          "orane-account-profile"
+        );
 
       if (savedProfile) {
-        const parsedProfile = JSON.parse(savedProfile);
+        const parsedProfile =
+          JSON.parse(savedProfile);
 
-        setProfile({
-          name: parsedProfile.name ?? "",
-          email: parsedProfile.email ?? "",
-          phone: parsedProfile.phone ?? "",
-          dateOfBirth: parsedProfile.dateOfBirth ?? "",
-        });
+        setProfile((current) => ({
+          ...current,
+          phone:
+            current.phone ||
+            parsedProfile.phone ||
+            "",
+          dateOfBirth:
+            parsedProfile.dateOfBirth ?? "",
+        }));
       }
     } catch {
       // Ignore malformed local profile data.
@@ -233,9 +589,10 @@ const [authMode, setAuthMode] =
   /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     try {
-      const savedPreferences = window.localStorage.getItem(
-        "orane-account-preferences"
-      );
+      const savedPreferences =
+        window.localStorage.getItem(
+          "orane-account-preferences"
+        );
 
       if (savedPreferences) {
         const parsedPreferences =
@@ -261,7 +618,9 @@ const [authMode, setAuthMode] =
   /* eslint-enable react-hooks/set-state-in-effect */
 
   useEffect(() => {
-    if (!profileLoaded) return;
+    if (!profileLoaded) {
+      return;
+    }
 
     try {
       window.localStorage.setItem(
@@ -274,7 +633,9 @@ const [authMode, setAuthMode] =
   }, [profile, profileLoaded]);
 
   useEffect(() => {
-    if (!preferencesLoaded) return;
+    if (!preferencesLoaded) {
+      return;
+    }
 
     try {
       window.localStorage.setItem(
@@ -285,7 +646,6 @@ const [authMode, setAuthMode] =
       // Ignore storage errors.
     }
   }, [preferences, preferencesLoaded]);
-
   const tabs: {
     id: DashboardTab;
     label: string;
@@ -319,12 +679,305 @@ const [authMode, setAuthMode] =
   if (!authReady) {
     return (
       <main className="min-h-screen bg-[#151515] px-6 py-24 text-white">
-        <div className="mx-auto flex max-w-xl justify-center">
+        <div className="mx-auto flex max-w-4xl justify-center">
           <div className="rounded-full border border-[#D4AF37]/30 px-6 py-3 text-sm text-[#D4AF37]">
             Loading your ORANE account...
           </div>
         </div>
-      </main>
+      
+<style jsx global>{`
+  /* ORANE ACCOUNT LUXURY FORM STYLES */
+
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    -webkit-text-fill-color: #f5f5f5 !important;
+    -webkit-box-shadow: 0 0 0 1000px #252525 inset !important;
+    box-shadow: 0 0 0 1000px #252525 inset !important;
+    caret-color: #f5f5f5 !important;
+    transition: background-color 9999s ease-in-out 0s !important;
+  }
+
+  input:-webkit-autofill::first-line {
+    color: #f5f5f5 !important;
+  }
+
+  .date-luxury-input {
+    color: #f5f5f5 !important;
+    color-scheme: dark;
+  }
+
+  .date-luxury-input::-webkit-datetime-edit {
+    color: #8f8f8f;
+  }
+
+  .date-luxury-input::-webkit-datetime-edit-text {
+    color: #777777;
+  }
+
+  .date-luxury-input::-webkit-datetime-edit-month-field,
+  .date-luxury-input::-webkit-datetime-edit-day-field,
+  .date-luxury-input::-webkit-datetime-edit-year-field {
+    color: #8f8f8f;
+  }
+
+  .date-luxury-input:focus::-webkit-datetime-edit,
+  .date-luxury-input:valid::-webkit-datetime-edit {
+    color: #f5f5f5;
+  }
+
+  .date-luxury-input::-webkit-calendar-picker-indicator {
+    opacity: 0.72;
+    filter: invert(1);
+    cursor: pointer;
+    transition:
+      opacity 180ms ease,
+      filter 180ms ease,
+      transform 180ms ease;
+  }
+
+  .date-luxury-input:hover::-webkit-calendar-picker-indicator,
+  .date-luxury-input:focus::-webkit-calendar-picker-indicator {
+    opacity: 1;
+    filter:
+      brightness(0)
+      saturate(100%)
+      invert(76%)
+      sepia(42%)
+      saturate(900%)
+      hue-rotate(2deg)
+      brightness(95%);
+    transform: scale(1.08);
+  }
+
+  .date-luxury-wrap {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .date-luxury-wrap > .date-luxury-input {
+    position: relative;
+    z-index: 2;
+  }
+
+  .date-luxury-glow {
+    position: absolute;
+    z-index: 0;
+    left: 8%;
+    right: 8%;
+    bottom: -7px;
+    height: 14px;
+    border-radius: 999px;
+    background:
+      radial-gradient(
+        ellipse at center,
+        rgba(212, 175, 55, 0.58) 0%,
+        rgba(212, 175, 55, 0.22) 32%,
+        rgba(212, 175, 55, 0) 74%
+      );
+    filter: blur(7px);
+    opacity: 0.48;
+    transform: scaleX(0.78);
+    animation: oraneCalendarGlow 3.2s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  .date-luxury-wrap:hover .date-luxury-glow,
+  .date-luxury-wrap:focus-within .date-luxury-glow {
+    opacity: 0.92;
+    animation-duration: 2.1s;
+  }
+
+  .date-luxury-wrap:focus-within .date-luxury-input {
+    border-color: rgba(212, 175, 55, 0.72);
+    box-shadow:
+      0 0 0 1px rgba(212, 175, 55, 0.14),
+      0 12px 34px -18px rgba(212, 175, 55, 0.55);
+  }
+
+  @keyframes oraneCalendarGlow {
+    0%,
+    100% {
+      opacity: 0.35;
+      transform: scaleX(0.72);
+    }
+
+    50% {
+      opacity: 0.72;
+      transform: scaleX(1);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .date-luxury-glow {
+      animation: none;
+    }
+  }
+`}</style>
+
+<style jsx global>{`
+  /* ORANE ACCOUNT AUTOFILL DARK V3 */
+
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    -webkit-text-fill-color: #f4f1e8 !important;
+    color: #f4f1e8 !important;
+    caret-color: #f4f1e8 !important;
+    background-color: #252525 !important;
+    background-clip: padding-box !important;
+    -webkit-background-clip: padding-box !important;
+    -webkit-box-shadow: 0 0 0 1000px #252525 inset !important;
+    box-shadow: 0 0 0 1000px #252525 inset !important;
+    border-color: rgba(255,255,255,0.10) !important;
+  }
+
+  input:-webkit-autofill::first-line {
+    -webkit-text-fill-color: #f4f1e8 !important;
+    color: #f4f1e8 !important;
+  }
+
+  #account-first-name,
+  #account-last-name,
+  #account-phone,
+  #account-email,
+  #account-password {
+    background-color: #252525 !important;
+    color: #f4f1e8 !important;
+    color-scheme: dark;
+  }
+
+  #account-first-name::placeholder,
+  #account-last-name::placeholder,
+  #account-phone::placeholder,
+  #account-email::placeholder,
+  #account-password::placeholder {
+    color: rgba(255,255,255,0.32) !important;
+  }
+
+  #account-first-name:focus,
+  #account-last-name:focus,
+  #account-phone:focus,
+  #account-email:focus,
+  #account-password:focus {
+    background-color: #292929 !important;
+    color: #f4f1e8 !important;
+    border-color: rgba(212,175,55,0.62) !important;
+  }
+
+  @keyframes oraneLuxuryFieldGlow {
+    0%,
+    100% {
+      opacity: 0.25;
+      transform: scaleX(0.72);
+    }
+
+    50% {
+      opacity: 0.7;
+      transform: scaleX(1);
+    }
+  }
+`}</style>
+
+<style jsx global>{`
+  /* ORANE AUTOFILL DARK V4 */
+
+  .autofill-dark-field,
+  .autofill-dark-field:hover,
+  .autofill-dark-field:focus {
+    background-color: #252525 !important;
+    background-image: none !important;
+    color: #f4f1e8 !important;
+    caret-color: #f4f1e8 !important;
+    color-scheme: dark;
+  }
+
+  .autofill-dark-field:-webkit-autofill,
+  .autofill-dark-field:-webkit-autofill:hover,
+  .autofill-dark-field:-webkit-autofill:focus,
+  .autofill-dark-field:-webkit-autofill:active {
+    -webkit-text-fill-color: #f4f1e8 !important;
+    color: #f4f1e8 !important;
+
+    background-color: #252525 !important;
+    background-image: none !important;
+
+    -webkit-box-shadow:
+      0 0 0 1000px #252525 inset !important;
+
+    box-shadow:
+      0 0 0 1000px #252525 inset !important;
+
+    border-color:
+      rgba(255,255,255,0.10) !important;
+
+    caret-color: #f4f1e8 !important;
+
+    transition:
+      background-color 50000s ease-in-out 0s !important;
+  }
+
+  .autofill-dark-field:-webkit-autofill::first-line {
+    -webkit-text-fill-color: #f4f1e8 !important;
+    color: #f4f1e8 !important;
+  }
+
+  .autofill-dark-field:-webkit-autofill::selection {
+    background: rgba(212,175,55,0.28) !important;
+    color: #ffffff !important;
+  }
+
+  .autofill-dark-field::selection {
+    background: rgba(212,175,55,0.28);
+    color: #ffffff;
+  }
+
+  /*
+   * Chrome sometimes paints autofill through an internal
+   * background layer. This animation gives the browser a
+   * permanent dark computed background instead of its blue/white UI.
+   */
+
+  @keyframes oraneAutofillDarkV4 {
+    from {
+      background-color: #252525;
+    }
+
+    to {
+      background-color: #252525;
+    }
+  }
+
+  .autofill-dark-field:-webkit-autofill {
+    animation-name: oraneAutofillDarkV4;
+    animation-fill-mode: both;
+  }
+
+  /*
+   * Luxury focus treatment.
+   */
+
+  .autofill-dark-field:focus {
+    border-color:
+      rgba(212,175,55,0.65) !important;
+
+    box-shadow:
+      0 0 0 1px rgba(212,175,55,0.10),
+      0 10px 30px -18px rgba(212,175,55,0.45) !important;
+  }
+
+  /*
+   * Keep placeholder muted.
+   */
+
+  .autofill-dark-field::placeholder {
+    color:
+      rgba(255,255,255,0.32) !important;
+  }
+`}</style>
+</main>
     );
   }
 
@@ -333,7 +986,7 @@ const [authMode, setAuthMode] =
       <main className="relative min-h-screen overflow-hidden bg-[#151515] px-6 py-16 text-white md:py-24">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(212,175,55,0.12),transparent_38%)]" />
 
-        <div className="relative mx-auto flex min-h-[80vh] max-w-md items-center">
+        <div className="relative mx-auto flex min-h-[80vh] max-w-4xl items-center">
           <div className="w-full rounded-[2rem] border border-white/10 bg-[#1d1d1d]/95 p-7 shadow-2xl sm:p-10">
 
             <Link
@@ -362,60 +1015,441 @@ const [authMode, setAuthMode] =
 
             <form
               onSubmit={handleAuthSubmit}
-              className="mt-8 space-y-4"
+              className="mt-8 space-y-5"
             >
               {authMode === "signup" && (
-                <input
-                  type="text"
-                  value={authName}
-                  onChange={(event) => {
-                    setAuthName(event.target.value);
-                    setAuthMessage("");
-                  }}
-                  placeholder="Full Name"
-                  className="w-full rounded-xl border border-white/10 bg-[#252525] px-4 py-3.5 text-white outline-none placeholder:text-white/65 focus:border-[#D4AF37]/60"
-                />
-              )}
-
-              <input
-                type="email"
-                value={authEmail}
-                onChange={(event) => {
-                  setAuthEmail(event.target.value);
-                  setAuthMessage("");
-                }}
-                placeholder="Email Address"
-                className="w-full rounded-xl border border-white/10 bg-[#252525] px-4 py-3.5 text-white outline-none placeholder:text-white/65 focus:border-[#D4AF37]/60"
-              />
-
-              <input
-                type="password"
-                value={authPassword}
-                onChange={(event) => {
-                  setAuthPassword(event.target.value);
-                  setAuthMessage("");
-                }}
-                placeholder="Password"
-                className="w-full rounded-xl border border-white/10 bg-[#252525] px-4 py-3.5 text-white outline-none placeholder:text-white/65 focus:border-[#D4AF37]/60"
-              />
-
-                  <div className="flex justify-end">
-                    <a
-                      href="/reset-password"
-                      className="text-sm text-[#C49A45] transition hover:text-[#E2C07D]"
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <label
+                      htmlFor="account-first-name"
+                      className="block text-xs font-medium uppercase tracking-[0.16em] text-white/55"
                     >
-                      Forgot Password?
-                    </a>
+                      First Name <span className="text-[#D4AF37]">*</span>
+                    </label>
+
+                    <input
+                      id="account-first-name"
+                      type="text"
+                      value={authFirstName}
+                      onChange={(event) => {
+                        setAuthFirstName(event.target.value);
+                        setAuthMessage("");
+                      }}
+                      placeholder="First Name"
+                      required
+                      autoComplete="given-name"
+                      className="h-14 w-full rounded-xl border border-white/10 bg-[#252525] px-4 text-sm text-white outline-none transition placeholder:text-white/30 focus:border-[#D4AF37]/70 focus:bg-[#292929] focus:ring-1 focus:ring-[#D4AF37]/20"
+                    />
                   </div>
 
-              {authMessage && (
-                <p className="text-sm text-red-300">
-                  {authMessage}
-                </p>
+                  <div className="space-y-2">
+                    <label
+                      htmlFor="account-last-name"
+                      className="block text-xs font-medium uppercase tracking-[0.16em] text-white/55"
+                    >
+                      Last Name <span className="text-[#D4AF37]">*</span>
+                    </label>
+
+                    <input
+                      id="account-last-name"
+                      type="text"
+                      value={authLastName}
+                      onChange={(event) => {
+                        setAuthLastName(event.target.value);
+                        setAuthMessage("");
+                      }}
+                      placeholder="Last Name"
+                      required
+                      autoComplete="family-name"
+                      className="h-14 w-full rounded-xl border border-white/10 bg-[#252525] px-4 text-sm text-white outline-none transition placeholder:text-white/30 focus:border-[#D4AF37]/70 focus:bg-[#292929] focus:ring-1 focus:ring-[#D4AF37]/20"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label
+                      htmlFor="account-phone"
+                      className="block text-xs font-medium uppercase tracking-[0.16em] text-white/55"
+                    >
+                      Phone Number <span className="text-[#D4AF37]">*</span>
+                    </label>
+
+                    <input
+                      id="account-phone"
+                      type="tel"
+                      value={authPhone}
+                      onChange={(event) => {
+                        setAuthPhone(event.target.value);
+                        setAuthMessage("");
+                      }}
+                      placeholder="Phone Number"
+                      required
+                      autoComplete="tel"
+                      className="h-14 w-full rounded-xl border border-white/10 bg-[#252525] px-4 text-sm text-white outline-none transition placeholder:text-white/30 focus:border-[#D4AF37]/70 focus:bg-[#292929] focus:ring-1 focus:ring-[#D4AF37]/20"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label
+                      htmlFor="account-date-of-birth"
+                      className="block text-xs font-medium uppercase tracking-[0.16em] text-white/55"
+                    >
+                      Date of Birth <span className="text-[#D4AF37]">*</span>
+                    </label>
+
+                    <div className="date-luxury-wrap">
+  <span className="date-luxury-glow" aria-hidden="true" />
+  <div className="relative">
+  <button
+    type="button"
+    id="account-date-of-birth"
+    onClick={() =>
+      setCalendarOpen((current) => !current)
+    }
+    className={[
+      "group relative flex h-14 w-full items-center rounded-xl border bg-[#252525] px-4 text-left text-sm outline-none transition-all duration-300",
+      calendarOpen
+        ? "border-[#D4AF37]/80 shadow-[0_0_0_1px_rgba(212,175,55,0.16),0_0_18px_-4px_rgba(212,175,55,0.45),0_16px_38px_-18px_rgba(212,175,55,0.65)]"
+        : "border-white/10 hover:border-white/20",
+    ].join(" ")}
+    aria-haspopup="dialog"
+    aria-expanded={calendarOpen}
+  >
+    <span
+      className={[
+        "mr-3 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border transition-all duration-300",
+        calendarOpen
+          ? "border-[#D4AF37]/60 bg-[#D4AF37]/10 text-[#D4AF37]"
+          : "border-white/10 bg-white/[0.03] text-white/40",
+      ].join(" ")}
+    >
+      <svg
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        aria-hidden="true"
+      >
+        <rect
+          x="3"
+          y="4"
+          width="18"
+          height="17"
+          rx="3"
+        />
+        <path d="M8 2v4M16 2v4M3 9h18" />
+      </svg>
+    </span>
+
+    <span
+      className={
+        authDateOfBirth
+          ? "text-white"
+          : "text-white/35"
+      }
+    >
+      {authDateOfBirth
+        ? new Date(
+            `${authDateOfBirth}T12:00:00`
+          ).toLocaleDateString("en-GB", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+          })
+        : "dd/mm/yyyy"}
+    </span>
+
+    <span
+      className={[
+        "ml-auto flex h-9 w-9 items-center justify-center rounded-lg transition-all duration-300",
+        calendarOpen
+          ? "bg-[#D4AF37]/10 text-[#D4AF37]"
+          : "text-white/35 group-hover:text-white/60",
+      ].join(" ")}
+    >
+      <svg
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        aria-hidden="true"
+      >
+        <rect
+          x="3"
+          y="4"
+          width="18"
+          height="17"
+          rx="3"
+        />
+        <path d="M8 2v4M16 2v4M3 9h18" />
+      </svg>
+    </span>
+
+    <span
+      className={[
+        "pointer-events-none absolute -bottom-2 left-[10%] right-[10%] h-3 rounded-full bg-[radial-gradient(ellipse_at_center,rgba(212,175,55,0.72)_0%,rgba(212,175,55,0.25)_38%,transparent_76%)] blur-[7px] transition-all duration-500",
+        calendarOpen
+          ? "scale-x-100 opacity-100"
+          : "scale-x-75 opacity-35",
+      ].join(" ")}
+      aria-hidden="true"
+    />
+  </button>
+
+  {calendarOpen && (
+    <div
+      className="absolute right-0 top-[calc(100%+12px)] z-[100] w-[340px] overflow-hidden rounded-2xl border border-[#D4AF37]/45 bg-[#161616]/[0.98] p-4 shadow-[0_30px_80px_-25px_rgba(0,0,0,0.98),0_0_35px_-12px_rgba(212,175,55,0.55)] backdrop-blur-xl"
+      role="dialog"
+      aria-label="Date of birth calendar"
+    >
+      <div className="pointer-events-none absolute left-[15%] right-[15%] top-0 h-px bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent opacity-80" />
+
+      <div className="mb-4 flex items-center justify-between">
+        <button
+          type="button"
+          onClick={previousCalendarMonth}
+          className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 text-lg text-white/50 transition-all duration-200 hover:border-[#D4AF37]/50 hover:bg-[#D4AF37]/10 hover:text-[#D4AF37]"
+          aria-label="Previous month"
+        >
+          ‹
+        </button>
+
+        <div className="text-center">
+          <p className="text-[9px] font-medium uppercase tracking-[0.25em] text-[#D4AF37]/70">
+            Date of Birth
+          </p>
+
+          <p className="mt-1 text-[15px] font-medium text-white">
+            {calendarMonthLabel}
+          </p>
+        </div>
+
+        <button
+          type="button"
+          onClick={nextCalendarMonth}
+          className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 text-lg text-white/50 transition-all duration-200 hover:border-[#D4AF37]/50 hover:bg-[#D4AF37]/10 hover:text-[#D4AF37]"
+          aria-label="Next month"
+        >
+          ›
+        </button>
+      </div>
+
+      <div className="mb-1 grid grid-cols-7">
+        {[
+          "Mo",
+          "Tu",
+          "We",
+          "Th",
+          "Fr",
+          "Sa",
+          "Su",
+        ].map((day) => (
+          <span
+            key={day}
+            className="py-2 text-center text-[10px] font-medium uppercase tracking-[0.12em] text-white/30"
+          >
+            {day}
+          </span>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-7 gap-1">
+        {calendarDays.map(
+          ({
+            day,
+            date,
+            currentMonth,
+          }) => {
+            const dateString = [
+              date.getFullYear(),
+              String(
+                date.getMonth() + 1
+              ).padStart(2, "0"),
+              String(
+                date.getDate()
+              ).padStart(2, "0"),
+            ].join("-");
+
+            const isSelected =
+              authDateOfBirth === dateString;
+
+            const isToday =
+              dateString ===
+              calendarTodayString;
+
+            const isFuture =
+              date.getTime() >
+              calendarToday.getTime();
+
+            return (
+              <button
+                key={dateString}
+                type="button"
+                disabled={isFuture}
+                onClick={() =>
+                  selectCalendarDate(date)
+                }
+                className={[
+                  "relative flex h-9 items-center justify-center rounded-lg text-xs transition-all duration-200",
+                  currentMonth
+                    ? "text-white/75"
+                    : "text-white/15",
+                  isFuture
+                    ? "cursor-not-allowed opacity-20"
+                    : "hover:bg-[#D4AF37]/10 hover:text-[#D4AF37]",
+                  isSelected
+                    ? "bg-[#D4AF37] font-semibold text-black shadow-[0_0_20px_rgba(212,175,55,0.62)] hover:bg-[#e6c75c] hover:text-black"
+                    : "",
+                  isToday &&
+                  !isSelected
+                    ? "ring-1 ring-[#D4AF37]/45 text-[#D4AF37]"
+                    : "",
+                ].join(" ")}
+              >
+                {day}
+              </button>
+            );
+          }
+        )}
+      </div>
+
+      <div className="mt-4 flex items-center justify-between border-t border-white/10 pt-3">
+        <button
+          type="button"
+          onClick={() => {
+            setAuthDateOfBirth("");
+            setCalendarOpen(false);
+            setAuthMessage("");
+          }}
+          className="text-xs font-medium text-white/35 transition hover:text-[#D4AF37]"
+        >
+          Clear
+        </button>
+
+        <button
+          type="button"
+          onClick={() => {
+            const today = new Date();
+
+            setCalendarMonth(
+              new Date(
+                today.getFullYear(),
+                today.getMonth(),
+                1
+              )
+            );
+          }}
+          className="text-xs font-medium text-[#D4AF37] transition hover:text-[#f0d477]"
+        >
+          Today
+        </button>
+      </div>
+
+      <div className="pointer-events-none absolute -bottom-4 left-[18%] right-[18%] h-7 rounded-full bg-[#D4AF37]/30 blur-2xl" />
+    </div>
+  )}
+</div>
+</div>
+                  </div>
+                </div>
               )}
-<button
+
+              <div className="space-y-2">
+                <label
+                  htmlFor="account-email"
+                  className="block text-xs font-medium uppercase tracking-[0.16em] text-white/55"
+                >
+                  Email Address <span className="text-[#D4AF37]">*</span>
+                </label>
+
+                <input
+                  id="account-email"
+                  type="email"
+                  value={authEmail}
+                  onChange={(event) => {
+                    setAuthEmail(event.target.value);
+                    setAuthMessage("");
+                  }}
+                  placeholder="Email Address"
+                  required
+                  autoComplete="email"
+                  className="h-14 w-full rounded-xl border border-white/10 bg-[#252525] px-4 text-sm text-white outline-none transition placeholder:text-white/30 focus:border-[#D4AF37]/70 focus:bg-[#292929] focus:ring-1 focus:ring-[#D4AF37]/20"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label
+                  htmlFor="account-password"
+                  className="block text-xs font-medium uppercase tracking-[0.16em] text-white/55"
+                >
+                  Password <span className="text-[#D4AF37]">*</span>
+                </label>
+
+                <div className="relative">
+                  <input
+                    id="account-password"
+                    type={showPassword ? "text" : "password"}
+                    value={authPassword}
+                    onChange={(event) => {
+                      setAuthPassword(event.target.value);
+                      setAuthMessage("");
+                    }}
+                    placeholder="Password"
+                    required
+                    autoComplete={
+                      authMode === "signup"
+                        ? "new-password"
+                        : "current-password"
+                    }
+                    className="h-14 w-full rounded-xl border border-white/10 bg-[#252525] px-4 pr-14 text-sm text-white outline-none transition placeholder:text-white/30 focus:border-[#D4AF37]/70 focus:bg-[#292929] focus:ring-1 focus:ring-[#D4AF37]/20"
+                  />
+
+                  <button
+                    type="button"
+                    aria-label={
+                      showPassword
+                        ? "Hide password"
+                        : "Show password"
+                    }
+                    onClick={() =>
+                      setShowPassword((current) => !current)
+                    }
+                    className="absolute right-2.5 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full text-white/40 transition hover:bg-white/5 hover:text-[#D4AF37]"
+                  >
+                    {showPassword ? (
+                      <EyeOff size={18} />
+                    ) : (
+                      <Eye size={18} />
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              {authMode === "login" && (
+                <div className="flex justify-end pt-0.5">
+                  <a
+                    href="/reset-password"
+                    className="text-sm font-medium text-[#C49A45] transition hover:text-[#E2C07D]"
+                  >
+                    Forgot Password?
+                  </a>
+                </div>
+              )}
+
+              {authMessage && (
+                <div className="rounded-xl border border-red-400/20 bg-red-400/5 px-4 py-3">
+                  <p className="text-sm leading-6 text-red-300">
+                    {authMessage}
+                  </p>
+                </div>
+              )}
+
+              <button
                 type="submit"
-                className="w-full rounded-full bg-[#D4AF37] px-6 py-4 font-medium text-black transition hover:bg-[#e3c65c]"
+                className="h-14 w-full rounded-full bg-[#D4AF37] px-6 font-medium text-black shadow-[0_8px_30px_rgba(212,175,55,0.12)] transition hover:bg-[#e3c65c] hover:shadow-[0_10px_35px_rgba(212,175,55,0.18)] active:scale-[0.99]"
               >
                 {authMode === "login"
                   ? "Sign In"
@@ -783,7 +1817,7 @@ const [authMode, setAuthMode] =
                       text-white/50
                     "
                   >
-                    Everything connected to your ORANE experience will live here â€” from upcoming treatments to your personal preferences.
+                    Everything connected to your ORANE experience will live here — from upcoming treatments to your personal preferences.
                   </p>
 
                 </div>
@@ -872,7 +1906,11 @@ const [authMode, setAuthMode] =
            =================================================== */}
 
         {activeTab === "appointments" && (
-          <AppointmentsPanel />
+          <AppointmentsPanel
+            bookings={customerBookings}
+            loading={bookingsLoading}
+            error={bookingsError}
+/>
         )}
 
         {/* ===================================================
@@ -1435,9 +2473,65 @@ function DashboardCard({
   );
 }
 
-function AppointmentsPanel() {
+function AppointmentsPanel({
+  bookings,
+  loading,
+  error,
+}: {
+  bookings: CustomerBooking[];
+  loading: boolean;
+  error: string;
+}) {
   const [appointmentView, setAppointmentView] =
     useState<"upcoming" | "history">("upcoming");
+
+  const getBookingDate = (
+    booking: CustomerBooking
+  ) => {
+    const value =
+      booking.appointmentDate ??
+      booking.date ??
+      null;
+
+    if (!value) {
+      return null;
+    }
+
+    const parsed = new Date(value);
+
+    return Number.isNaN(parsed.getTime())
+      ? null
+      : parsed;
+  };
+
+  const now = new Date();
+
+  const upcomingBookings =
+    bookings.filter((booking) => {
+      const date = getBookingDate(booking);
+
+      if (!date) {
+        return true;
+      }
+
+      return date >= now;
+    });
+
+  const historyBookings =
+    bookings.filter((booking) => {
+      const date = getBookingDate(booking);
+
+      if (!date) {
+        return false;
+      }
+
+      return date < now;
+    });
+
+  const visibleBookings =
+    appointmentView === "upcoming"
+      ? upcomingBookings
+      : historyBookings;
 
   return (
     <section
@@ -1453,21 +2547,17 @@ function AppointmentsPanel() {
         lg:p-10
       "
     >
-
-      {/* Header */}
-
       <div
         className="
           flex
           flex-col
           gap-6
           lg:flex-row
-          lg:items-start lg:justify-start
+          lg:items-start
+          lg:justify-start
         "
       >
-
         <div className="flex items-start gap-4">
-
           <div
             className="
               flex
@@ -1481,14 +2571,12 @@ function AppointmentsPanel() {
               border-[#D4AF37]/20
               bg-[#D4AF37]/10
               text-[#D4AF37]
-              shadow-[0_0_25px_rgba(212,175,55,.06)]
             "
           >
             <CalendarDays size={24} />
           </div>
 
           <div>
-
             <p
               className="
                 text-xs
@@ -1508,9 +2596,7 @@ function AppointmentsPanel() {
               Keep track of your upcoming treatments and your ORANE visit
               history in one place.
             </p>
-
           </div>
-
         </div>
 
         <Link
@@ -1536,7 +2622,6 @@ function AppointmentsPanel() {
           "
         >
           Book Appointment
-
           <ArrowRight
             size={16}
             className="
@@ -1546,10 +2631,7 @@ function AppointmentsPanel() {
             "
           />
         </Link>
-
       </div>
-
-      {/* Appointment navigation */}
 
       <div
         className="
@@ -1565,10 +2647,11 @@ function AppointmentsPanel() {
           p-1
         "
       >
-
         <button
           type="button"
-          onClick={() => setAppointmentView("upcoming")}
+          onClick={() =>
+            setAppointmentView("upcoming")
+          }
           className={`
             whitespace-nowrap
             rounded-full
@@ -1579,7 +2662,7 @@ function AppointmentsPanel() {
             duration-500
             ${
               appointmentView === "upcoming"
-                ? "bg-[#D4AF37]/12 text-[#D4AF37] shadow-[0_0_22px_rgba(212,175,55,.07)]"
+                ? "bg-[#D4AF37]/12 text-[#D4AF37]"
                 : "text-white/70 hover:text-white/70"
             }
           `}
@@ -1589,7 +2672,9 @@ function AppointmentsPanel() {
 
         <button
           type="button"
-          onClick={() => setAppointmentView("history")}
+          onClick={() =>
+            setAppointmentView("history")
+          }
           className={`
             whitespace-nowrap
             rounded-full
@@ -1600,48 +2685,242 @@ function AppointmentsPanel() {
             duration-500
             ${
               appointmentView === "history"
-                ? "bg-[#D4AF37]/12 text-[#D4AF37] shadow-[0_0_22px_rgba(212,175,55,.07)]"
+                ? "bg-[#D4AF37]/12 text-[#D4AF37]"
                 : "text-white/70 hover:text-white/70"
             }
           `}
         >
           Visit History
         </button>
-
       </div>
-
-      {/* Content */}
 
       <div className="mt-7">
 
-        {appointmentView === "upcoming" ? (
-          <AppointmentEmptyState
-            eyebrow="UPCOMING VISIT"
-            icon={<CalendarDays size={26} />}
-            title="Your next ORANE experience is waiting."
-            description="Once you make an appointment, your treatment details, date, time and specialist will appear here."
-            primaryAction="Book an Appointment"
-            secondaryAction="Explore Services"
-            primaryHref="/booking"
-            secondaryHref="/"
-          />
-        ) : (
-          <AppointmentEmptyState
-            eyebrow="VISIT HISTORY"
-            icon={<Clock3 size={26} />}
-            title="Your ORANE journey starts here."
-            description="Your completed treatments and previous visits will appear in this space after your first appointment."
-            primaryAction="Book Your First Visit"
-            primaryHref="/booking"
-          />
+        {loading && (
+          <div
+            className="
+              rounded-[30px]
+              border
+              border-white/10
+              bg-white/[0.02]
+              px-6
+              py-12
+              text-center
+              text-sm
+              text-white/60
+            "
+          >
+            Loading your appointments...
+          </div>
         )}
 
-      </div>
+        {!loading && error && (
+          <div
+            className="
+              rounded-[30px]
+              border
+              border-red-300/10
+              bg-red-300/[0.03]
+              px-6
+              py-10
+              text-center
+              text-sm
+              leading-7
+              text-red-200/75
+            "
+          >
+            {error}
+          </div>
+        )}
 
+        {!loading &&
+          !error &&
+          visibleBookings.length === 0 && (
+            <AppointmentEmptyState
+              eyebrow={
+                appointmentView === "upcoming"
+                  ? "UPCOMING VISIT"
+                  : "VISIT HISTORY"
+              }
+              icon={
+                appointmentView === "upcoming"
+                  ? <CalendarDays size={26} />
+                  : <Clock3 size={26} />
+              }
+              title={
+                appointmentView === "upcoming"
+                  ? "Your next ORANE experience is waiting."
+                  : "Your ORANE journey starts here."
+              }
+              description={
+                appointmentView === "upcoming"
+                  ? "Once you make an appointment, your treatment details, date, time and specialist will appear here."
+                  : "Your completed treatments and previous visits will appear in this space after your first appointment."
+              }
+              primaryAction={
+                appointmentView === "upcoming"
+                  ? "Book an Appointment"
+                  : "Book Your First Visit"
+              }
+              secondaryAction={
+                appointmentView === "upcoming"
+                  ? "Explore Services"
+                  : undefined
+              }
+              primaryHref="/booking"
+              secondaryHref={
+                appointmentView === "upcoming"
+                  ? "/"
+                  : undefined
+              }
+            />
+          )}
+
+        {!loading &&
+          !error &&
+          visibleBookings.length > 0 && (
+            <div className="space-y-4">
+              {visibleBookings.map((booking) => {
+                const date =
+                  getBookingDate(booking);
+
+                const serviceNames =
+                  booking.bookingServices
+                    ?.map(
+                      (item) =>
+                        item.service?.name
+                    )
+                    .filter(
+                      (
+                        name
+                      ): name is string =>
+                        Boolean(name)
+                    ) ??
+                  booking.services
+                    ?.map(
+                      (service) =>
+                        service.name
+                    )
+                    .filter(
+                      (
+                        name
+                      ): name is string =>
+                        Boolean(name)
+                    ) ??
+                  [];
+
+                const total =
+                  Number(
+                    booking.totalPrice ?? 0
+                  );
+
+                return (
+                  <div
+                    key={booking.id}
+                    className="
+                      rounded-[28px]
+                      border
+                      border-white/10
+                      bg-white/[0.025]
+                      p-6
+                      transition-all
+                      duration-500
+                      hover:border-[#D4AF37]/20
+                      hover:bg-white/[0.04]
+                    "
+                  >
+                    <div
+                      className="
+                        flex
+                        flex-col
+                        gap-5
+                        lg:flex-row
+                        lg:items-start
+                        lg:justify-between
+                      "
+                    >
+                      <div>
+                        <p
+                          className="
+                            text-[10px]
+                            uppercase
+                            tracking-[0.3em]
+                            text-[#D4AF37]/65
+                          "
+                        >
+                          {appointmentView === "upcoming"
+                            ? "UPCOMING APPOINTMENT"
+                            : "PAST APPOINTMENT"}
+                        </p>
+
+                        <h3 className="mt-2 text-xl font-light text-white">
+                          {serviceNames.length
+                            ? serviceNames.join(" â€¢ ")
+                            : "ORANE Treatment"}
+                        </h3>
+
+                        <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm text-white/60">
+                          {date && (
+                            <span>
+                              {date.toLocaleDateString(
+                                "en-GB",
+                                {
+                                  day: "2-digit",
+                                  month: "short",
+                                  year: "numeric",
+                                }
+                              )}
+                            </span>
+                          )}
+
+                          {booking.time && (
+                            <span>
+                              {booking.time}
+                            </span>
+                          )}
+
+                          {booking.bookingNo && (
+                            <span>
+                              {booking.bookingNo}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col items-start gap-2 lg:items-end">
+                        <span
+                          className="
+                            rounded-full
+                            border
+                            border-[#D4AF37]/20
+                            bg-[#D4AF37]/[0.06]
+                            px-3
+                            py-1.5
+                            text-[10px]
+                            uppercase
+                            tracking-[0.18em]
+                            text-[#D4AF37]/80
+                          "
+                        >
+                          {booking.paymentStatus ??
+                            booking.status ??
+                            "Booking"}
+                        </span>
+
+                        <span className="text-sm text-white/60">
+                          Â£{total.toFixed(2)}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+      </div>
     </section>
   );
 }
-
 function AppointmentEmptyState({
   eyebrow,
   icon,
@@ -3018,3 +4297,5 @@ function PreferenceSelect({
     </div>
   );
 }
+
+

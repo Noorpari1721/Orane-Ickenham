@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 
@@ -1296,11 +1297,11 @@ try {
                     className="w-full rounded-xl border border-white/10 bg-black/30 px-3 py-3 text-sm text-white outline-none focus:border-[#D4AF37]/50"
                   >
                     <option value="ASC" className="bg-[#111]">
-                      Date &amp; Time — Earliest
+                      Date &amp; Time â€” Earliest
                     </option>
 
                     <option value="DESC" className="bg-[#111]">
-                      Date &amp; Time — Latest
+                      Date &amp; Time â€” Latest
                     </option>
                   </select>
                 </div>
@@ -1684,7 +1685,7 @@ try {
               </p>
 
               <p className="text-xs text-white/70">
-                {service.duration} min {" Â· "}
+                {service.duration} min {" Ã‚Â· "}
                 {formatMoney(Number(service.price))}
               </p>
             </div>

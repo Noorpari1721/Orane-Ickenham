@@ -1,4 +1,4 @@
-type GlassPillProps = {
+﻿type GlassPillProps = {
   children: React.ReactNode;
   className?: string;
   innerClassName?: string;
@@ -35,8 +35,10 @@ export default function GlassPill({
         className={`
           relative
           flex
+          w-full
           items-center
-          gap-8
+          justify-between
+          gap-6
           ${innerClassName}
         `}
       >

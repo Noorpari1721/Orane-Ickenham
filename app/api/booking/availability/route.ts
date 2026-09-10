@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+﻿import { NextResponse } from "next/server";
 import { PrismaClient } from "@/app/generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 
@@ -215,15 +215,21 @@ export async function GET(request: Request) {
         : []),
     ];
 
-    const uniqueServiceIds = [
-      ...new Set(
-        serviceIds.filter(Boolean)
-      ),
-    ];
+    /*
+     * DO NOT deduplicate service IDs.
+     *
+     * Repeated IDs represent repeated treatments.
+     *
+     * Example:
+     * [headSpa, headSpa, headSpa]
+     * = 3 x Head Spa
+     */
+    const requestedServiceIds =
+      serviceIds.filter(Boolean);
 
     if (
       !date ||
-      uniqueServiceIds.length === 0
+      requestedServiceIds.length === 0
     ) {
       return NextResponse.json(
         {
@@ -251,7 +257,7 @@ export async function GET(request: Request) {
 
     const services = await findServices(
       prisma,
-      uniqueServiceIds
+      requestedServiceIds
     );
 
     if (
@@ -559,3 +565,4 @@ export async function GET(request: Request) {
     );
   }
 }
+

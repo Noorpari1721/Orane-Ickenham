@@ -13,12 +13,16 @@ model Customer {
   firstName  String
   lastName   String
   email      String         @unique
+  dateOfBirth String?
   phone      String?
   status     CustomerStatus @default(ACTIVE)
+  passwordHash String?
   notes      String?
   createdAt  DateTime       @default(now())
   updatedAt  DateTime       @updatedAt
   bookings   Booking[]
+  sessions CustomerSession[]
+  passwordResetTokens CustomerPasswordResetToken[]
   payments   Payment[]
 
   @@index([lastName])
@@ -92,11 +96,10 @@ model BookingService {
   id        String   @id @default(cuid())
   bookingId String
   serviceId String
+  quantity  Int      @default(1)
   createdAt DateTime @default(now())
   booking   Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
   service   Service  @relation(fields: [serviceId], references: [id])
-
-  @@unique([bookingId, serviceId])
   @@index([bookingId])
   @@index([serviceId])
 }
@@ -199,6 +202,20 @@ model GiftCardRedemption {
   @@index([redeemedAt])
 }
 
+
+model CustomerSession {
+  id         String   @id @default(cuid())
+  tokenHash  String   @unique
+  customerId String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  revokedAt  DateTime?
+
+  customer Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@index([customerId])
+  @@index([expiresAt])
+}
 model Admin {
   id           String               @id @default(cuid())
   email        String               @unique
@@ -265,4 +282,18 @@ enum GiftCardStatus {
   REDEEMED
   EXPIRED
   CANCELLED
+}
+
+model CustomerPasswordResetToken {
+  id         String   @id @default(cuid())
+  tokenHash  String   @unique
+  expiresAt  DateTime
+  usedAt     DateTime?
+  createdAt  DateTime @default(now())
+
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@index([customerId])
+  @@index([expiresAt])
 }

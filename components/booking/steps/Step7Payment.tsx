@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { getDurationMinutes } from "@/lib/duration";
@@ -262,9 +263,9 @@ export default function Step7Payment() {
 
             <div className="mt-5 space-y-3">
               {selectedServices.map(
-                (service) => (
+                (service, index) => (
                   <div
-                    key={service.id}
+                    key={`${service.id}-${index}`}
                     className="flex items-center justify-between gap-4"
                   >
                     <div>
@@ -439,7 +440,7 @@ export default function Step7Payment() {
             </p>
 
             <p className="mt-1 text-xs text-white/65">
-              You will be redirected to Stripe's
+              You will be redirected to Stripe&apos;s
               secure payment page.
             </p>
           </div>
@@ -462,8 +463,14 @@ export default function Step7Payment() {
             I confirm that I have read and agree to the{" "}
             <Link
               href="/policies"
-              target="_blank"
-              rel="noopener noreferrer"
+            onClick={() => {
+              sessionStorage.setItem(
+                "orane-policy-return-scroll",
+                String(window.scrollY)
+              );
+            }}
+             
+             
               className="font-medium text-[#D4AF37] underline decoration-[#D4AF37]/40 underline-offset-4 transition hover:text-[#ead27a]"
             >
               Policies & Aftercare
@@ -552,6 +559,10 @@ function CustomerItem({
     </div>
   );
 }
+
+
+
+
 
 
 

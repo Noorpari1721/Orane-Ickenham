@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { motion } from "framer-motion";
@@ -260,9 +261,9 @@ export default function Step6Review() {
 
                 <div className="mt-4 space-y-3">
                   {selectedServices.map(
-                    (service) => (
+                    (service, index) => (
                       <div
-                        key={service.id}
+                        key={`${service.id}-${index}`}
                         className="flex flex-wrap items-center justify-between gap-3"
                       >
                         <div>
@@ -584,6 +585,7 @@ function ReviewItem({
     </div>
   );
 }
+
 
 
 

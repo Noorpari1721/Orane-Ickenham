@@ -1,4 +1,5 @@
-"use client";
+﻿"use client";
+import Image from "next/image";
 
 import Link from "next/link";
 import {
@@ -27,11 +28,13 @@ export default function Footer() {
             aria-label="Orane Ickenham Home"
             className="inline-flex"
           >
-            <img
-              src="/images/logo/orane-logo.png"
-              alt="Orane Ickenham"
-              className="h-16 w-auto object-contain"
-            />
+            <Image
+          src="/images/logo/orane-logo.png"
+          alt="Orane Ickenham"
+          width={200}
+          height={64}
+          className="h-16 w-auto object-contain"
+        />
           </Link>
 
           <div className="mt-4 h-[2px] w-16 bg-[#D4AF37]" />
@@ -51,11 +54,13 @@ export default function Footer() {
               aria-label="Instagram"
               className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-white/5 transition-all duration-300 hover:-translate-y-1 hover:border-[#D4AF37]/60 hover:bg-[#D4AF37]/10"
             >
-              <img
-                src="/images/icons/instagram-icon.png"
-                alt=""
-                className="h-7 w-7 object-contain"
-              />
+              <Image
+              src="/images/icons/instagram-icon.png"
+              alt=""
+              width={28}
+              height={28}
+              className="h-7 w-7 object-contain"
+            />
             </a>
 
             <a
@@ -65,11 +70,13 @@ export default function Footer() {
               aria-label="Facebook"
               className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-white/5 transition-all duration-300 hover:-translate-y-1 hover:border-[#D4AF37]/60 hover:bg-[#D4AF37]/10"
             >
-              <img
-                src="/images/icons/facebook-icon.png"
-                alt=""
-                className="h-8 w-8 object-contain"
-              />
+              <Image
+              src="/images/icons/facebook-icon.png"
+              alt=""
+              width={32}
+              height={32}
+              className="h-8 w-8 object-contain"
+            />
             </a>
 
           </div>
@@ -136,24 +143,6 @@ export default function Footer() {
                 className="transition-all duration-300 hover:pl-1 hover:text-[#D4AF37]"
               >
                 Book Appointment
-              </Link>
-            </li>
-
-            <li>
-              <Link
-                href="/policies"
-                className="transition-all duration-300 hover:pl-1 hover:text-[#D4AF37]"
-              >
-                Policies & Aftercare
-              </Link>
-            </li>
-
-            <li>
-              <Link
-                href="/privacy-policy"
-                className="transition-all duration-300 hover:pl-1 hover:text-[#D4AF37]"
-              >
-                Privacy Policy
               </Link>
             </li>
 
@@ -273,3 +262,6 @@ export default function Footer() {
     </footer>
   );
 }
+
+
+

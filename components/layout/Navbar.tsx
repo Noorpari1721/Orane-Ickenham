@@ -1,4 +1,5 @@
 ﻿"use client";
+import Image from "next/image";
 
 import { useEffect, useRef, useState } from "react";
 import { Menu, X } from "lucide-react";
@@ -6,6 +7,7 @@ import { Menu, X } from "lucide-react";
 import GlassPill from "./GlassPill";
 import NavLinks from "./NavLinks";
 import ActionButtons from "./ActionButtons";
+import MyAccountButton from "./MyAccountButton";
 
 const links = [
   { name: "Home", href: "#home" },
@@ -112,7 +114,7 @@ export default function Navbar() {
 
   return (
     <header className="fixed top-0 left-0 z-50 w-full">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6">
+      <div className="mx-auto max-w-[1520px] px-0 sm:px-0 lg:px-8">
 
         {/* MAIN NAVBAR */}
 
@@ -123,8 +125,9 @@ export default function Navbar() {
             min-h-16 sm:h-20
             items-center
             justify-between
+            gap-0
             rounded-full
-            px-5 sm:px-7
+            px-4 sm:px-6 lg:px-9
             transition-all
             duration-500
             ${
@@ -141,35 +144,94 @@ export default function Navbar() {
             ref={logoRef}
             href="#home"
             onClick={(e) => scrollToSection(e, "#home")}
-            className={`flex shrink-0 items-center rounded-full px-3 py-2 transition-all duration-300 hover:scale-[1.03] ${
-              logoOverMap
-                ? "border border-white/10 bg-black/55 shadow-[0_8px_30px_rgba(0,0,0,.45)] backdrop-blur-xl"
-                : ""
-            }`}
+            className={`
+              flex
+              w-[145px]
+              shrink-0
+              items-center
+              lg:w-[180px]
+              rounded-full
+              px-0
+              py-2
+              lg:px-3
+              transition-all
+              duration-300
+              hover:scale-[1.03]
+              ${
+                logoOverMap
+                  ? "border border-white/10 bg-black/55 shadow-[0_8px_30px_rgba(0,0,0,.45)] backdrop-blur-xl"
+                  : ""
+              }
+            `}
             aria-label="Orane Ickenham Home"
           >
-            <img
-              src="/images/logo/orane-logo.png"
-              alt="Orane Ickenham"
-              className="h-auto w-[135px] object-contain sm:w-[155px]"
-            />
+            <Image
+          src="/images/logo/orane-logo.png"
+          alt="Orane Ickenham"
+          width={155}
+          height={64}
+          className="h-auto w-[135px] object-contain sm:w-[145px] lg:w-[155px]"
+          priority
+        />
           </a>
+
+          {/* DESKTOP MY ACCOUNT */}
+
+          <div
+            className="
+              hidden
+              lg:flex
+              shrink-0
+              items-center
+              ml-1
+              mr-5
+              pl-1
+            "
+          >
+            <MyAccountButton
+              variant="home"
+              scrolled={scrolled}
+            />
+          </div>
 
           {/* DESKTOP NAVIGATION */}
 
-          <div className="hidden lg:block">
-            <GlassPill>
-              <NavLinks
-                links={links}
-                scrolled={scrolled}
-                onNavigate={scrollToSection}
-              />
-            </GlassPill>
+          <div
+            className="
+              hidden
+              lg:flex
+              min-w-0
+              flex-1
+              justify-center
+              px-2
+              xl:px-4
+            "
+          >
+            <div className="w-full max-w-[700px] whitespace-nowrap">
+              <GlassPill>
+                <NavLinks
+                  links={links}
+                  scrolled={scrolled}
+                  onNavigate={scrollToSection}
+                />
+              </GlassPill>
+            </div>
           </div>
 
           {/* DESKTOP ACTIONS */}
 
-          <div className="hidden lg:flex items-center gap-3 shrink-0">
+          <div
+            className="
+              hidden
+              lg:flex
+              shrink-0
+              items-center
+              gap-3
+              xl:gap-4
+              ml-5
+              pl-3
+            "
+          >
             <ActionButtons scrolled={scrolled} />
           </div>
 
@@ -196,6 +258,7 @@ export default function Navbar() {
               ease-out
               hover:scale-110
               active:scale-95
+              ml-auto
               lg:hidden
 
               ${
@@ -433,3 +496,10 @@ export default function Navbar() {
     </header>
   );
 }
+
+
+
+
+
+
+

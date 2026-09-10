@@ -1,7 +1,8 @@
+﻿/* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import nodemailer from "nodemailer";
-import { PrismaClient } from "@/app/generated/prisma/client";
+import { Prisma, PrismaClient } from "@/app/generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 
 export const runtime = "nodejs";
@@ -240,10 +241,10 @@ function createEndTime(
 }
 
 async function getNextCustomerNumber(
-  prisma: PrismaClient
+  customer: PrismaClient["customer"]
 ) {
   const existingCustomerNumbers =
-    await prisma.customer.findMany({
+    await customer.findMany({
       select: {
         customerNo: true,
       },
@@ -275,7 +276,7 @@ async function getNextCustomerNumber(
 }
 
 async function upsertCustomer(
-  prisma: any,
+  prisma: Pick<PrismaClient, "customer">,
   metadata: BookingMetadata,
   firstName: string,
   lastName: string
@@ -283,7 +284,7 @@ async function upsertCustomer(
   for (let attempt = 1; attempt <= 5; attempt++) {
     try {
       const customerNo =
-        await getNextCustomerNumber(prisma);
+        await getNextCustomerNumber(prisma.customer);
 
       return await prisma.customer.upsert({
         where: {
@@ -430,7 +431,7 @@ async function sendBookingEmails(
             ${escapeHtml(item.name)}
           </td>
           <td style="padding:10px 0;border-bottom:1px solid #eeeeee;text-align:right;color:#333;">
-            £${item.price.toFixed(2)}
+            &#163;${item.price.toFixed(2)}
           </td>
         </tr>
       `
@@ -465,7 +466,7 @@ async function sendBookingEmails(
               Total Paid
             </td>
             <td style="padding:16px 0 0;text-align:right;font-size:18px;font-weight:bold;color:#b28a32;">
-              £${paidAmount.toFixed(2)}
+              &#163;${paidAmount.toFixed(2)}
             </td>
           </tr>
         </tfoot>
@@ -540,7 +541,7 @@ async function sendBookingEmails(
               Total Paid
             </td>
             <td style="padding:16px 0 0;text-align:right;font-size:18px;font-weight:bold;color:#b28a32;">
-              £${paidAmount.toFixed(2)}
+              &#163;${paidAmount.toFixed(2)}
             </td>
           </tr>
         </tfoot>
@@ -739,7 +740,7 @@ async function sendBookingEmails(
           metadata.serviceNames ||
           metadata.serviceName ||
           "Appointment"
-        } - £${paidAmount.toFixed(2)}`,
+        } - &#163;${paidAmount.toFixed(2)}`,
       html: salonHtml,
     }),
   ]);
@@ -857,7 +858,7 @@ async function sendGiftCardEmails(
             </div>
 
             <div style="margin:10px 0;font-family:Georgia,serif;font-size:40px;color:#d4af5a;">
-              ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âº${amount}
+              ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚ÂÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Âº${amount}
             </div>
 
             <div style="font-size:10px;letter-spacing:2px;color:#aaa;">
@@ -922,7 +923,7 @@ async function sendGiftCardEmails(
           </p>
 
           <p style="margin:12px 0 0;font-size:18px;color:#b28a32;">
-            ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âº${amount}
+            ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚ÂÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Âº${amount}
           </p>
 
           <p style="margin:8px 0 0;color:#777;">
@@ -946,7 +947,7 @@ async function sendGiftCardEmails(
       from: `"ORANE Ickenham" <${fromEmail}>`,
       to: recipientEmail,
       subject:
-        "Your ORANE Ickenham Gift Card ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â­ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¾ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¼",
+        "Your ORANE Ickenham Gift Card ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â­ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¾ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¾ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¼",
       html: recipientHtml,
     }),
   ];
@@ -1046,9 +1047,9 @@ async function processGiftCardPayment(
 
   if (difference > 0.01) {
     throw new Error(
-      `Gift Card payment amount mismatch for ${giftCard.giftCardNo}. Database: ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âº${databaseAmount.toFixed(
+      `Gift Card payment amount mismatch for ${giftCard.giftCardNo}. Database: ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚ÂÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Âº${databaseAmount.toFixed(
         2
-      )}, Stripe: ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âº${amountPaid.toFixed(2)}`
+      )}, Stripe: ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚ÂÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Âº${amountPaid.toFixed(2)}`
     );
   }
 
@@ -1164,7 +1165,7 @@ function bookingTimesOverlap(
 }
 
 async function findAvailableTechnicianForBooking(
-  prisma: any,
+  prisma: PrismaClient,
   appointmentDate: Date,
   appointmentTime: string,
   requestedEndTime: string | null,
@@ -1193,7 +1194,7 @@ async function findAvailableTechnicianForBooking(
 
   const techIds =
     technicians.map(
-      (tech: any) => tech.id
+      (tech) => tech.id
     );
 
   const existingBookings =
@@ -1222,12 +1223,12 @@ async function findAvailableTechnicianForBooking(
 
   const orderedTechnicians = [
     ...technicians.filter(
-      (tech: any) =>
+      (tech) =>
         preferredTechId &&
         tech.id === preferredTechId
     ),
     ...technicians.filter(
-      (tech: any) =>
+      (tech) =>
         !preferredTechId ||
         tech.id !== preferredTechId
     ),
@@ -1236,7 +1237,7 @@ async function findAvailableTechnicianForBooking(
   for (const tech of orderedTechnicians) {
     const conflict =
       existingBookings.some(
-        (booking: any) =>
+        (booking) =>
           booking.techId === tech.id &&
           bookingTimesOverlap(
             appointmentTime,
@@ -1347,8 +1348,21 @@ async function createBookingRecords(
       .filter(Boolean);
   }
 
+  /*
+   * Preserve duplicate service IDs for quantity.
+   *
+   * Example:
+   * [A, A, B] means A x2 + B x1.
+   *
+   * Prisma "in" queries return each database row only once,
+   * even if the same ID appears multiple times.
+   *
+   * Therefore:
+   * - uniqueServiceIds is used only for the database lookup.
+   * - requestedServiceIds is used to preserve quantity/order.
+   */
   const uniqueServiceIds =
-    [...new Set(requestedServiceIds)];
+    Array.from(new Set(requestedServiceIds));
 
   if (uniqueServiceIds.length === 0) {
     throw new Error(
@@ -1375,8 +1389,15 @@ async function createBookingRecords(
     );
   }
 
+  /*
+   * Rebuild the original selection order from the
+   * duplicate-preserving requestedServiceIds list.
+   *
+   * [A, A, B] becomes:
+   * A, A, B
+   */
   const orderedServices =
-    uniqueServiceIds.map(
+    requestedServiceIds.map(
       (id) =>
         services.find(
           (service) =>
@@ -1386,6 +1407,27 @@ async function createBookingRecords(
 
   const primaryService =
     orderedServices[0];
+
+  /*
+   * Calculate the expected amount from the exact Stripe service list.
+   *
+   * Duplicate IDs represent quantity:
+   * [A, A, B] = A x 2 + B x 1
+   *
+   * This must match the quantity-aware Stripe Checkout total.
+   */
+  const serviceQuantities =
+    requestedServiceIds.reduce(
+      (groups, serviceId) => {
+        groups.set(
+          serviceId,
+          (groups.get(serviceId) || 0) + 1
+        );
+
+        return groups;
+      },
+      new Map<string, number>()
+    );
 
   const totalPrice =
     orderedServices.reduce(
@@ -1418,6 +1460,31 @@ async function createBookingRecords(
       "The selected services have an invalid total duration."
     );
   }
+
+  /*
+   * Temporary production-safe diagnostic logging.
+   *
+   * Never log customer email, phone, names, card details,
+   * Stripe secrets, or webhook secrets.
+   *
+   * These values let us compare the Stripe amount with the
+   * database-backed service total when a real payment arrives.
+   */
+  console.log(
+    "BOOKING_AMOUNT_DIAGNOSTIC",
+    JSON.stringify({
+      amountPaid,
+      expectedTotalPrice: totalPrice,
+      amountPaidPence: Math.round(amountPaid * 100),
+      expectedTotalPence: Math.round(totalPrice * 100),
+      requestedServiceIds,
+      servicePrices: orderedServices.map((service) => ({
+        id: service.id,
+        price: Number(service.price),
+        quantity: serviceQuantities.get(service.id) || 1,
+      })),
+    })
+  );
 
   if (
     Math.round(amountPaid * 100) !==
@@ -1587,14 +1654,54 @@ async function createBookingRecords(
                 tech?.id ?? null,
 
               /*
-               * The complete appointment is stored here.
-               * A single booking can therefore contain one
-               * or many treatments.
+               * MULTIPLE SERVICE QUANTITY SUPPORT
+               *
+               * Stripe metadata preserves every selected
+               * service ID, including duplicates.
+               *
+               * Example:
+               * [A, A, B]
+               *
+               * Database:
+               * A -> quantity 2
+               * B -> quantity 1
                */
               bookingServices: {
-                create: orderedServices.map(
-                  (service) => ({
-                    serviceId: service.id,
+                create: Array.from(
+                  requestedServiceIds.reduce(
+                    (groups, requestedServiceId) => {
+                      const existing =
+                        groups.get(requestedServiceId);
+
+                      if (existing) {
+                        existing.quantity += 1;
+                      } else {
+                        groups.set(
+                          requestedServiceId,
+                          {
+                            serviceId: requestedServiceId,
+                            quantity: 1,
+                          }
+                        );
+                      }
+
+                      return groups;
+                    },
+                    new Map<
+                      string,
+                      {
+                        serviceId: string;
+                        quantity: number;
+                      }
+                    >()
+                  ).values()
+                ).map(
+                  ({
+                    serviceId,
+                    quantity,
+                  }) => ({
+                    serviceId,
+                    quantity,
                   })
                 ),
               },
@@ -1866,3 +1973,7 @@ export async function POST(
     );
   }
 }
+
+
+
+
